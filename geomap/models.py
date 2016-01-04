@@ -16,7 +16,7 @@ class Map(models.Model):
     map_center_radius = models.FloatField()
     map_center_zoom = models.FloatField()
     
-    map_polygon = models.MultiPolygonField(null=True)
+    map_polygon = models.MultiPolygonField(null=True, blank=True)
 
     def __str__(self):
         return self.map_title

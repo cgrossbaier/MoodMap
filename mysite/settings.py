@@ -95,14 +95,21 @@ if 'RDS_DB_NAME' in os.environ:
         }
     }
 else:
+#    DATABASES = {
+#        'default': {
+#            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#            'NAME': 'iotd',
+#            'USER': 'iotd',
+#            'PASSWORD': 'iotd',
+#            'HOST': 'localhost',
+#            'PORT': '5432',
+#        }
+#    }
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'iotd',
-            'USER': 'iotd',
-            'PASSWORD': 'iotd',
-            'HOST': 'localhost',
-            'PORT': '5432',
+    'default': {
+         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+         'NAME': 'iotd',
+         'USER': 'cgrossbaier',
         }
     }
 
