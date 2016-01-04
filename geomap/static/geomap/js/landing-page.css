@@ -1,0 +1,409 @@
+/*!
+ * Start Bootstrap - Landing Page Bootstrap Theme (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/* Colors
+
+White: #FCFFF5
+Red: #682321
+DarkBlue: #193441
+LightBlue: #799AA5
+*/
+
+
+body{
+    background-color: #FCFFF5;
+},
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-fasmily: 'Arial';
+    font-weight: 700;
+}
+
+a {
+    color: #193441;
+}
+
+.topnav {
+    font-size: 14px; 
+    background-color: #FCFFF5;
+}
+
+.navbar-default{
+    color: #FCFFF5;
+    border-bottom: 3px solid #682321;
+}
+.navbar-default .navbar-nav>li>a {
+    color: #193441;
+}
+
+.navbar-brand {
+    padding: 7px 0px;
+    }
+
+.lead {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.intro-header {
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 10px;
+    text-align: left;
+    color: #FCFFF5;
+    background: url(../img/EngineerWithIPad_Cropped_Color.png) no-repeat center center;
+    background-size: cover;
+    border-bottom: 5px solid #682321;
+}
+
+.intro-header-subpage {
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 10px;
+    text-align: left;
+    color: #FCFFF5;
+    background: url(../img/EngineerWithIPad_Background.png) no-repeat center center;
+    background-size: cover;
+    border-bottom: 5px solid #682321;
+}
+
+.intro-message {
+    position: relative;
+    padding-top: 5%;
+    padding-bottom: 20%;
+}
+
+.intro-message > h1 {
+    margin: 0;
+    font-size: 4em;
+}
+
+.intro-divider {
+    width: 500px;
+    border-top: 1px solid #FCFFF5;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    float: left;
+}
+
+@media(max-width:767px) {
+    
+    .navbar-brand {
+        padding: 0; 
+        color: #FCFFF5;
+    }
+    
+    .navbar-brand img {
+        margin-top: 8px;
+        margin-left: 3px;
+    }
+
+    .intro-header {
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 100px;
+    background: url(../img/EngineerWithIPad_Background.png) no-repeat center center;
+    background-size: cover;    
+    }
+    
+    
+    .intro-message {
+        padding-bottom: 15%;
+    }
+
+    .intro-message > h1 {
+        font-size: 3.5em;
+    }
+    
+    .intro-message > h3 {
+        font-size: 1.5em;
+    }
+    
+    h1{
+        font-size: 2.0em;
+    }
+    
+    h2{
+        font-size: 1.5em;
+    }
+        
+    h3{
+        font-size: 1.2em;
+    }
+    
+    h4{
+        font-size: 1em;
+    }
+    
+    
+    .banner h2 {
+        margin: 0;
+        font-size: 1.5em;
+    }
+    
+    ul.intro-social-buttons > li {
+        display: block;
+        margin-bottom: 20px;
+        padding: 0;
+    }
+
+    ul.intro-social-buttons > li:last-child {
+        margin-bottom: 0;
+    }
+
+    .intro-divider {
+        width: 100%;
+    }
+
+    ul.banner-social-buttons > li {
+        display: block;
+        margin-bottom: 20px;
+        padding: 0;
+    }
+
+    ul.banner-social-buttons > li:last-child {
+        margin-bottom: 0;
+    }
+    
+    
+}
+
+@media(max-width:1199px) {
+    ul.banner-social-buttons {
+        float: left;
+        margin-top: 15px;
+    }
+}
+
+
+.fa:hover{
+    color: #682321;
+}
+
+/*
+.network-name {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+*/
+
+.content-section-quote {
+    padding: 55px 0;
+    background-color: rgba(121, 154, 165, 0.475);
+    color: #193441;
+    text-align: center;
+    font-size: 20px;
+/*    font-size: 1.5em;*/
+
+}
+
+.content-section-a {
+    border-top: 1px solid #193441;
+    padding: 55px 0;
+    background-color: #FCFFF5;
+    color: #193441;
+}
+
+.content-section-b {
+    padding: 55px 0;
+    border-top: 1px solid #193441;
+    background-color: rgba(121, 154, 165, 0.475);
+    color: #193441;
+}
+.content-section-c {
+/*    border-top: 1px solid #193441;*/
+    padding: 25px 0;
+    background-color: #FCFFF5;
+    color: #193441;
+}
+
+.circle
+{
+width:50px;
+height:50px;
+border-radius:50%;
+font-size: 20px; 
+color:#FCFFF5;
+line-height:50px;
+text-align:center;
+background:#682321
+}
+
+
+.section-heading {
+    margin-bottom: 30px;
+}
+
+.section-heading-spacer {
+    float: left;
+    width: 200px;
+    border-top: 1px solid #682321;
+}
+
+.banner {
+    padding: 100px 0;
+    color: #FFFFF0;
+    background: url(../img/EngineerWithIPad_Background.png) no-repeat center center;
+    background-size: cover;
+    border-top: 5px solid #682321;
+}
+
+.banner h1 {
+    margin: 0;
+/*    font-size: 3em;*/
+}
+
+.banner ul {
+    margin-bottom: 0;
+}
+
+.banner-social-buttons {
+    float: left;
+    margin-top: 0;
+}
+
+footer {
+    padding: 50px 0;
+    background-color: #FFFFF0;
+    color: #193441;
+}
+
+p.copyright {
+    margin: 15px 0 0;
+}
+
+/*Line Chart*/
+
+.charts{
+    border-left: 5px;
+    border-right: 10px;
+}
+
+#chartRealTime.c3-line {
+  stroke-width: 1.5px;
+}
+
+#chartWarning .c3-line {
+  stroke-width: 1.5px;
+}
+
+#chartPrediction .c3-line {
+  stroke-width: 1.5px;
+}
+
+#chartWarning .c3-circles-Normal {
+  display: none;
+}
+#chartWarning .c3-line-Normal {
+  stroke-width: 0px;
+}
+
+#chartWarning .c3-circles-Critical {
+  display: none;
+}
+#chartWarning .c3-line-Critical {
+  stroke-width: 0px;
+}
+
+#chartWarning .c3-circles-Failure {
+  display: none;
+}
+#chartWarning .c3-line-Failure {
+  stroke-width: 0px;
+}
+
+
+
+
+.c3-region.regionX {
+  fill: red;
+}
+
+
+/*Unternehmen*/
+
+.page-header {
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
+/*    border-bottom: 1px solid #682321;*/
+}
+
+.page-header-sub {
+    padding-top: 10px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 9px;
+/*    margin: 10px 0 20px;*/
+    border-bottom: 1px solid #682321;
+}
+
+
+.content-section-company {
+    padding-top: 55px;
+}
+
+.content-section-management {
+    padding: 10px 0;
+}
+
+.img-responsive-unternehmen {
+    border:  1px solid #682321;
+    height: 200px;
+    margin: auto;
+    box-shadow: 5px 2px 6px rgba(0, 0, 0, 0.175);
+
+}
+.portfolio-item {
+    margin-bottom: 25px;
+}
+
+.fa {
+    color: #193441;
+}
+
+.nameName {
+    color: #682321;
+    text-align: center;
+}
+.namePosition {
+    color: #193441;
+    text-align: center;
+}
+.nameDescription {
+    font-size: 14px; 
+    color: #193441;
+    font-weight: 400;
+    text-align: justify;
+    border-bottom:  1px solid #682321;
+}
+.nameLinks > li > a:hover{
+    font-size: 14px; 
+    color: #193441;
+}
+
+
+
+
+
+/*Impressum*/
+
+impressum {
+    font-size: 14px; 
+    background-color: #FCFFF5;
+}
+
+
+
+
+
+

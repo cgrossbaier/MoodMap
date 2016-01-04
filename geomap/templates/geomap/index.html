@@ -1,0 +1,81 @@
+<head>
+    {% load staticfiles %}
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/detail.css' %}" />
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="{% static 'geomap/leaflet/leaflet.css' %}" />
+        
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="{% static 'geomap/css/bootstrap.min.css' %}" />
+    
+    <!-- Custom Fonts -->
+    <link href="{% static 'geomap/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                    <a class="navbar-brand" rel="home" href="index.html" title="rivutec">
+                        <img src="{% static 'geomap/img/logo_FS3.png' %}" alt="Logo" height="40px"/>
+    </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="">TEST</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!-- / Navigation -->
+    <!-- Page Content -->
+    <div class="content-section-a">
+        <div class="container">
+            <div class="row">
+                <form action="{% url 'geomap:loginUser'%}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="verificationCode">Verification Code</label>
+                        <input type="text" id="verificationCode" placeholder="Input" name="verificationCode">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="username" placeholder="Name" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Password</label>
+                        <input type="password" id="password" placeholder="Password" name="password">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                </form>
+                {% if error_message %}
+                <h1>{{error_message}}</h1>
+                {% endif %}
+            </div>
+        </div>
+<!-- /.container -->
+</div>
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'geomap/js/bootstrap.min.js' %}"></script>
+
+</body>

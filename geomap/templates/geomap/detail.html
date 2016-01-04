@@ -1,0 +1,167 @@
+<head>
+    {% load staticfiles %}
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/detail.css' %}" />
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="{% static 'geomap/leaflet/leaflet.css' %}" />
+        
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="{% static 'geomap/css/bootstrap.min.css' %}" />
+    
+    <!-- Custom Fonts -->
+    <link href="{% static 'geomap/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                    <a class="navbar-brand" rel="home" href="index.html" title="rivutec">
+                        <img src="{% static 'geomap/img/logo_FS3.png' %}" alt="Logo" height="40px"/>
+    </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="">{{user}}</a>
+                    </li>
+                    <li>
+                        <a href="">{{map.map_title}}</a>
+                    </li>
+                    <li>
+                        <a href="{{ STATIC_URL }}/geomap/logoutUser">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!-- / Navigation -->
+    <!-- Page Content -->
+    <div class="content-section-a">
+        <div class="container">
+            
+        <div class="row">
+            <div class="col-md-10">
+                <div id="mapImage"></div>
+            </div>
+             <div class="col-md-2">
+                <form action="{% url 'geomap:addField' map.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="store">Store</label>
+                        <input type="text" id="store" placeholder="Input" name="store">
+                    </div>
+                    <div class="form-group">
+                        <label for="radius">Radius</label>
+                        <input type="text" id="radius" placeholder="Radius in m" name="radius">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                </form>
+                  <button type="submit" id="buttonResetMap" class="btn btn-default">Reset map</button>
+                  {% if choices_list %}
+                      {% for choice in choices_list %}
+                        <button type="submit" class="btn btn-default boxChoice" data-id={{choice.id}}>
+                            {{ choice.choice_text }} - 
+                            {{ choice.choice_radius }}
+                    </button>
+                    {% endfor %}
+                  {% endif %}
+            </div>
+    </div>
+</div>
+<!-- /.container -->
+</div>
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<script src="{% static 'geomap/leaflet/leaflet.js' %}"></script>
+<script src="{% static 'geomap/js/csrfSafeMethod.js' %}"></script>
+<script src="{% static 'geomap/js/bootstrap.min.js' %}"></script>
+
+<script type="text/javascript">
+    
+    var polygonStyle = {
+    "color": "#193441",        
+    "weight": 1,
+    "fillOpacity": 0.4,
+    "fillColor": "#193441"    
+    };
+    
+    var center_lat = "{{ map.map_center_lat }}"
+    var center_lon = "{{ map.map_center_lon }}"
+    
+    var map = L.map('mapImage').setView([center_lat, center_lon], 14);
+
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18,
+        id: 'cgrossbaier.ojbm8b13',
+        accessToken: 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A'
+    }).addTo(map);
+    
+    if ('{{ polygon | safe }}' != "None"){
+        L.geoJson({{ polygon | safe }}, 
+                  {style: polygonStyle}).addTo(map);
+    }
+    
+    map.on('moveend', function(e) {
+        var data= {changeType: 'changePosition', 
+                   lat: map.getCenter().lat, 
+                   lon: map.getCenter().lng};
+        var link = "/geomap/"+{{map.id}}+"/changeMap/";
+	
+        $.post(link, data, function(){
+        }); 
+});
+    map.on('zoomend', function(e) {
+        var data= {changeType: 'changeZoom', 
+                   zoom: map.getZoom()};
+        var link = "/geomap/"+{{map.id}}+"/changeMap/";
+	
+        $.post(link, data, function(){
+        });  
+});
+    $( "#buttonResetMap" ).click(function() {
+        var data= {changeType: 'resetMap'};
+        var link = "/geomap/"+{{map.id}}+"/changeMap/";
+	
+        $.post(link, data, function(reponse){
+        if (reponse.status == 'resetMap'){
+            location.reload(true);
+        }
+        });  
+});
+    
+
+$(".boxChoice").click( function(ev) {
+    var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
+    var link = "/geomap/"+{{map.id}}+"/changeChoice/";
+    $.post(link, data, function(reponse){
+        if (reponse.status == 'Choice deleted'){
+            location.reload(true);
+        }
+
+        }); 
+
+});
+
+    
+    
+</script>
+</body>

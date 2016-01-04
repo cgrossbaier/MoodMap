@@ -1,0 +1,1 @@
+$(function(){$("#Navigation").load("navigation.html");});$(function(){$("#Footer").load("footer.html");});$(function(){$("#Banner").load("banner.html");});
