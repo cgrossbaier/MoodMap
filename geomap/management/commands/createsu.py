@@ -6,6 +6,12 @@ from django.contrib.auth.models import User
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        User.objects.filter(username="admin").delete()
         if not User.objects.filter(username="admin").exists():
-            User.objects.create_superuser("admin", "admin@admin.com", "admin12345")
+            user = User.objects.create_superuser("admin", "admin@admin.com", "admin")
+            user.save()
+            
+
+
+
 
