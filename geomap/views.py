@@ -100,29 +100,29 @@ def detail(request, map_id):
 @login_required
 def addField(request, map_id):
     map = get_object_or_404(Map, pk=map_id)
-    
-    try:
-        store = request.POST['store']
-        radius = int(request.POST['radius'])
-    except (KeyError):
-        # Redisplay the question voting form.
-        return render(request, 'geomap/detail.html', {
-            'map': map,
-            'error_message': "You didn't select a choice.",
-            'choices_list' : choices_list,
-        })
-    else:
-        
-        results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, store)
-        polygon = getPolygonFromQuery(results, radius)
-        
-        if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-            choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+    if request.method == u'POST':
+        try:
+            store = request.POST['store']
+            radius = request.POST['radius']
+        except (KeyError):
+            # Redisplay the question voting form.
+            return render(request, 'geomap/detail.html', {
+                'map': map,
+                'error_message': "You didn't select a choice.",
+                'choices_list' : choices_list,
+            })
         else:
-            choice_polygon = polygon.wkt
-        
-        choice = Choice(map=map, choice_text=store, choice_radius =  radius, choice_polygon = choice_polygon)
-        choice.save()
+
+            results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, store)
+            polygon = getPolygonFromQuery(results, radius)
+
+            if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+            else:
+                choice_polygon = polygon.wkt
+
+            choice = Choice(map=map, choice_text=store, choice_radius =  radius, choice_polygon = choice_polygon)
+            choice.save()
         
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a

@@ -7,7 +7,7 @@ LightBlue: #799AA5
 */
 body {
     padding: 0;
-    margin: 20;
+    margin: 0;
     background-color: #FCFFF5;
 }
 
@@ -209,7 +209,7 @@ a {
 
 .content-section-a {
     border-top: 1px solid #193441;
-    padding: 55px 0;
+    padding: 60px 0;
     background-color: #FCFFF5;
     color: #193441;
 }
