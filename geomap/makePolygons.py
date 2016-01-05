@@ -1,5 +1,4 @@
 import pyproj
-import folium
 import json
 from functools import partial
 
@@ -37,19 +36,3 @@ def intersectPolygons(polygon1, polygon2):
         return polygon1
     else:
         return polygon1.intersection(polygon2)
-
-def extractCoordinates(poly):
-    # Extract the point values that define the perimeter of the polygon
-    x,y = poly.exterior.coords.xy
-    
-    polygon = list()
-    for x_coordinate, y_coordinate in zip(x, y):
-        polygon.append([y_coordinate, x_coordinate])
-    return polygon
-
-
-def saveGeoJSON(filename, geojson):
-    f = open(filename, 'w')
-    f.write(geojson)
-    f.close()
-    return
