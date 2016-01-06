@@ -25,6 +25,12 @@ from django.db import IntegrityError
 
 from random import randint
 
+############### variables ###############
+
+
+colours = ["#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"]
+numberOfColours = len(colours)
+
 ############### Pages ###############
 
 
@@ -40,13 +46,13 @@ def detail(request, map_id):
     choices_list = Choice.objects.filter(map = map)
     polygon_geoGESON = None
     polygon_Choices_geoGESON = []
-    polygon_Choices_colors = ["#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"]
+    polygon_Choices_colours = []
     
     if choices_list:
         polygon = choices_list[0].choice_polygon
         for choice in choices_list:
             polygon_Choices_geoGESON.append(choice.choice_polygon.geojson)
-#            polygon_Choices_colors.append('%06X' % randint(0, 0xFFFFFF))
+            polygon_Choices_colours.append(choice.choice_colour)
             
             polygon = intersectPolygons(polygon, choice.choice_polygon)
 
@@ -68,7 +74,7 @@ def detail(request, map_id):
             'choices_list' : choices_list,
             'polygon' : polygon_geoGESON,
             'polygon_Choices_geoGESON' : polygon_Choices_geoGESON,
-            'polygon_Choices_colors' : polygon_Choices_colors,
+            'polygon_Choices_colours' : json.dumps(polygon_Choices_colours),
             'user' : username},)
 
 
@@ -86,8 +92,6 @@ def loginUser(request):
         verificationCode = POST.get('verificationCode', False)
         username = 'User' + str(len(User.objects.all())+1)
         password = 'user1234'
-#        username = POST.get('username', False)
-#        password = POST.get('password', False)
         if verificationCode == 'rivutec':
             try:
                 user = User.objects.create_user(username, password = password)
@@ -109,6 +113,7 @@ def loginUser(request):
                 
                 choice_text = 'Thai food'
                 choice_radius = 200
+                choice_colour = colours[0]
                 results = queryGoogle_radarSearch(map_user.map_center_lat, 
                                                   map_user.map_center_lon, 
                                                   map_user.map_center_radius, 
@@ -127,11 +132,13 @@ def loginUser(request):
                     choice.choice_text = choice_text
                     choice.choice_radius = choice_radius
                     choice.choice_polygon = choice_polygon
+                    choice.choice_colour = choice_colour
                     choice.save()
                 
                 
                 choice_text = 'Pub'
                 choice_radius = 50
+                choice_colour = colours[1]
                 results = queryGoogle_radarSearch(map_user.map_center_lat, 
                                                   map_user.map_center_lon, 
                                                   map_user.map_center_radius, 
@@ -150,9 +157,9 @@ def loginUser(request):
                     choice.choice_text = choice_text
                     choice.choice_radius = choice_radius
                     choice.choice_polygon = choice_polygon
+                    choice.choice_colour = choice_colour
                     choice.save()
                     
-
                 return HttpResponseRedirect(reverse('geomap:detail', args=(map_user.id,)))
             except IntegrityError:
                 error_message = 'User already exists'
@@ -194,12 +201,15 @@ def addChoice(request, map_id):
                         choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
                     else:
                         choice_polygon = polygon.wkt
-
+                        
+                    numberOfChoices = len(Choice.objects.all())
                     choice = Choice()
                     choice.map = map
                     choice.choice_text = choice_text
                     choice.choice_radius = choice_radius
                     choice.choice_polygon = choice_polygon
+                    choice.choice_colour = colours[((numberOfChoices + 1) % numberOfColours)]
+                    
                     choice.save()
         
             # Always return an HttpResponseRedirect after successfully dealing

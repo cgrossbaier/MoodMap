@@ -76,12 +76,13 @@
             </div>
              <div class="col-md-2">
                  <div> 
-                     <div style='widht=100%;'>Choices</div>
+                     <div style='widht=100%;'>Legend</div>
                      <div style="margin-top: 5px;">
+                        <button type="button" class="btn btn-default boxChoicesAll">All Choices combined</button>
                       {% if choices_list %}
                           {% for choice in choices_list %}
-                            <button type="submit" class="btn btn-default boxChoice" data-id={{choice.id}}>
-                                {{ choice.choice_text }} |  
+                            <button type="button" class="btn btn-default boxChoice" data-id={{choice.id}} style="background-color:{{ choice.choice_colour }};">
+                                {{ choice.choice_text }} within   
                                 {{ choice.choice_radius }}m
                         </button>
                         {% endfor %}
@@ -123,13 +124,14 @@
     }).addTo(map);
     
     var polygons_choice = {{polygon_Choices_geoGESON | safe }}
-    var polygons_choice_colors = {{polygon_Choices_colors | safe }}
-        for (var i = 0; i < polygons_choice.length; i++) {
+    var polygon_Choices_colours = {{polygon_Choices_colours | safe }}
+        
+    for (var i = 0; i < polygons_choice.length; i++) {
             var polygonStyle_Choice = {
                 "weight": 1,
-                "color": polygons_choice_colors[i],
+                "color": polygon_Choices_colours[i],
                 "fillOpacity": 0.1,
-                "fillColor": polygons_choice_colors[i]    
+                "fillColor": polygon_Choices_colours[i]    
             };
             L.geoJson(JSON.parse(polygons_choice[i]), 
                       {style: polygonStyle_Choice}).addTo(map);

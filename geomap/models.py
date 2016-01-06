@@ -24,19 +24,13 @@ class Map(models.Model):
     def __str__(self):
         return self.map_title
     
-#    def save(self, *args, **kwargs):
-#        # if map_polygon ends up as a Polgon, make it into a MultiPolygon
-#        if self.map_polygon and isinstance(self.map_polygon, geos.Polygon):
-#            self.map_polygon = geos.MultiPolygon(self.map_polygon)
-#            
-#        self.save(*args, **kwargs)
-    
 
 class Choice(models.Model):
     map = models.ForeignKey(Map, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     choice_radius = models.IntegerField()
     choice_polygon = models.MultiPolygonField(null=True)
+    choice_colour = models.CharField(default='#377eb8', max_length=7)
     
     def __str__(self):
         return self.choice_text
