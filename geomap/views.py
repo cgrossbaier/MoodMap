@@ -69,7 +69,8 @@ def loginUser(request):
 def logoutUser(request):
     logout(request)
     context = {}
-    return render(request, 'geomap/index.html', context)
+    return HttpResponseRedirect(reverse('geomap:index', args=()))
+#    return render(request, 'geomap/index.html', context)
     
 @login_required
 def detail(request, map_id):
@@ -77,10 +78,12 @@ def detail(request, map_id):
     map = get_object_or_404(Map, pk=map_id)
     choices_list = Choice.objects.filter(map = map)
     polygon_geoGESON = None
+    polygon_Choices_geoGESON = []
     
     if choices_list:
         polygon = choices_list[0].choice_polygon
         for choice in choices_list:
+            polygon_Choices_geoGESON.append(choice.choice_polygon.geojson)
             polygon = intersectPolygons(polygon, choice.choice_polygon)
 
         polygon_geoGESON = polygon.geojson
@@ -100,6 +103,7 @@ def detail(request, map_id):
             'map': map,
             'choices_list' : choices_list,
             'polygon' : polygon_geoGESON,
+            'polygon_Choices_geoGESON' : polygon_Choices_geoGESON,
             'user' : username},)
 
 @login_required
@@ -119,19 +123,21 @@ def addChoice(request, map_id):
                 return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
             else:
                 results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, choice_text)
-                polygon = getPolygonFromQuery(results, int(choice_radius))
+                
+                if results is not None:
+                    polygon = getPolygonFromQuery(results, int(choice_radius))
 
-                if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-                    choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
-                else:
-                    choice_polygon = polygon.wkt
+                    if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                        choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+                    else:
+                        choice_polygon = polygon.wkt
 
-                choice = Choice()
-                choice.map = map
-                choice.choice_text = choice_text
-                choice.choice_radius = choice_radius
-                choice.choice_polygon = choice_polygon
-                choice.save()
+                    choice = Choice()
+                    choice.map = map
+                    choice.choice_text = choice_text
+                    choice.choice_radius = choice_radius
+                    choice.choice_polygon = choice_polygon
+                    choice.save()
         
             # Always return an HttpResponseRedirect after successfully dealing
             # with POST data. This prevents data from being posted twice if a

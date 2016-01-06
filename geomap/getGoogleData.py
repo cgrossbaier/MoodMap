@@ -8,7 +8,7 @@ key = "AIzaSyC_XaGJy5dpcH2YoYDckNv-IfCKIeiSNSU"
 
 def queryGoogle_radarSearch(lat, lon, radius, types):
     googleGeocodeUrl = 'https://maps.googleapis.com/maps/api/place/radarsearch/json?'
-    url = googleGeocodeUrl + "location=" + str(lat) + "," + str(lon) + "&radius=" + str(radius) + "&types=" + types + "&key=" + key
+    url = googleGeocodeUrl + "location=" + str(lat) + "," + str(lon) + "&radius=" + str(radius) + "&keyword=" + types + "&key=" + key
     json_response = urllib.urlopen(url)
     response = json.loads(json_response.read())
     

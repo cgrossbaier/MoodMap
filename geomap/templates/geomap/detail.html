@@ -79,14 +79,18 @@
                 <div id="mapImage"></div>
             </div>
              <div class="col-md-2">
-                  {% if choices_list %}
-                      {% for choice in choices_list %}
-                        <button type="submit" class="btn btn-default boxChoice" data-id={{choice.id}}>
-                            {{ choice.choice_text }} - 
-                            {{ choice.choice_radius }}
-                    </button>
-                    {% endfor %}
-                  {% endif %}
+                 <div> 
+                     <div style='widht=100%;'>Choices</div>
+                     <div style="margin-top: 5px;">
+                      {% if choices_list %}
+                          {% for choice in choices_list %}
+                            <button type="submit" class="btn btn-default boxChoice" data-id={{choice.id}}>
+                                {{ choice.choice_text }} - 
+                                {{ choice.choice_radius }}
+                        </button>
+                        {% endfor %}
+                      {% endif %}
+                </div>
             </div>
     </div>
 </div>
@@ -109,6 +113,7 @@
     "fillColor": "#682321"    
     };
     
+    
     var center_lat = "{{ map.map_center_lat }}"
     var center_lon = "{{ map.map_center_lon }}"
     
@@ -121,10 +126,22 @@
         accessToken: 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A'
     }).addTo(map);
     
+    var polygons_choice = {{polygon_Choices_geoGESON | safe }}
+        for (var i = 0; i < polygons_choice.length; i++) {
+            var polygonStyle_Choice = {
+                "weight": 0.3,
+                "fillOpacity": 0.1,
+                "fillColor": "#799AA5"    
+                };
+            L.geoJson(JSON.parse(polygons_choice[i]), 
+                      {style: polygonStyle_Choice}).addTo(map);
+    }
+    
     if ('{{ polygon | safe }}' != "None"){
         L.geoJson({{ polygon | safe }}, 
                   {style: polygonStyle}).addTo(map);
     }
+    
     
     map.on('moveend', function(e) {
         var data= {changeType: 'changePosition', 

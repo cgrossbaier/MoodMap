@@ -188,6 +188,11 @@ a {
     color: #682321;
 }
 
+.boxChoice{
+    margin: 5px;
+    color: #193441;
+}
+
 /*
 .network-name {
     text-transform: uppercase;

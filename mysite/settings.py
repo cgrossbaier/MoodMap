@@ -54,7 +54,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'mysite.urls'
 
-LOGIN_URL = 'geomap'
+LOGIN_URL = '/geomap/'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
