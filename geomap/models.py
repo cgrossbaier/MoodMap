@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.contrib.gis.db import models
-
 from shapely.geometry import Point, LineString, Polygon, mapping
 
 from django.contrib.gis import geos
@@ -34,3 +33,11 @@ class Choice(models.Model):
     
     def __str__(self):
         return self.choice_text
+
+class Feedback(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    generalFeedback = models.TextField(blank=True)
+    dataSource = models.TextField(blank=True)
+    problem = models.TextField(blank=True)
+    def __str__(self):
+        return 'User ' + str(self.user.id)

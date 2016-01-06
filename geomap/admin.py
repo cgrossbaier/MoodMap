@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.gis.db import models
-from .models import Choice, Map
+from .models import Choice, Map, Feedback
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
@@ -16,5 +16,12 @@ class MapAdmin(admin.ModelAdmin):
     list_display = ('map_title', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['map_title, map_center']
+    
+class FeedbackAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['user']}),
+        ('Feedback', {'fields': ['generalFeedback', 'dataSource', 'problem']}),
+    ]
 
 admin.site.register(Map, MapAdmin)
+admin.site.register(Feedback, FeedbackAdmin)

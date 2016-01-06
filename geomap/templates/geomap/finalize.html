@@ -37,7 +37,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="" id='BackToMap'> <span class="glyphicon glyphicon-chevron-left"></span> Back to Map</a>
+                        <a href="" id='BackToMap'>Back to map</a>
                     </li>
                 </ul>
             </div>
@@ -53,7 +53,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Feedback</h1>
+                    <h1 class="page-header">MTurk Code</h1>
                 </div>
             </div>
 
@@ -76,23 +76,15 @@
                         The quality of your answers will determine the MTurk payout.
                     </div>
                 </div>
-                <form action="{% url 'geomap:saveFeedback' 2 %}" method="post"  id='frmFeedback'>
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <div class="form-group">
-                        <label for="feedbackGeneral">Could you please describe what functionality this tool offers?</label>
-                        <textarea cols="60" rows="5" type="text" class="form-control" id="feedbackGeneral" placeholder="..." name="feedbackGeneral" /></textarea>
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        Your Mturk Code
                     </div>
-                        <label for="feedbackLiveData">What live data sources can be incorporated into the tool?</label>
-                        <textarea cols="60" rows="5" class="form-control" id="feedbackLiveData" placeholder="..." name="feedbackLiveData"></textarea>
+                    <div class="panel-body">
+                        {{username}}
                     </div>
-                    <div class="form-group">
-                        <label for="feedbackProblems">What problem can be solved with this tool?</label>
-                        <textarea cols="60" rows="5" class="form-control" id="feedbackProblems" placeholder="..." name="feedbackProblems"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-                <div id='errorMessage' class = 'errorMessage'></div>
+                </div>
+                
                 </div>
             </div>
         </div>
@@ -103,32 +95,9 @@
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="{% static 'geomap/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'geomap/js/csrfSafeMethod.js' %}"></script>
-
 <script>
     var name = window.location.href.replace('feedback/','');
-    document.getElementById('BackToMap').setAttribute('href', name)
-        
-    $(document).ready(function(){
-     $('#frmFeedback').submit(function (e) {
-         e.preventDefault();
-         var data= {feedbackGeneral: $('#feedbackGeneral').val(),
-                    feedbackLiveData: $('#feedbackLiveData').val(),
-                    feedbackProblems: $('#feedbackProblems').val()};
-
-        var link = "/geomap/1/saveFeedback/";
-	
-        $.post(link, data, function(reponse){
-         console.log(reponse.status)
-        if (reponse.status == 'Okay'){
-            window.location.replace("/geomap/finalize/");
-        }
-        else{
-            $('#errorMessage').val() = "Please adjust your feedback."
-        }
-        }); 
-     });
-});
+    document.getElementById('BackToMap').setAttribute('href',name)
 </script>
 
 </body>

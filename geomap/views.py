@@ -7,7 +7,7 @@ from django.views import generic
 from django.utils import timezone
 
 from django.contrib.gis.db import models
-from .models import Map, Choice
+from .models import Map, Choice, Feedback
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -24,9 +24,10 @@ from getGoogleData import *
 from django.db import IntegrityError
 
 from random import randint
+import string
+
 
 ############### variables ###############
-
 
 colours = ["#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"]
 numberOfColours = len(colours)
@@ -78,9 +79,17 @@ def detail(request, map_id):
             'user' : username},)
 
 
+
+@login_required
 def feedback(request, map_id):
     context = {}
     return render(request, 'geomap/feedback.html', context)
+
+@login_required
+def finalize(request):
+    context = {'username': request.user.username}
+    logout(request)
+    return render(request, 'geomap/finalize.html', context)
 
 ############### Functions ###############
 
@@ -90,7 +99,8 @@ def loginUser(request):
     if request.method == u'POST':
         POST = request.POST
         verificationCode = POST.get('verificationCode', False)
-        username = 'User' + str(len(User.objects.all())+1)
+        NumberOfUsers = len(User.objects.all())+1
+        username = makeSessionId(str(NumberOfUsers))
         password = 'user1234'
         if verificationCode == 'rivutec':
             try:
@@ -179,7 +189,7 @@ def logoutUser(request):
 @login_required
 def addChoice(request, map_id):
     response = {'status': 'No Post Method'}
-    map = get_object_or_404(Map, pk=map_id)
+    map = get_object_or_404(Map, user=request.user)
     if request.method == u'POST':
         try:
             choice_text = request.POST['store']
@@ -277,3 +287,81 @@ def changeChoice(request, map_id):
             response = {'status': 'Choice deleted'} # for ok
         return HttpResponse(json.dumps(response), content_type='application/json')
     
+@login_required
+def saveFeedback(request, map_id):
+    response = {'status': "Not Okay"} 
+    user=request.user
+    if request.method == u'POST':
+        response = {'status': "Not Okay", 'message': "You didn't answer all the questions."}
+        POST = request.POST
+        feedbackGeneral = POST.get('feedbackGeneral', False)
+        feedbackLiveData = POST.get('feedbackLiveData', False)
+        feedbackProblems = POST.get('feedbackProblems', False)
+        
+        if feedbackGeneral != "" or feedbackLiveData != "" or feedbackProblems != "":
+            feedback = Feedback()
+            feedback.user = user
+            feedback.generalFeedback = feedbackGeneral
+            feedback.dataSource = feedbackLiveData
+            feedback.problem = feedbackProblems
+            feedback.save()
+        response = {'status': "Okay"} 
+    
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+    
+def makeSessionId(st):
+	import md5, time, base64
+	m = md5.new()
+	m.update('this is a test of the emergency broadcasting system')
+	m.update(str(time.time()))
+	m.update(str(st))
+	return string.replace(base64.encodestring(m.digest())[:-3], '/', '$')
+
+
+@login_required
+def export_feedback(request):
+    
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export_feedback.csv'
+    
+    # Delimiter ',' for German Excel
+    writer = csv.writer(response, dialect=csv.excel, delimiter=';')
+    column_list = ["MturkCode", "General", "Problem", "Data source"]
+    writer.writerow(column_list)
+    # List of Users
+    feedbacks = Feedback.objects.all().order_by('id')
+    for feedback in feedbacks:
+        answers = [u'%s' % (feedback.user.username), 
+                   u'%s' % (feedback.generalFeedback),
+                  u'%s' % (feedback.dataSource),
+                  u'%s' % (feedback.problem)]
+        writer.writerow(answers)
+    
+    return response
+
+@login_required
+def export_user(request):
+    
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export_user.csv'
+    
+    # Delimiter ',' for German Excel
+    writer = csv.writer(response, dialect=csv.excel, delimiter=';')
+    column_list = ["MturkCode", "Choice Text", "Choice Radius"]
+    writer.writerow(column_list)
+    # List of Users
+    users = User.objects.all().order_by('id')
+    for user in users:
+        map = Map.objects.filter(user=user)
+        if map:
+            choices = Choice.objects.filter(map=map[0]).order_by('id')
+            for choice in choices:
+                answers = [u'%s' % (map[0].user.username), 
+                           u'%s' % (choice.choice_text),
+                          u'%s' % (choice.choice_radius)]
+                writer.writerow(answers)
+    
+    return response

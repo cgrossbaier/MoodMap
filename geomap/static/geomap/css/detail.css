@@ -199,6 +199,29 @@ a {
     background-color: #682321;
 }
 
+.circle
+{
+width:50px;
+height:50px;
+border-radius:50%;
+font-size: 20px; 
+color:#FCFFF5;
+line-height:50px;
+text-align:center;
+float: left;
+}
+
+.circleThisPage
+{
+background:#682321;
+}
+
+.circleNotThisPage
+{
+background:#193441;
+}
+
+
 
 /*
 .network-name {
@@ -238,19 +261,6 @@ a {
     background-color: #FCFFF5;
     color: #193441;
 }
-
-.circle
-{
-width:50px;
-height:50px;
-border-radius:50%;
-font-size: 20px; 
-color:#FCFFF5;
-line-height:50px;
-text-align:center;
-background:#682321
-}
-
 
 .section-heading {
     margin-bottom: 30px;
