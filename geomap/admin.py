@@ -8,7 +8,7 @@ class ChoiceInline(admin.TabularInline):
 
 class MapAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['map_title']}),
+        (None,               {'fields': ['map_title', 'user']}),
         ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
         ('Map information', {'fields': ['map_center_lat', 'map_center_lon', 'map_center_radius', 'map_center_zoom', 'map_polygon']}),
     ]

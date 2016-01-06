@@ -34,27 +34,32 @@ def loginUser(request):
     if request.method == u'POST':
         POST = request.POST
         verificationCode = POST.get('verificationCode', False)
-        username = POST.get('username', False)
-        password = POST.get('password', False)
+        username = 'User' + str(len(User.objects.all())+1)
+        password = 'user1234'
+#        username = POST.get('username', False)
+#        password = POST.get('password', False)
         if verificationCode == 'rivutec':
-            user = authenticate(username=username, password = password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    # Redirect to a success page.
-                    return HttpResponseRedirect(reverse('geomap:detail', args=(1,)))
-                else:
-                    # Return a 'disabled account' error message
-                    error_message = 'disabled account'
-            else:
-                try:
-                    user = User.objects.create_user(username, password = password)
-                    user.save()
-                    user = authenticate(username=username, password = password)
-                    login(request, user)
-                    return HttpResponseRedirect(reverse('geomap:detail', args=(1,)))
-                except IntegrityError:
-                    error_message = 'IntegrityError'
+            try:
+                user = User.objects.create_user(username, password = password)
+                user.save()
+                user = authenticate(username=username, password = password)
+                login(request, user)
+
+                # Create map for user
+                map_user = Map()
+                map_user.user = user
+                map_user.map_title = 'Map'
+                map_user.pub_date = timezone.now()
+                map_user.map_center_lon = -0.101709365845
+                map_user.map_center_lat = 51.5003012206
+                map_user.map_center_radius = 2000
+                map_user.map_center_zoom = 13
+
+                map_user.save()
+
+                return HttpResponseRedirect(reverse('geomap:detail', args=(map_user.id,)))
+            except IntegrityError:
+                error_message = 'User already exists'
         else:
             error_message = 'Wrong Verfication Code'
             
@@ -98,42 +103,47 @@ def detail(request, map_id):
             'user' : username},)
 
 @login_required
-def addField(request, map_id):
+def addChoice(request, map_id):
+    response = {'status': 'No Post Method'}
     map = get_object_or_404(Map, pk=map_id)
     if request.method == u'POST':
         try:
-            store = request.POST['store']
-            radius = request.POST['radius']
+            choice_text = request.POST['store']
+            choice_radius = request.POST['radius']
         except (KeyError):
-            # Redisplay the question voting form.
-            return render(request, 'geomap/detail.html', {
-                'map': map,
-                'error_message': "You didn't select a choice.",
-                'choices_list' : choices_list,
-            })
+            # Redisplay the page
+            return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
         else:
-
-            results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, store)
-            polygon = getPolygonFromQuery(results, radius)
-
-            if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-                choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+            # Make sure that values are correct
+            if choice_text == "" or choice_radius == "" or int(choice_radius) <= 0:
+                return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
             else:
-                choice_polygon = polygon.wkt
+                results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, choice_text)
+                polygon = getPolygonFromQuery(results, int(choice_radius))
 
-            choice = Choice(map=map, choice_text=store, choice_radius =  radius, choice_polygon = choice_polygon)
-            choice.save()
+                if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                    choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+                else:
+                    choice_polygon = polygon.wkt
+
+                choice = Choice()
+                choice.map = map
+                choice.choice_text = choice_text
+                choice.choice_radius = choice_radius
+                choice.choice_polygon = choice_polygon
+                choice.save()
         
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
+            # Always return an HttpResponseRedirect after successfully dealing
+            # with POST data. This prevents data from being posted twice if a
+            # user hits the Back button.
+            return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
     
 
 @login_required
 def changeMap(request, map_id):
     response = {'status': 0, 'message': "Your error"} 
-    map = get_object_or_404(Map, pk=map_id)
+#    map = get_object_or_404(Map, pk=map_id)
+    map = get_object_or_404(Map, user=request.user)
     if request.method == u'POST':
         response = {'status': 2, 'message': "Post Request, no Data"} # for ok
         POST = request.POST

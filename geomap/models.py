@@ -6,9 +6,12 @@ from shapely.geometry import Point, LineString, Polygon, mapping
 
 from django.contrib.gis import geos
 
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 class Map(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     map_title = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
     map_center_lon = models.FloatField()
