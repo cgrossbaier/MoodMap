@@ -309,7 +309,7 @@ def saveFeedback(request, map_id):
         
         if feedbackGeneral != "" or feedbackLiveData != "" or feedbackProblems != "":
             response = {'status': "Not Okay", 'message': "Could you please write a little bit more."}
-            if len(feedbackGeneral) > 150 and len(feedbackLiveData) > 150 and len(feedbackProblems) > 150:
+            if len(feedbackGeneral) >= 150 and len(feedbackLiveData) >= 150 and len(feedbackProblems) >= 150:
                 feedback = Feedback()
                 feedback.user = user
                 feedback.generalFeedback = feedbackGeneral
