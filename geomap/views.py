@@ -73,6 +73,7 @@ def finalize(request):
         return render(request, 'geomap/feedback.html', context)
         
 
+
 ############### Functions ###############
 
 def loginUser(request):
@@ -84,79 +85,82 @@ def loginUser(request):
         NumberOfUsers = len(User.objects.all())+1
         username = makeSessionId(str(NumberOfUsers))
         password = 'user1234'
-        if verificationCode == 'rivutec':
-            try:
-                user = User.objects.create_user(username, password = password)
-                user.save()
-                user = authenticate(username=username, password = password)
-                login(request, user)
+        if NumberOfUsers < 30:
+            if verificationCode == 'MTURK_Code':
+                try:
+                    user = User.objects.create_user(username, password = password)
+                    user.save()
+                    user = authenticate(username=username, password = password)
+                    login(request, user)
 
-                # Create map for user
-                map_user = Map()
-                map_user.user = user
-                map_user.map_title = 'Map'
-                map_user.pub_date = timezone.now()
-                map_user.map_center_lon = -0.101709365845
-                map_user.map_center_lat = 51.5003012206
-                map_user.map_center_radius = 2000
-                map_user.map_center_zoom = 12
+                    # Create map for user
+                    map_user = Map()
+                    map_user.user = user
+                    map_user.map_title = 'Map'
+                    map_user.pub_date = timezone.now()
+                    map_user.map_center_lon = -0.101709365845
+                    map_user.map_center_lat = 51.5003012206
+                    map_user.map_center_radius = 2000
+                    map_user.map_center_zoom = 12
 
-                map_user.save()
-                
-                choice_text = 'Thai food'
-                choice_radius = 200
-                choice_colour = colours[0]
-                results = queryGoogle_radarSearch(map_user.map_center_lat, 
-                                                  map_user.map_center_lon, 
-                                                  map_user.map_center_radius, 
-                                                  choice_text)
-                
-                if results is not None:
-                    polygon = getPolygonFromQuery(results, int(choice_radius))
+                    map_user.save()
 
-                    if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-                        choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
-                    else:
-                        choice_polygon = polygon.wkt
+                    choice_text = 'Thai food'
+                    choice_radius = 200
+                    choice_colour = colours[0]
+                    results = queryGoogle_radarSearch(map_user.map_center_lat, 
+                                                      map_user.map_center_lon, 
+                                                      map_user.map_center_radius, 
+                                                      choice_text)
 
-                    choice = Choice()
-                    choice.map = map_user
-                    choice.choice_text = choice_text
-                    choice.choice_radius = choice_radius
-                    choice.choice_polygon = choice_polygon
-                    choice.choice_colour = choice_colour
-                    choice.save()
-                
-                
-                choice_text = 'Pub'
-                choice_radius = 50
-                choice_colour = colours[1]
-                results = queryGoogle_radarSearch(map_user.map_center_lat, 
-                                                  map_user.map_center_lon, 
-                                                  map_user.map_center_radius, 
-                                                  choice_text)
-                
-                if results is not None:
-                    polygon = getPolygonFromQuery(results, int(choice_radius))
+                    if results is not None:
+                        polygon = getPolygonFromQuery(results, int(choice_radius))
 
-                    if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-                        choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
-                    else:
-                        choice_polygon = polygon.wkt
+                        if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                            choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+                        else:
+                            choice_polygon = polygon.wkt
 
-                    choice = Choice()
-                    choice.map = map_user
-                    choice.choice_text = choice_text
-                    choice.choice_radius = choice_radius
-                    choice.choice_polygon = choice_polygon
-                    choice.choice_colour = choice_colour
-                    choice.save()
-                    
-                return HttpResponseRedirect(reverse('geomap:detail', args=(map_user.id,)))
-            except IntegrityError:
-                error_message = 'User already exists'
+                        choice = Choice()
+                        choice.map = map_user
+                        choice.choice_text = choice_text
+                        choice.choice_radius = choice_radius
+                        choice.choice_polygon = choice_polygon
+                        choice.choice_colour = choice_colour
+                        choice.save()
+
+
+                    choice_text = 'Pub'
+                    choice_radius = 50
+                    choice_colour = colours[1]
+                    results = queryGoogle_radarSearch(map_user.map_center_lat, 
+                                                      map_user.map_center_lon, 
+                                                      map_user.map_center_radius, 
+                                                      choice_text)
+
+                    if results is not None:
+                        polygon = getPolygonFromQuery(results, int(choice_radius))
+
+                        if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                            choice_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+                        else:
+                            choice_polygon = polygon.wkt
+
+                        choice = Choice()
+                        choice.map = map_user
+                        choice.choice_text = choice_text
+                        choice.choice_radius = choice_radius
+                        choice.choice_polygon = choice_polygon
+                        choice.choice_colour = choice_colour
+                        choice.save()
+
+                    return HttpResponseRedirect(reverse('geomap:detail', args=(map_user.id,)))
+                except IntegrityError:
+                    error_message = 'User already exists'
+            else:
+                error_message = 'Wrong Verfication Code'
         else:
-            error_message = 'Wrong Verfication Code'
+            error_message = 'Experiment is not running anymore.'
             
     return render_to_response('geomap/index.html', {'error_message': error_message}, context_instance=RequestContext(request))
 
@@ -357,10 +361,10 @@ def export_feedback(request):
     # List of Users
     feedbacks = Feedback.objects.all().order_by('id')
     for feedback in feedbacks:
-        answers = [u'%s' % (feedback.user.username), 
-                   u'%s' % (feedback.generalFeedback),
-                  u'%s' % (feedback.dataSource),
-                  u'%s' % (feedback.problem)]
+        answers = [(feedback.user.username.encode('utf-8')), 
+                   (feedback.generalFeedback.encode('utf-8')),
+                  (feedback.dataSource.encode('utf-8')),
+                  (feedback.problem.encode('utf-8'))]
         writer.writerow(answers)
     
     return response
