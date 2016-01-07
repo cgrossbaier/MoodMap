@@ -87,9 +87,15 @@ def feedback(request, map_id):
 
 @login_required
 def finalize(request):
-    context = {'username': request.user.username}
-    logout(request)
-    return render(request, 'geomap/finalize.html', context)
+    context = {}
+    user = request.user
+    if Feedback.objects.filter(user=user):
+        context = {'username': request.user.username}
+        logout(request)
+        return render(request, 'geomap/finalize.html', context)
+    else:
+        return render(request, 'geomap/feedback.html', context)
+        
 
 ############### Functions ###############
 
@@ -188,19 +194,18 @@ def logoutUser(request):
 
 @login_required
 def addChoice(request, map_id):
-    response = {'status': 'No Post Method'}
+    response = {'status': 'Not okay', 'message': 'No Post method'}
     map = get_object_or_404(Map, user=request.user)
     if request.method == u'POST':
         try:
-            choice_text = request.POST['store']
-            choice_radius = request.POST['radius']
+            choice_text = request.POST['queryText']
+            choice_radius = request.POST['queryRadius']
         except (KeyError):
-            # Redisplay the page
-            return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
+            response = {'status': 'Not okay', 'message': 'KeyError'}
         else:
             # Make sure that values are correct
             if choice_text == "" or choice_radius == "" or int(choice_radius) <= 0:
-                return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
+                response = {'status': 'Not okay', 'message': 'Please adjust your query'}
             else:
                 results = queryGoogle_radarSearch(map.map_center_lat, map.map_center_lon, map.map_center_radius, choice_text)
                 
@@ -218,14 +223,18 @@ def addChoice(request, map_id):
                     choice.choice_text = choice_text
                     choice.choice_radius = choice_radius
                     choice.choice_polygon = choice_polygon
-                    choice.choice_colour = colours[((numberOfChoices + 1) % numberOfColours)]
-                    
+                    choice.choice_colour = colours[((numberOfChoices + 1) % numberOfColours)]              
                     choice.save()
-        
-            # Always return an HttpResponseRedirect after successfully dealing
-            # with POST data. This prevents data from being posted twice if a
-            # user hits the Back button.
-            return HttpResponseRedirect(reverse('geomap:detail', args=(map.id,)))
+                    response = {'status': "Okay", 
+                                'choice_id': choice.id,
+                                'choice_text': choice.choice_text,
+                                'choice_radius': choice.choice_radius,
+                                'choice_polygon': choice.choice_polygon.geojson,
+                                'choice_colour': choice.choice_colour} 
+                else:
+                    response = {'status': 'Not okay', 'message': 'Nothing found'}
+            
+            return HttpResponse(json.dumps(response), content_type='application/json')
     
 
 @login_required
@@ -289,7 +298,7 @@ def changeChoice(request, map_id):
     
 @login_required
 def saveFeedback(request, map_id):
-    response = {'status': "Not Okay"} 
+    response = {'status': "Not Okay", 'message': "Please try again"} 
     user=request.user
     if request.method == u'POST':
         response = {'status': "Not Okay", 'message': "You didn't answer all the questions."}
@@ -299,13 +308,15 @@ def saveFeedback(request, map_id):
         feedbackProblems = POST.get('feedbackProblems', False)
         
         if feedbackGeneral != "" or feedbackLiveData != "" or feedbackProblems != "":
-            feedback = Feedback()
-            feedback.user = user
-            feedback.generalFeedback = feedbackGeneral
-            feedback.dataSource = feedbackLiveData
-            feedback.problem = feedbackProblems
-            feedback.save()
-        response = {'status': "Okay"} 
+            response = {'status': "Not Okay", 'message': "Could you please write a little bit more."}
+            if len(feedbackGeneral) > 150 and len(feedbackLiveData) > 150 and len(feedbackProblems) > 150:
+                feedback = Feedback()
+                feedback.user = user
+                feedback.generalFeedback = feedbackGeneral
+                feedback.dataSource = feedbackLiveData
+                feedback.problem = feedbackProblems
+                feedback.save()
+                response = {'status': "Okay"} 
     
     return HttpResponse(json.dumps(response), content_type='application/json')
 

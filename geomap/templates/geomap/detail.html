@@ -55,18 +55,18 @@
             
         <div class="row">
             <div class="col-md-10">
-                <form id = 'addChoice' action="{% url 'geomap:addChoice' map.id %}" method="post" class="form-inline">
+                <form id = 'addChoice' name = 'addChoice' action="{% url 'geomap:addChoice' map.id %}" method="post" class="form-inline">
                     {% csrf_token %}
                     <div class="form-group">
-<!--                        <label for="store">Store</label>-->
-                        <input type="text" class="form-control" id="store" placeholder="e.g. Thai food" name="store">
+                        <input type="text" class="form-control" id="queryText" placeholder="e.g. Thai food" name="store">
                     </div>
                     <div class="form-group">
                         <label for="radius">Max. distance</label>
-                        <input type="number" class="form-control" id="radius" placeholder="e.g. 200 m" name="radius">
+                        <input type="number" class="form-control" id="queryRadius" placeholder="e.g. 200 m" name="radius">
                     </div>
                     <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Choice</button>
                     <button type="button" id="buttonResetMap" class="btn btn-warning"><span class="glyphicon glyphicon-remove"></span> All Choices</button>
+                    <div id='errorMessage' class = 'errorMessage'></div>
                 </form>
             </div>
             <div class="col-md-2">
@@ -79,7 +79,7 @@
              <div class="col-md-2">
                  <div> 
                      <div style='widht=100%;'>Legend</div>
-                     <div style="margin-top: 5px;">
+                     <div id = "legendBoxes" style="margin-top: 5px;">
                         <button type="button" class="btn btn-default boxChoicesAll">All Choices combined</button>
                       {% if choices_list %}
                           {% for choice in choices_list %}
@@ -104,7 +104,13 @@
         <h4 class="modal-title" id="myModalLabel">Explanation</h4>
       </div>
       <div class="modal-body">
-          Explanation
+          <p>The following tools tries to simplify the search for locations, where several requirements from the user have to be met. </p>
+          <p>A search query can look like the following: Please show me all the places in London, where there is a pub within a 50 min radius and a thai food restaurant within a 200m radius.</p>
+          
+           <p> For you to get the highest payout from this MTURK HIT, you are required to complete two tasks. First, try out the tool, add search queries and delete search queries by clicking on the button under the legend.</p>
+          
+ <p> Second, go to the next page and give us some feedback on your experience. The quality of your feedback and ideas will determine your payout. </p>
+Thank you and have fun!
       </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -168,6 +174,8 @@
                   {style: polygonStyle}).addTo(map);
     }
     
+    $(document).ready(function(){
+        
     map.on('moveend', function(e) {
         var data= {changeType: 'changePosition', 
                    lat: map.getCenter().lat, 
@@ -185,6 +193,7 @@
         $.post(link, data, function(){
         });  
 });
+    
     $( "#buttonResetMap" ).click(function() {
         var data= {changeType: 'resetMap'};
         var link = "/geomap/"+{{map.id}}+"/changeMap/";
@@ -196,8 +205,7 @@
         });  
 });
     
-
-$(".boxChoice").click( function(ev) {
+    $(".boxChoice").click( function(ev) {
     var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
     var link = "/geomap/"+{{map.id}}+"/changeChoice/";
     $.post(link, data, function(reponse){
@@ -208,12 +216,56 @@ $(".boxChoice").click( function(ev) {
         }); 
 
 });
-    
+    // With on():
+
+    $("#legendBoxes").on("click", ".boxChoice", function(ev){
+        var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
+        var link = "/geomap/"+{{map.id}}+"/changeChoice/";
+        $.post(link, data, function(reponse){
+            if (reponse.status == 'Choice deleted'){
+                location.reload(true);
+            }
+
+            });
+    });
+
     $( "#buttonFeedback" ).click(function() {
         window.location.href = window.location.href + 'feedback' 
 });
 
-    
-    
+    $('#addChoice').submit(function (e) {
+         e.preventDefault();
+         var data= {queryText: $('#queryText').val(),
+                    queryRadius: $('#queryRadius').val()};
+
+        var link = "/geomap/"+{{map.id}}+"addChoice/";
+        	
+        $.post(link, data, function(response){
+        if (response.status == 'Okay'){
+            $('#errorMessage').text('');
+            var polygonStyle_Choice = {
+                "weight": 1,
+                "color": response.choice_colour,
+                "fillOpacity": 0.1,
+                "fillColor": response.choice_colour    
+            };
+            L.geoJson(JSON.parse(response.choice_polygon), 
+                      {style: polygonStyle_Choice}).addTo(map);
+            
+            choiceButton = document.createElement("input");
+            choiceButton.type = "button";
+            choiceButton.setAttribute("class", "btn btn-default boxChoice");
+            choiceButton.setAttribute('data-id' , response.choice_id);
+            choiceButton.style.background = response.choice_colour;
+            choiceButton.value = response.choice_text + ' | ' + response.choice_radius + 'm radius';
+            legendBoxes = document.getElementById("legendBoxes");
+            legendBoxes.appendChild(choiceButton);
+        }
+        else{
+            $('#errorMessage').text(response.message);
+        }
+        }); 
+     });   
+});    
 </script>
 </body>

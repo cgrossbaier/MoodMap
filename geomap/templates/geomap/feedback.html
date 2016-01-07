@@ -73,7 +73,7 @@
                         Warning
                     </div>
                     <div class="panel-body">
-                        The quality of your answers will determine the MTurk payout.
+                        The quality of your answers will determine the MTurk payout. Please write at least 150 characters per answer.
                     </div>
                 </div>
                 <form action="{% url 'geomap:saveFeedback' 2 %}" method="post"  id='frmFeedback'>
@@ -82,17 +82,20 @@
                         <div class="form-group">
                         <label for="feedbackGeneral">Could you please describe what functionality this tool offers?</label>
                         <textarea cols="60" rows="5" type="text" class="form-control" id="feedbackGeneral" placeholder="..." name="feedbackGeneral" /></textarea>
+                        <div id="feedbackGeneral_Characters"></div>
                     </div>
                         <label for="feedbackLiveData">What live data sources can be incorporated into the tool?</label>
                         <textarea cols="60" rows="5" class="form-control" id="feedbackLiveData" placeholder="..." name="feedbackLiveData"></textarea>
+                    <div id="feedbackLiveData_Characters"></div>
                     </div>
                     <div class="form-group">
                         <label for="feedbackProblems">What problem can be solved with this tool?</label>
                         <textarea cols="60" rows="5" class="form-control" id="feedbackProblems" placeholder="..." name="feedbackProblems"></textarea>
+                        <div id="feedbackProblems_Characters"></div>
                     </div>
+                    <div id='errorMessage' class = 'errorMessage'></div>
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
-                <div id='errorMessage' class = 'errorMessage'></div>
                 </div>
             </div>
         </div>
@@ -110,6 +113,32 @@
     document.getElementById('BackToMap').setAttribute('href', name)
         
     $(document).ready(function(){
+        var numberOfCharacters_Min = 150
+        var feedbackGeneral_numberOfCharacters = 0
+        $('#feedbackGeneral_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+        $('#feedbackLiveData_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+        $('#feedbackProblems_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+
+    $('#feedbackGeneral').keyup(function() {
+        var feedbackGeneral_numberOfCharacters = $('#feedbackGeneral').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedbackGeneral_numberOfCharacters,0);
+
+        $('#feedbackGeneral_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+    $('#feedbackLiveData').keyup(function() {
+        var feedbackLiveData_numberOfCharacters = $('#feedbackLiveData').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedbackLiveData_numberOfCharacters,0);
+
+        $('#feedbackLiveData_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+    $('#feedbackProblems').keyup(function() {
+        var feedbackProblems_numberOfCharacters = $('#feedbackProblems').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedbackProblems_numberOfCharacters,0);
+
+        $('#feedbackProblems_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+        
+        
      $('#frmFeedback').submit(function (e) {
          e.preventDefault();
          var data= {feedbackGeneral: $('#feedbackGeneral').val(),
@@ -118,13 +147,13 @@
 
         var link = "/geomap/1/saveFeedback/";
 	
-        $.post(link, data, function(reponse){
-         console.log(reponse.status)
-        if (reponse.status == 'Okay'){
+        $.post(link, data, function(response){
+         console.log(response.message)
+        if (response.status == 'Okay'){
             window.location.replace("/geomap/finalize/");
         }
         else{
-            $('#errorMessage').val() = "Please adjust your feedback."
+            $('#errorMessage').text(response.message);
         }
         }); 
      });
