@@ -106,7 +106,8 @@
       <div class="modal-body">
           <p>The following tools tries to simplify the search for locations, where several requirements from the user have to be met. </p>
           <p>A search query can look like the following: Please show me all the places in London, where there is a pub within a 50 min radius and a thai food restaurant within a 200m radius.</p>
-          
+          <button type="button" class="btn btn-default" style="background-color:#4daf4a;">pub | 50m radius</button>
+          <button type="button" class="btn btn-default" style="background-color:#377eb8;">thai food | 200m radius</button>
            <p> For you to get the highest payout from this MTURK HIT, you are required to complete two tasks. First, try out the tool, add search queries and delete search queries by clicking on the button under the legend.</p>
           
  <p> Second, go to the next page and give us some feedback on your experience. The quality of your feedback and ideas will determine your payout. </p>
@@ -155,9 +156,15 @@ Thank you and have fun!
         accessToken: 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A'
     }).addTo(map);
     
+    var polygons_Layer = L.layerGroup();
+    var polygons_Choices_Layer = L.layerGroup();
+    
+    polygons_Layer.addTo(map)
+    polygons_Choices_Layer.addTo(map)
+    
     var polygons_choice = {{polygon_Choices_geoGESON | safe }}
     var polygon_Choices_colours = {{polygon_Choices_colours | safe }}
-        
+            
     for (var i = 0; i < polygons_choice.length; i++) {
             var polygonStyle_Choice = {
                 "weight": 1,
@@ -165,15 +172,16 @@ Thank you and have fun!
                 "fillOpacity": 0.1,
                 "fillColor": polygon_Choices_colours[i]    
             };
-            L.geoJson(JSON.parse(polygons_choice[i]), 
-                      {style: polygonStyle_Choice}).addTo(map);
+            polygons_Choices_Layer.addLayer(L.geoJson(JSON.parse(polygons_choice[i]), 
+                      {style: polygonStyle_Choice}));
     }
     
     if ('{{ polygon | safe }}' != "None"){
-        L.geoJson({{ polygon | safe }}, 
-                  {style: polygonStyle}).addTo(map);
+        polygons_Layer.addLayer(L.geoJson({{ polygon | safe }}, 
+                  {style: polygonStyle}));
     }
     
+            
     $(document).ready(function(){
         
     map.on('moveend', function(e) {
@@ -198,35 +206,87 @@ Thank you and have fun!
         var data= {changeType: 'resetMap'};
         var link = "/geomap/"+{{map.id}}+"/changeMap/";
 	
-        $.post(link, data, function(reponse){
-        if (reponse.status == 'resetMap'){
-            location.reload(true);
+        $.post(link, data, function(response){
+        if (response.status == 'resetMap'){
+            polygons_Choices_Layer.clearLayers()
+            polygons_Layer.clearLayers()
+            var buttons = document.getElementsByClassName('boxChoice');
+            i = buttons.length;
+            while(i--) {
+                buttons[i].parentNode.removeChild(buttons[i]);
+            }
         }
         });  
 });
     
     $(".boxChoice").click( function(ev) {
-    var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
-    var link = "/geomap/"+{{map.id}}+"/changeChoice/";
-    $.post(link, data, function(reponse){
-        if (reponse.status == 'Choice deleted'){
-            location.reload(true);
-        }
+        var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
+        var link = "/geomap/"+{{map.id}}+"/changeChoice/";
+        $.post(link, data, function(response){
+            if (response.status == 'Choice deleted'){
+
+                // Update polygons_Layer
+                polygons_Layer.clearLayers()
+                polygons_Layer.addLayer(L.geoJson(JSON.parse(response.polygon_geoGESON), 
+                          {style: polygonStyle}));
+
+                // Update polygons_Choices_Layer
+                polygons_Choices_Layer.clearLayers();
+                var polygons_choice = response.polygon_Choices_geoGESON;
+                var polygon_Choices_colours = response.polygon_Choices_colours;
+
+                for (var i = 0; i < polygons_choice.length; i++) {
+                        var polygonStyle_Choice = {
+                            "weight": 1,
+                            "color": polygon_Choices_colours[i],
+                            "fillOpacity": 0.1,
+                            "fillColor": polygon_Choices_colours[i]    
+                        };
+                        polygons_Choices_Layer.addLayer(L.geoJson(JSON.parse(polygons_choice[i]), 
+                                  {style: polygonStyle_Choice}));
+                }
+
+                // Delete button
+                ev.target.parentNode.removeChild(ev.target);
+            }
 
         }); 
 
 });
+    
     // With on():
-
     $("#legendBoxes").on("click", ".boxChoice", function(ev){
         var data= {changeType: 'deleteChoice', choiceID : ev.target.getAttribute("data-id")};
         var link = "/geomap/"+{{map.id}}+"/changeChoice/";
-        $.post(link, data, function(reponse){
-            if (reponse.status == 'Choice deleted'){
-                location.reload(true);
+        $.post(link, data, function(response){
+            if (response.status == 'Choice deleted'){
+
+                // Update polygons_Layer
+                polygons_Layer.clearLayers()
+                polygons_Layer.addLayer(L.geoJson(JSON.parse(response.polygon_geoGESON), 
+                          {style: polygonStyle}));
+
+                // Update polygons_Choices_Layer
+                polygons_Choices_Layer.clearLayers();
+                var polygons_choice = response.polygon_Choices_geoGESON;
+                var polygon_Choices_colours = response.polygon_Choices_colours;
+
+                for (var i = 0; i < polygons_choice.length; i++) {
+                        var polygonStyle_Choice = {
+                            "weight": 1,
+                            "color": polygon_Choices_colours[i],
+                            "fillOpacity": 0.1,
+                            "fillColor": polygon_Choices_colours[i]    
+                        };
+                        polygons_Choices_Layer.addLayer(L.geoJson(JSON.parse(polygons_choice[i]), 
+                                  {style: polygonStyle_Choice}));
+                }
+
+                // Delete button
+                ev.target.parentNode.removeChild(ev.target);
             }
 
-            });
+        }); 
     });
 
     $( "#buttonFeedback" ).click(function() {
@@ -242,6 +302,11 @@ Thank you and have fun!
         	
         $.post(link, data, function(response){
         if (response.status == 'Okay'){
+            
+            polygons_Layer.clearLayers()
+            polygons_Layer.addLayer(L.geoJson(JSON.parse(response.polygon_geoGESON), 
+                      {style: polygonStyle}));
+            
             $('#errorMessage').text('');
             var polygonStyle_Choice = {
                 "weight": 1,
@@ -249,8 +314,8 @@ Thank you and have fun!
                 "fillOpacity": 0.1,
                 "fillColor": response.choice_colour    
             };
-            L.geoJson(JSON.parse(response.choice_polygon), 
-                      {style: polygonStyle_Choice}).addTo(map);
+            polygons_Choices_Layer.addLayer(L.geoJson(JSON.parse(response.choice_polygon), 
+                      {style: polygonStyle_Choice}));
             
             choiceButton = document.createElement("input");
             choiceButton.type = "button";

@@ -148,7 +148,6 @@
         var link = "/geomap/1/saveFeedback/";
 	
         $.post(link, data, function(response){
-         console.log(response.message)
         if (response.status == 'Okay'){
             window.location.replace("/geomap/finalize/");
         }

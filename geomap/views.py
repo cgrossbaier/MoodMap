@@ -43,32 +43,8 @@ def index(request):
 @login_required
 def detail(request, map_id):
     username = request.user.username
-    map = get_object_or_404(Map, pk=map_id)
-    choices_list = Choice.objects.filter(map = map)
-    polygon_geoGESON = None
-    polygon_Choices_geoGESON = []
-    polygon_Choices_colours = []
-    
-    if choices_list:
-        polygon = choices_list[0].choice_polygon
-        for choice in choices_list:
-            polygon_Choices_geoGESON.append(choice.choice_polygon.geojson)
-            polygon_Choices_colours.append(choice.choice_colour)
-            
-            polygon = intersectPolygons(polygon, choice.choice_polygon)
-
-        polygon_geoGESON = polygon.geojson
-                
-        if GEOSGeometry(polygon.wkt).dims == -1:
-            map.map_polygon = None
-        
-        else:
-            if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-                map.map_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
-            else:
-                map.map_polygon = polygon.wkt
-            
-        map.save()
+    map = get_object_or_404(Map, user=request.user)
+    map, choices_list, polygon_geoGESON, polygon_Choices_geoGESON, polygon_Choices_colours = getPolygons(map)
     
     return render(request, 'geomap/detail.html', {
             'map': map,
@@ -225,12 +201,14 @@ def addChoice(request, map_id):
                     choice.choice_polygon = choice_polygon
                     choice.choice_colour = colours[((numberOfChoices + 1) % numberOfColours)]              
                     choice.save()
+                    map, choices_list, polygon_geoGESON, polygon_Choices_geoGESON, polygon_Choices_colours = getPolygons(map)
                     response = {'status': "Okay", 
                                 'choice_id': choice.id,
                                 'choice_text': choice.choice_text,
                                 'choice_radius': choice.choice_radius,
                                 'choice_polygon': choice.choice_polygon.geojson,
-                                'choice_colour': choice.choice_colour} 
+                                'choice_colour': choice.choice_colour,
+                                'polygon_geoGESON': polygon_geoGESON} 
                 else:
                     response = {'status': 'Not okay', 'message': 'Nothing found'}
             
@@ -283,7 +261,7 @@ def changeMap(request, map_id):
 @login_required
 def changeChoice(request, map_id):
     response = {'status': 0, 'message': "No Post Request"} 
-    map = get_object_or_404(Map, pk=map_id)
+    map = get_object_or_404(Map, user=request.user)
     if request.method == u'POST':
         POST = request.POST
         changeType = POST.get('changeType', False)
@@ -293,7 +271,11 @@ def changeChoice(request, map_id):
             choiceID = str(POST.get('choiceID'))
             selectedChoice = Choice.objects.filter(id = choiceID)
             selectedChoice.delete()
-            response = {'status': 'Choice deleted'} # for ok
+            map, choices_list, polygon_geoGESON, polygon_Choices_geoGESON, polygon_Choices_colours = getPolygons(map)
+            response = {'status': "Choice deleted",
+                                'polygon_Choices_colours': json.dumps(polygon_Choices_colours),
+                                'polygon_Choices_geoGESON': polygon_Choices_geoGESON,
+                                'polygon_geoGESON': polygon_geoGESON} 
         return HttpResponse(json.dumps(response), content_type='application/json')
     
 @login_required
@@ -321,6 +303,8 @@ def saveFeedback(request, map_id):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
     
+    
+# Help Function
 def makeSessionId(st):
 	import md5, time, base64
 	m = md5.new()
@@ -329,6 +313,35 @@ def makeSessionId(st):
 	m.update(str(st))
 	return string.replace(base64.encodestring(m.digest())[:-3], '/', '$')
 
+def getPolygons(map):
+    map = map
+    choices_list = Choice.objects.filter(map = map)
+    polygon_geoGESON = None
+    polygon_Choices_geoGESON = []
+    polygon_Choices_colours = []
+
+    if choices_list:
+        polygon = choices_list[0].choice_polygon
+        for choice in choices_list:
+            polygon_Choices_geoGESON.append(choice.choice_polygon.geojson)
+            polygon_Choices_colours.append(choice.choice_colour)
+
+            polygon = intersectPolygons(polygon, choice.choice_polygon)
+
+        polygon_geoGESON = polygon.geojson
+
+        if GEOSGeometry(polygon.wkt).dims == -1:
+            map.map_polygon = None
+
+        else:
+            if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
+                map.map_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
+            else:
+                map.map_polygon = polygon.wkt
+
+        map.save()
+    return map, choices_list, polygon_geoGESON, polygon_Choices_geoGESON, polygon_Choices_colours
+        
 
 @login_required
 def export_feedback(request):
