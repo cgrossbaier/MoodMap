@@ -238,7 +238,7 @@ Thank you and have fun!
          var data= {queryText: $('#queryText').val(),
                     queryRadius: $('#queryRadius').val()};
 
-        var link = "/geomap/"+{{map.id}}+"addChoice/";
+        var link = "/geomap/"+{{map.id}}+"/addChoice/";
         	
         $.post(link, data, function(response){
         if (response.status == 'Okay'){
