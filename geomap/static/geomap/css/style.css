@@ -1,6 +1,120 @@
-li a {
-    color: green;
-}
+/* Colors
+
+White: #FCFFF5
+Red: #682321
+DarkBlue: #193441
+LightBlue: #799AA5
+*/
+
 body {
-    background: white url("images/shutterstock_338726573.jpg") no-repeat right bottom;
+    padding: 0;
+    margin: 0;
 }
+html, body{
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+}
+
+#container-login{
+    padding-top: 75px;
+}
+
+#map-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding-top: 47px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#button-wrapper {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+}
+
+.buttonCategory {
+    color: white;
+    font-size: 30px;
+}
+#buttonGood {
+    background-color: #193441;
+    border-color: #193441;
+}
+#buttonBad {
+    background-color: #682321;
+    border-color: #682321;
+}
+
+/* Custom search field*/
+
+#custom-search-input{
+    position: absolute;
+    top: 10px;
+    margin-left: 40px;
+    width: 80%;
+/*    padding: 3px;*/
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+.btnSearch{
+    padding: 9px 12px;
+}
+
+
+#modalMarker{
+    margin-top: 50px;
+}
+
+#modalMarker_buttonWrapper{
+    float: left;
+    width: 100%;
+}
+
+.btn-timerange{
+   font-size: 50px;
+}
+
+.ui-slider .ui-slider-handle { 
+    width: 40px;
+    height: 38px;
+/*    background: #682321;*/
+    background: grey;
+}
+
+.ui-widget-content {
+    height: 28px;
+}
+
+
+@media(max-width:767px) {
+    .form-control {
+       font-size: 24px;
+        height: 55px;
+    }
+    .btnSearch{
+    font-size: 35px;
+    }
+    .leaflet-control-locate a {
+    padding: 4px 10 0 8px;
+    height: 40px;
+    width: 40px;
+    font-size: 35px;
+    }
+}
+
+
+
+
+

@@ -1,27 +1,15 @@
 from django.contrib import admin
-from django.contrib.gis.db import models
-from .models import Choice, Map, Feedback
+from django.db import models
+from .models import Event
 
-class ChoiceInline(admin.TabularInline):
-    model = Choice
-    extra = 1
-
-class MapAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (None,               {'fields': ['map_title', 'user']}),
-        ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
-        ('Map information', {'fields': ['map_center_lat', 'map_center_lon', 'map_center_radius', 'map_center_zoom', 'map_polygon']}),
-    ]
-    inlines = [ChoiceInline]
-    list_display = ('map_title', 'pub_date')
-    list_filter = ['pub_date']
-    search_fields = ['map_title, map_center']
-    
-class FeedbackAdmin(admin.ModelAdmin):
+class EventAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['user']}),
-        ('Feedback', {'fields': ['generalFeedback', 'dataSource', 'problem']}),
+        ('Date information', {'fields': ['creation_date', 'valid_until']}),
+        ('Event information', {'fields': ['eventType', 'lng', 'lat']}),
     ]
-
-admin.site.register(Map, MapAdmin)
-admin.site.register(Feedback, FeedbackAdmin)
+    list_display = ('user', 'creation_date')
+    list_filter = ['creation_date']
+    search_fields = ['user']
+    
+admin.site.register(Event, EventAdmin)

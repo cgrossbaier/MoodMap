@@ -1,1 +1,0 @@
-{"@context":"http://schema.org","@type":"Organization","url":"http://www.rivutec.com","logo":"http://www.rivutec.com/img/logo_FS3.png"}

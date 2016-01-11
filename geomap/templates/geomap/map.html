@@ -1,0 +1,175 @@
+<html>
+    <head>
+        {% load staticfiles %}
+        <!--disable unwanted scaling of the page-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <!-- JS: Leaflet  -->
+        <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
+        <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet' />
+        
+        <!-- Custom Bootstrap -->
+        <link rel="stylesheet" type="text/css" href="{% static 'geomap/bootstrap/css/bootstrap.min.css' %}" />
+    
+        <!-- CSS: font-awesome  -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        
+        <!-- CSS: jquery  -->
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        
+        <!-- Custom Style -->
+        <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/style.css' %}" />
+    
+    </head>
+    <body> 
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">Mood map</a>
+                </div>
+                  <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a><span class="glyphicon glyphicon-user"></span></a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicon glyphicon-asterisk"></span></a>
+                        </li>
+                    </ul>
+                </div>
+              </div>
+            </nav>
+    
+        <div class="container">
+                <div id="map-wrapper">
+                    <div class="row">
+                        <div class="row">
+                        <div class="col-lg-1"></div>
+                          <div class="col-lg-6">
+                            <div class="input-group" id="custom-search-input">
+                              <input type="text" id="autocomplete" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default btnSearch" type="button">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                              </span>
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="row">
+                        <div id="map"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center">
+                            <div id="button-wrapper">
+                                <button type="button" class="btn btn-lg buttonCategory" id="buttonGood"> 
+                                    <i class="fa fa-thumbs-up fa-6"></i>
+                                </button>
+                                <button type="button" class="btn btn-lg buttonCategory" id="buttonBad">
+                                    <i class="fa fa-thumbs-down fa-6"></i>
+                                </button>
+                            </div> 
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div> 
+                </div>
+        </div>
+        
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">@rivutec 2016</p>
+            </div>
+        </footer>
+        
+        <!-- Modal -->
+        <div class="modal" id="modalMarker" tabindex="-1" role="dialog" aria-labelledby="modalMarkerLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">New Event</h4>
+              </div>
+              <div class="modal-body">
+                  <form>
+                      <div class="form-group">
+                        <label for="modalMarker_Description">Description</label>
+                        <textarea class="form-control" rows="3" id="eventDescription"></textarea>
+                      </div>
+                      <div class="form-group">
+                          <label for="modalMarker_Timerange" id="amount">
+                              <div type="text" id="amount"></div>
+                          </label>
+                      </div>
+                      <div class="form-group">
+                          <label for="modalMarker_Timerange" id="amount">
+                              <div type="text" id="amount"></div>
+                          </label>
+                          <div id="modalMarker_Timerange"></div>
+                      </div>
+                    </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="buttonSaveEvent" onclick="saveEvent();" >Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal -->
+        
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!--        <script src="javascripts/jquery.ui.touch-punch.min.js"></script>-->
+        
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="{% static 'geomap/bootstrap/js/bootstrap.min.js' %}"></script>
+        
+        <!-- JS: Leaflet  -->
+        <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+        <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
+<!--        <script src="{% static 'geomap/leaflet/leaflet.js' %}"></script>-->
+        
+        <!-- Google API -->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANQYxP-lNK7CRRjjTixFzHLtXWcqXO7Gg&libraries=places"></script>
+        
+        <!-- JS: Map  -->
+        <script src="{% static 'geomap/js/csrfSafeMethod.js' %}"></script>
+        
+        <script src="{% static 'geomap/js/script.js' %}"></script>
+        
+        <script>
+            var events_Type = {{events_Type | safe}}
+            var events_Lat = {{events_Lat | safe}}
+            var events_Lng = {{events_Lng | safe}}
+            for (var i = 0; i < events_Type.length; i++) {
+                
+                if (events_Type[i] == "Good"){
+                    marker = L.marker([events_Lat[i], events_Lng[i]], 
+                    {
+                    icon: iconGood
+                    });
+                    markersGood.addLayer(marker);
+                }
+                if (events_Type[i] == "Bad"){
+                    marker = L.marker([events_Lat[i], events_Lng[i]], 
+                    {
+                    icon: iconBad
+                    });
+                    markersBad.addLayer(marker);
+                }
+            }        
+        </script>
+        
+    </body>
+</html>

@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '*kzve91z*sbf6#t-z&b1w$_@th)#&1=w+h1&hw7v@^v6oc5=x^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["rivutec.elasticbeanstalk.com"]
+#ALLOWED_HOSTS = ["rivutec.elasticbeanstalk.com"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,9 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.gis'
-]
+    'django.contrib.staticfiles']
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,7 +85,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 if 'RDS_DB_NAME' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': os.environ['RDS_DB_NAME'],
             'USER': os.environ['RDS_USERNAME'],
             'PASSWORD': os.environ['RDS_PASSWORD'],
@@ -95,37 +94,16 @@ if 'RDS_DB_NAME' in os.environ:
         }
     }
 else:
-#    DATABASES = {
-#        'default': {
-#            'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#            'NAME': 'iotd',
-#            'USER': 'iotd',
-#            'PASSWORD': 'iotd',
-#            'HOST': 'localhost',
-#            'PORT': '5432',
-#        }
-#    }
     DATABASES = {
     'default': {
-         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-         'NAME': 'iotd',
-         'USER': 'cgrossbaier',
-        }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'moodmapdb',
+        'USER': 'cgrossbaier',
+        'PASSWORD': 'MoodMap1234',
+        'HOST': 'localhost',
+        'PORT': '',
     }
-
-#    
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#        'NAME': 'iotd',
-#        'USER': '',
-#        'PASSWORD': '',
-#        'HOST': 'localhost',
-#        'PORT': '5432',
-#    }
-#}
-
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
