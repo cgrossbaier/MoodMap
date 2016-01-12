@@ -160,7 +160,9 @@ $(".buttonCategory").click(function (ev) {
     }
     else{
         if (buttonSelected == buttonClicked){
-            $('#modalMarker').modal('show');
+            $('#modal_Description').modal('show');
+            $('#eventDescription').focus();
+
             setMarker = false;
         }
         else{
@@ -187,7 +189,13 @@ function discardEvent() {
         buttonClicked.style.borderColor = color_buttonBad_NotPressed;
         $('#buttonBad').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-down fa-6');
     }
-    $('#modalMarker').modal('hide');
+    $('#modal_Description').modal('hide');
+    $('#modal_Timerange').modal('hide');
+}
+
+function showDescription() {
+    $('#modal_Description').modal('hide');
+    $('#modal_Timerange').modal('show');
 }
 
 function saveEvent() {
@@ -227,7 +235,7 @@ function saveEvent() {
             });
             markersTemp.clearLayers();
             
-            $('#modalMarker').modal('hide');
+            $('#modal_Timerange').modal('hide');
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
             timestamp = new Date(Date.now() + 60 * 1000 * 60);

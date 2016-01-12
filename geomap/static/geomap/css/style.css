@@ -71,11 +71,17 @@ html, body{
 
 #modalMarker{
     margin-top: 50px;
+    
 }
 
-#modalMarker_buttonWrapper{
-    float: left;
-    width: 100%;
+#modal-buttonWrapper{
+    margin-bottom: 30px; 
+}
+
+.btn-modal{
+    float: right;
+    margin-left: 10;
+    
 }
 
 .btn-timerange{
@@ -96,11 +102,11 @@ html, body{
 
 @media(max-width:767px) {
     .form-control {
-       font-size: 24px;
-        height: 55px;
+       font-size: 18px;
+       height: 55px;
     }
     .btnSearch{
-    font-size: 35px;
+    font-size: 30px;
     }
     .leaflet-control-locate a {
     padding: 4px 10 0 8px;

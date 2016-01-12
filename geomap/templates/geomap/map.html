@@ -90,19 +90,45 @@
             </div>
         </footer>
         
-        <!-- Modal -->
-        <div class="modal" id="modalMarker" tabindex="-1" role="dialog" aria-labelledby="modalMarkerLabel">
+        <!-- Modal Description -->
+        <div class="modal" id="modal_Description" tabindex="-1" role="dialog" aria-labelledby="modal_Description" data-backdrop="static" data-keyboard="false">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">New Event</h4>
               </div>
               <div class="modal-body">
+                  <div id=modal-buttonWrapper>
+                   <button type="button" class="btn btn-primary btn-modal" onclick="showDescription();" >Next</button>
+                   <button type="button" class="btn btn-default btn-modal" onclick="discardEvent();" >Close</button>
+                  </div>
                   <form>
                       <div class="form-group">
                         <label for="modalMarker_Description">Description</label>
                         <textarea class="form-control" rows="3" id="eventDescription"></textarea>
                       </div>
+                    </form>
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal Description -->
+        
+        <!-- Modal Timerange -->
+        <div class="modal" id="modal_Timerange" tabindex="-1" role="dialog" aria-labelledby="modal_Timerange" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">New Event</h4>
+              </div>
+              <div class="modal-body">
+                  <div id=modal-buttonWrapper>
+                    <button type="button" class="btn btn-primary btn-modal" onclick="saveEvent();" >Save</button>
+                     <button type="button" class="btn btn-default btn-modal" onclick="discardEvent();" >Close</button>
+                  </div>
+                  <form>
                       <div class="form-group">
                           <label for="modalMarker_Timerange" id="amount">
                               <div type="text" id="amount"></div>
@@ -117,13 +143,11 @@
                     </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="discardEvent();" >Close</button>
-                <button type="button" class="btn btn-primary" id="buttonSaveEvent" onclick="saveEvent();" >Save</button>
               </div>
             </div>
           </div>
         </div>
-        <!-- Modal -->
+        <!-- Modal Timerange -->
         
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
