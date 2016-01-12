@@ -12,7 +12,7 @@
     <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/index.css' %}" />
     
 </head>
 
@@ -55,7 +55,7 @@
     <label for="verificationCode">Verification Code</label>
     <input type="text" class="form-control" id="verificationCode" placeholder="Verfication Code" name="verificationCode">
   </div>
-            <button type="submit" class="btn btn-default">Sign in</button>
+            <button type="submit" class="btn btn-default btn-Login">Sign in</button>
                 </div>
             {% if error_message %}
                     <h1>{{error_message }}</h1>

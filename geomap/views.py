@@ -22,7 +22,6 @@ from random import randint
 import string
 import datetime
 
-
 ############### variables ###############
 
 colours = ["#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"]
@@ -60,6 +59,7 @@ def checkVerification(request):
             
     return render_to_response('geomap/index.html', {'error_message': error_message}, context_instance=RequestContext(request))
 
+
 @login_required
 def mapView(request):
     context = {}
@@ -80,10 +80,6 @@ def mapView(request):
             'events_Lat' : json.dumps(events_Lat),
             'events_Lng' : json.dumps(events_Lng)
             },)
-#    return render('geomap/index.html', {
-#            'error_message': error_message,
-#            'events' : events
-#            }, context_instance=RequestContext(request))
 
 
 @login_required
@@ -111,6 +107,8 @@ def addEvent(request):
             response = {'status': 'Okay', 'message': 'Event saved'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
+
+@login_required
 def searchQuery(request):
     response = {'status': 'Not okay', 'message': 'No Post method'}
     if request.method == u'POST':
@@ -137,6 +135,8 @@ def searchQuery(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
+
+@login_required
 def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, boundSouthEast_lat,  boundSouthEast_lng):
     ## API KEY
     key = "AIzaSyC_XaGJy5dpcH2YoYDckNv-IfCKIeiSNSU"
@@ -434,36 +434,7 @@ def makeSessionId(st):
 	m.update(str(st))
 	return string.replace(base64.encodestring(m.digest())[:-3], '/', '$')
 
-#def getPolygons(map):
-#    map = map
-#    choices_list = Choice.objects.filter(map = map)
-#    polygon_geoGESON = None
-#    polygon_Choices_geoGESON = []
-#    polygon_Choices_colours = []
-#
-#    if choices_list:
-#        polygon = choices_list[0].choice_polygon
-#        for choice in choices_list:
-#            polygon_Choices_geoGESON.append(choice.choice_polygon.geojson)
-#            polygon_Choices_colours.append(choice.choice_colour)
-#
-#            polygon = intersectPolygons(polygon, choice.choice_polygon)
-#
-#        polygon_geoGESON = polygon.geojson
-#
-#        if GEOSGeometry(polygon.wkt).dims == -1:
-#            map.map_polygon = None
-#
-#        else:
-#            if isinstance(GEOSGeometry(polygon.wkt), geos.Polygon):
-#                map.map_polygon = geos.MultiPolygon(GEOSGeometry(polygon.wkt))
-#            else:
-#                map.map_polygon = polygon.wkt
-#
-#        map.save()
-#    return map, choices_list, polygon_geoGESON, polygon_Choices_geoGESON, polygon_Choices_colours
-#        
-#
+
 #@login_required
 #def export_feedback(request):
 #    

@@ -39,6 +39,9 @@ var iconBad_Large = L.mapbox.marker.icon({'marker-color': markerColor_Bad,
 
 var markersGood = L.layerGroup().addTo(map);
 var markersBad =  L.layerGroup().addTo(map);
+var markersTemp =  L.layerGroup().addTo(map);
+
+var userLocation_Set = false;
 
 eventType = "";
 
@@ -61,6 +64,7 @@ function success(pos) {
 
     map.setView([crd.latitude, crd.longitude], 14);
     L.circle([crd.latitude, crd.longitude], radius).addTo(map);
+    userLocation_Set = true;
 };
 
 function error(err) {
@@ -83,7 +87,7 @@ function error(err) {
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
-L.control.locate({onLocationError: error}).addTo(map);
+L.control.locate({onLocationError: error, drawCircle: userLocation_Set}).addTo(map);
 
 //Create dummy data
 
@@ -124,6 +128,7 @@ $(".buttonCategory").click(function (ev) {
         buttonClicked.style.backgroundColor = color_button_Pressed;
         buttonClicked.style.borderColor = color_button_Pressed;
         buttonClicked.style.color = "white";
+
         setMarker = true;
         buttonSelected = buttonClicked;
         
@@ -136,13 +141,13 @@ $(".buttonCategory").click(function (ev) {
 
         
         if (buttonClicked === buttonGood){
+            $(this).find($(".fa")).removeClass('fa-thumbs-up fa-6').addClass('fa-spinner fa-spin');
             icon = iconGood_Large
-            markers = markersGood
             eventType = "Good";
         }
         if (buttonClicked === buttonBad){
+            $(this).find($(".fa")).removeClass('fa-thumbs-down fa-6').addClass('fa-spinner fa-spin');
             icon = iconBad_Large
-            markers = markersBad
             eventType = "Bad";
         }
         
@@ -151,26 +156,12 @@ $(".buttonCategory").click(function (ev) {
             icon: icon
             });
         
-        markers.addLayer(marker);
+        markersTemp.addLayer(marker);
     }
     else{
         if (buttonSelected == buttonClicked){
             $('#modalMarker').modal('show');
-            markersGood.eachLayer(function (layer) {
-            layer.setIcon(iconGood);
-            });
-            markersBad.eachLayer(function (layer) {
-                layer.setIcon(iconBad);
-            });
-            if (buttonClicked === buttonGood){
-                buttonClicked.style.backgroundColor = color_buttonGood_NotPressed;
-                buttonClicked.style.borderColor = color_buttonGood_NotPressed;
-            }
-            if (buttonClicked === buttonBad){
-                buttonClicked.style.backgroundColor = color_buttonBad_NotPressed;
-                buttonClicked.style.borderColor = color_buttonBad_NotPressed;
-            }
-        setMarker = false;
+            setMarker = false;
         }
         else{
             alert("Please save your choice first.")
@@ -178,9 +169,29 @@ $(".buttonCategory").click(function (ev) {
     }
 });
 
+function discardEvent() {
+    markersTemp.clearLayers();
+    markersGood.eachLayer(function (layer) {
+            layer.setIcon(iconGood);
+            });
+    markersBad.eachLayer(function (layer) {
+        layer.setIcon(iconBad);
+    });
+    if (eventType === "Good"){
+        buttonClicked.style.backgroundColor = color_buttonGood_NotPressed;
+        buttonClicked.style.borderColor = color_buttonGood_NotPressed;
+        $('#buttonGood').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-up fa-6');
+    }
+    if (eventType === "Bad"){
+        buttonClicked.style.backgroundColor = color_buttonBad_NotPressed;
+        buttonClicked.style.borderColor = color_buttonBad_NotPressed;
+        $('#buttonBad').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-down fa-6');
+    }
+    $('#modalMarker').modal('hide');
+}
 
 function saveEvent() {
-    valid_until = $( "#modalMarker_Timerange" ).slider( "values" )[0]
+    valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
     var data = {eventType: eventType,
                valid_until: valid_until,
@@ -191,10 +202,43 @@ function saveEvent() {
 
     $.post(link, data, function(response){
         if (response.status == 'Okay'){
+            marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
+            {
+            icon: icon
+            });
+            if (eventType === "Good"){
+                buttonClicked.style.backgroundColor = color_buttonGood_NotPressed;
+                buttonClicked.style.borderColor = color_buttonGood_NotPressed;
+                $('#buttonGood').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-up fa-6');
+                markersGood.addLayer(marker);
+            }
+            if (eventType === "Bad"){
+                buttonClicked.style.backgroundColor = color_buttonBad_NotPressed;
+                buttonClicked.style.borderColor = color_buttonBad_NotPressed;
+                $('#buttonBad').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-down fa-6');
+                markersBad.addLayer(marker);
+            }
+            
+            markersGood.eachLayer(function (layer) {
+            layer.setIcon(iconGood);
+            });
+            markersBad.eachLayer(function (layer) {
+                layer.setIcon(iconBad);
+            });
+            markersTemp.clearLayers();
+            
             $('#modalMarker').modal('hide');
+            
+            $( "#modalMarker_Timerange" ).slider( "value" , 60);
+            timestamp = new Date(Date.now() + 60 * 1000 * 60);
+            timestamp_String = addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes());
+
+            $( "#amount" ).text( "Valid until " + timestamp_String );
+            $('#eventDescription').val('');
         }
         else{
             console.log("Error")
+            markersTemp.clearLayers();
         }
     });  
 };
@@ -274,9 +318,9 @@ $(function() {
     $( "#modalMarker_Timerange" ).slider({
       min: 0,
       max: 260,
-      values: [60],
+      value: 60,
       slide: function( event, ui ) {
-        timestamp = new Date(Date.now() + ui.values[ 0 ] * 1000 * 60);
+        timestamp = new Date(Date.now() + ui.value * 1000 * 60);
         timestamp_String = addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes());
         $( "#amount" ).text( "Valid until " + timestamp_String );
       }

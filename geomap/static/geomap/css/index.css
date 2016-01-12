@@ -1,0 +1,36 @@
+/* Colors
+
+White: #FCFFF5
+Red: #682321
+DarkBlue: #193441
+LightBlue: #799AA5
+*/
+
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body{
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+}
+
+#container-login{
+    padding-top: 75px;
+}
+
+@media(max-width:767px) {
+    .form-control {
+       font-size: 24px;
+        height: 55px;
+    }
+    .btn-Login{
+            height: 80px;
+            width: 120px;
+            font-size: 17px;
+    }
+}
