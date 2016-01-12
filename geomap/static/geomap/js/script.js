@@ -299,7 +299,8 @@ $("#buttonSearch").click(function (ev) {
             searchQuery.value = "";
         }
         else{
-            console.log("Error")
+            document.getElementById('autocomplete').value = '';
+            document.getElementById('autocomplete').placeholder = 'Place not found, enter a place';
         }
     });
 });

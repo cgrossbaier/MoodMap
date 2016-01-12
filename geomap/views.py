@@ -136,12 +136,12 @@ def searchQuery(request):
 
 
 
-@login_required
 def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, boundSouthEast_lat,  boundSouthEast_lng):
     ## API KEY
     key = "AIzaSyC_XaGJy5dpcH2YoYDckNv-IfCKIeiSNSU"
     googleGeocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json?'
     url = googleGeocodeUrl + "address=" + str(searchQuery) + "&bounds=" + boundNorthWest_lat + " " + boundNorthWest_lng + "|" + boundSouthEast_lat + " " + boundSouthEast_lng + " " + "&key=" + key
+    print(url)
     json_response = urllib.urlopen(url)
     response = json.loads(json_response.read())
 
