@@ -4,8 +4,11 @@ White: #FCFFF5
 Red: #682321
 DarkBlue: #193441
 LightBlue: #799AA5
+https://color.adobe.com/CS04-color-theme-1994456/edit/?copy=true&base=2&rule=Custom&selected=4&name=Copy%20of%20CS04&mode=rgb&rgbvalues=0.964706,0.968627,0.572549,0.199289,0.215578,0.27,0.465992,0.768536,0.827451,0.854902,0.929412,0.886275,0.917647,0.179088,0.287378&swatchOrder=0,1,2,3,4
 */
 
+
+/* General styles */
 body {
     padding: 0;
     margin: 0;
@@ -18,6 +21,8 @@ html, body{
 .container {
     width: 100%;
 }
+
+/* Map */
 
 #map-wrapper {
     width: 100%;
@@ -37,35 +42,40 @@ html, body{
     width: 100%;
 }
 
-.buttonCategory {
+/* Event */
+
+#buttonEvent {
     color: white;
     font-size: 30px;
-}
-#buttonGood {
     background-color: #193441;
-    border-color: #193441;
-}
-#buttonBad {
-    background-color: #682321;
-    border-color: #682321;
 }
 
-/* Custom search field*/
-
-#custom-search-input{
-    position: absolute;
-    top: 10px;
-    margin-left: 40px;
-    width: 80%;
-/*    padding: 3px;*/
-    border: solid 1px #E4E4E4;
-    border-radius: 6px;
-    background-color: #fff;
-    margin-bottom: 5px;
+.button-category {
+    font-size: 40px;
+    margin-right: 10px;
+    color: white;
+    border-radius: 20;
 }
 
-.btnSearch{
-    padding: 9px 12px;
+
+/*
+    font-size: 40px;
+    background-color: beige;
+    border-color: black;
+    color: white;
+*/
+
+.button-warning {
+    background-color: #EA2E49;
+    border-color: #EA2E49;
+}
+.button-event {
+    background-color: #77C4D3;
+    border-color: #77C4D3;
+}
+.button-info {
+    background-color: #F6F792;
+    border-color: #F6F792;
 }
 
 
@@ -100,6 +110,40 @@ html, body{
 }
 
 
+/* Custom search field*/
+
+#custom-search-input{
+    position: absolute;
+    top: 10px;
+    margin-left: 40px;
+    width: 80%;
+/*    padding: 3px;*/
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+.btnSearch{
+    padding: 9px 12px;
+}
+
+
+/* Individual markers */
+.MarkerInfo{
+    background: url(../img/noun_307154_cc.svg) no-repeat center center; 
+    height: 100%;
+    width: 100%;
+    color: #FCFFF5;
+    background-size: cover;
+}
+
+.leaflet-control-locate a {
+    padding: 4px 0 0 6px;
+}
+
+/* Adjustment for media */
+
 @media(max-width:767px) {
     .form-control {
        font-size: 18px;
@@ -109,7 +153,7 @@ html, body{
     font-size: 30px;
     }
     .leaflet-control-locate a {
-    padding: 4px 10 0 8px;
+    padding: 3px 10 0 8px;
     height: 40px;
     width: 40px;
     font-size: 35px;

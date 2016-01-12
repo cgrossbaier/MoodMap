@@ -6,6 +6,7 @@
         <!-- JS: Leaflet  -->
         <link href='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
         <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet' />
+        <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/leaflet.extra-markers.min.css' %}" />
         
         <!-- Custom Bootstrap -->
         <link rel="stylesheet" type="text/css" href="{% static 'geomap/bootstrap/css/bootstrap.min.css' %}" />
@@ -71,11 +72,8 @@
                         <div class="col-md-4"></div>
                         <div class="col-md-4 text-center">
                             <div id="button-wrapper">
-                                <button type="button" class="btn btn-lg buttonCategory" id="buttonGood"> 
-                                    <i class="fa fa-thumbs-up fa-6"></i>
-                                </button>
-                                <button type="button" class="btn btn-lg buttonCategory" id="buttonBad">
-                                    <i class="fa fa-thumbs-down fa-6"></i>
+                                <button type="button" class="btn btn-lg" id="buttonEvent"> 
+                                    <i class="fa fa-plus fa-6"></i>
                                 </button>
                             </div> 
                         </div>
@@ -125,7 +123,7 @@
               </div>
               <div class="modal-body">
                   <div id=modal-buttonWrapper>
-                    <button type="button" class="btn btn-primary btn-modal" onclick="saveEvent();" >Save</button>
+                    <button type="button" class="btn btn-primary btn-modal" onclick="showCategory();" >Next</button>
                      <button type="button" class="btn btn-default btn-modal" onclick="discardEvent();" >Close</button>
                   </div>
                   <form>
@@ -149,6 +147,60 @@
         </div>
         <!-- Modal Timerange -->
         
+        <!-- Modal Category -->
+        <div class="modal" id="modal_Category" tabindex="-1" role="dialog" aria-labelledby="modal_Category" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">New Event</h4>
+              </div>
+              <div class="modal-body">
+                  <div id=modal-buttonWrapper>
+                    <button type="button" class="btn btn-primary btn-modal" onclick="saveEvent();" >Save</button>
+                     <button type="button" class="btn btn-default btn-modal" onclick="discardEvent();" >Close</button>
+                  </div>
+                  <form>
+                      <div class="form-group">
+                          <label for="modalMarker_Timerange" id="amount">
+                              <div>Category</div>
+                          </label>
+                      </div>
+                  </form>
+                  <div id="modal-buttonWrapper-Category">
+                      <div class="btn-group" data-toggle="buttons">
+                          <label class="btn btn-primary button-category button-warning">
+                            <input type="radio" name="category" value="warning" autocomplete="off" checked> 
+                              <i class="fa fa-exclamation-circle fa-6"></i>
+                          </label>
+                          <label class="btn btn-primary button-category button-event">
+                            <input type="radio" name="category" value="event" autocomplete="off">                                     <i class="fa fa-smile-o fa-6"></i>
+                          </label>
+                          <label class="btn btn-primary button-category button-info">
+                            <input type="radio" name="category" value="info" autocomplete="off"> 
+                              <i class="fa fa-info-circle fa-6"></i>
+                          </label>
+                        </div>
+<!--
+                        <button type="button" class="btn button-category" id="button-warning" onclick="setCategory(this);">
+                                    <i class="fa fa-exclamation-circle fa-6"></i>
+                        </button>
+                        <button type="button" class="btn button-category" id="button-event" onclick="setCategory(this);">
+                                    <i class="fa fa-smile-o fa-6"></i>
+                        </button>
+                        <button type="button" class="btn button-category" id="button-info" onclick="setCategory(this);">
+                                    <i class="fa fa-info-circle fa-6"></i>
+                        </button>
+-->
+                  </div>
+                    
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal Category -->
+        
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         
@@ -162,6 +214,7 @@
         <!-- JS: Leaflet  -->
         <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
         <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
+        <script src="{% static 'geomap/js/leaflet.extra-markers.min.js' %}" /></script>
 <!--        <script src="{% static 'geomap/leaflet/leaflet.js' %}"></script>-->
         
         <!-- Google API -->
@@ -177,21 +230,27 @@
             var events_Lat = {{events_Lat | safe}}
             var events_Lng = {{events_Lng | safe}}
             for (var i = 0; i < events_Type.length; i++) {
+                switch(events_Type[i]) {
+                    case "warning":
+                        icon = iconWarning_Normal
+                        break;
+                    case "event":
+                        icon = iconEvent_Normal
+                        break;
+                    case "info":
+                        icon = iconInfo_Normal
+                        break;
+                    default:
+                        icon = icon_Normal
+                        break;
+                }
                 
-                if (events_Type[i] == "Good"){
-                    marker = L.marker([events_Lat[i], events_Lng[i]], 
-                    {
-                    icon: iconGood
-                    });
-                    markersGood.addLayer(marker);
-                }
-                if (events_Type[i] == "Bad"){
-                    marker = L.marker([events_Lat[i], events_Lng[i]], 
-                    {
-                    icon: iconBad
-                    });
-                    markersBad.addLayer(marker);
-                }
+                marker = L.marker([events_Lat[i], events_Lng[i]], 
+                {
+                icon: icon
+                });
+                markers.addLayer(marker);
+                
             }        
         </script>
         

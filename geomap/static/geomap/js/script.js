@@ -1,18 +1,13 @@
 // Define variables
 
-var typeOfButton = "buttonGood";
-var markerColor = document.getElementById("buttonGood").style.backgroundColor;
+var typeOfButton = "buttonEvent";
+var markerColor = document.getElementById("buttonEvent").style.backgroundColor;
 
 var setMarker = false;
 
-var color_buttonGood_NotPressed = document.getElementById("buttonGood").style.backgroundColor;
-var color_buttonBad_NotPressed = document.getElementById("buttonBad").style.backgroundColor;
+var color_buttonEvent_NotPressed = document.getElementById("buttonEvent").style.backgroundColor;
 
-var markerColor_Good = "193441";
-var markerColor_Bad = "682321";
-
-var buttonGood = document.getElementById("buttonGood");
-var buttonBad = document.getElementById("buttonBad");
+var buttonEvent = document.getElementById("buttonEvent");
 
 var color_button_Pressed = "grey";
 
@@ -25,20 +20,47 @@ var marker = L.marker();
 var buttonClicked;
 var buttonSelected;
 
-var iconGood_Small = L.mapbox.marker.icon({'marker-color': markerColor_Good,
+var markerColor = "193441";
+var icon_Small = L.mapbox.marker.icon({'marker-color': markerColor,
                                             'marker-size': 'small'});
-var iconGood = L.mapbox.marker.icon({'marker-color': markerColor_Good});
-var iconGood_Large = L.mapbox.marker.icon({'marker-color': markerColor_Good,
+var icon_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+var icon_Large = L.mapbox.marker.icon({'marker-color': markerColor,
                                             'marker-size': 'large'});
 
-var iconBad_Small = L.mapbox.marker.icon({'marker-color': markerColor_Bad,
-                                            'marker-size': 'small'});
-var iconBad = L.mapbox.marker.icon({'marker-color': markerColor_Bad});
-var iconBad_Large = L.mapbox.marker.icon({'marker-color': markerColor_Bad,
-                                            'marker-size': 'large'});
+markerColor = "EA2E49";
+var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 
-var markersGood = L.layerGroup().addTo(map);
-var markersBad =  L.layerGroup().addTo(map);
+markerColor = "77C4D3";
+var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+
+markerColor = "F6F792";
+var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+
+//
+//var MarkerWarning = L.ExtraMarkers.icon({
+//    icon: 'fa-exclamation-circle',
+//    markerColor: 'red',
+//    shape: 'round',
+//    prefix: 'fa'
+//  });
+//var MarkerEvent = L.ExtraMarkers.icon({
+//    icon: 'fa-smile-o',
+//    markerColor: 'green',
+//    shape: 'round',
+//    prefix: 'fa'
+//  });
+//var MarkerInfo = L.ExtraMarkers.icon({
+//    icon: 'fa-info-circle',
+//    markerColor: 'purple',
+//    shape: 'round',
+//    prefix: 'fa'
+//  });
+//
+//var MarkerInfo_DIV = L.divIcon({className: 'MarkerInfo',
+//                           iconSize: [60, 60]});
+
+
+var markers = L.layerGroup().addTo(map);
 var markersTemp =  L.layerGroup().addTo(map);
 
 var userLocation_Set = false;
@@ -87,41 +109,41 @@ function error(err) {
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
-L.control.locate({onLocationError: error, drawCircle: userLocation_Set}).addTo(map);
+L.control.locate({onLocationError: error, drawCircle: userLocation_Set, icon: 'fa fa-compass'}).addTo(map);
 
 //Create dummy data
 
-function createMarkers(lat, lng, type) {
-    var mapCenter_Lat = lat;
-    var mapCenter_Lng = lng;
-
-
-    for (i = 0; i < 100; i++) { 
-        marker_Lat = Math.random() * 0.06 - 0.03 + mapCenter_Lat;
-        marker_Lng = Math.random() * 0.10 - 0.05 + mapCenter_Lng;
-        if(Math.random() > 0.5) {
-            marker = L.marker([marker_Lat, marker_Lng], 
-                {
-                icon: iconGood
-                });
-            markersGood.addLayer(marker);
-        }
-         else{
-            marker = L.marker([marker_Lat, marker_Lng], 
-                {
-                icon: iconBad
-                });
-            markersBad.addLayer(marker);
-         }
-
-    }
-    
-    return false
-}
+//function createMarkers(lat, lng, type) {
+//    var mapCenter_Lat = lat;
+//    var mapCenter_Lng = lng;
+//
+//
+//    for (i = 0; i < 100; i++) { 
+//        marker_Lat = Math.random() * 0.06 - 0.03 + mapCenter_Lat;
+//        marker_Lng = Math.random() * 0.10 - 0.05 + mapCenter_Lng;
+//        if(Math.random() > 0.5) {
+//            marker = L.marker([marker_Lat, marker_Lng], 
+//                {
+//                icon: iconGood
+//                });
+//            markersGood.addLayer(marker);
+//        }
+//         else{
+//            marker = L.marker([marker_Lat, marker_Lng], 
+//                {
+//                icon: iconBad
+//                });
+//            markersBad.addLayer(marker);
+//         }
+//
+//    }
+//    
+//    return false
+//}
 
 //Function to handle clicks on the category buttons
 
-$(".buttonCategory").click(function (ev) {
+$("#buttonEvent").click(function (ev) {
     buttonClicked = ev.delegateTarget;
     
     if (setMarker === false){
@@ -132,30 +154,20 @@ $(".buttonCategory").click(function (ev) {
         setMarker = true;
         buttonSelected = buttonClicked;
         
-        markersGood.eachLayer(function (layer) {
-            layer.setIcon(iconGood_Small);
-        });
-        markersBad.eachLayer(function (layer) {
-            layer.setIcon(iconBad_Small);
-        });
+//        markers.eachLayer(function (layer) {
+//            layer.setIcon(icon_Small);
+//        });
 
-        
-        if (buttonClicked === buttonGood){
-            $(this).find($(".fa")).removeClass('fa-thumbs-up fa-6').addClass('fa-spinner fa-spin');
-            icon = iconGood_Large
-            eventType = "Good";
-        }
-        if (buttonClicked === buttonBad){
-            $(this).find($(".fa")).removeClass('fa-thumbs-down fa-6').addClass('fa-spinner fa-spin');
-            icon = iconBad_Large
-            eventType = "Bad";
+        if (buttonClicked === buttonEvent){
+            $(this).find($(".fa")).removeClass('fa-plus fa-6').addClass('fa-spinner fa-spin');
+            icon = icon_Large
         }
         
         marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
             icon: icon
             });
-        
+                
         markersTemp.addLayer(marker);
     }
     else{
@@ -173,34 +185,31 @@ $(".buttonCategory").click(function (ev) {
 
 function discardEvent() {
     markersTemp.clearLayers();
-    markersGood.eachLayer(function (layer) {
-            layer.setIcon(iconGood);
-            });
-    markersBad.eachLayer(function (layer) {
-        layer.setIcon(iconBad);
-    });
-    if (eventType === "Good"){
-        buttonClicked.style.backgroundColor = color_buttonGood_NotPressed;
-        buttonClicked.style.borderColor = color_buttonGood_NotPressed;
-        $('#buttonGood').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-up fa-6');
-    }
-    if (eventType === "Bad"){
-        buttonClicked.style.backgroundColor = color_buttonBad_NotPressed;
-        buttonClicked.style.borderColor = color_buttonBad_NotPressed;
-        $('#buttonBad').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-down fa-6');
-    }
+//    markers.eachLayer(function (layer) {
+//            layer.setIcon(icon_Normal);
+//            });
+    
+    buttonClicked.style.backgroundColor = color_buttonEvent_NotPressed;
+    buttonClicked.style.borderColor = color_buttonEvent_NotPressed;
+    $('#buttonEvent').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-plus fa-6');
+    
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('hide');
 }
+
 
 function showDescription() {
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('show');
 }
-
+function showCategory() {
+    $('#modal_Timerange').modal('hide');
+    $('#modal_Category').modal('show');
+}
 function saveEvent() {
     valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
+    eventType = $('input[name="category"]:checked').val();
     var data = {eventType: eventType,
                valid_until: valid_until,
                lng: marker.getLatLng().lng,
@@ -209,33 +218,37 @@ function saveEvent() {
     var link = "/geomap/addEvent/";
 
     $.post(link, data, function(response){
-        if (response.status == 'Okay'){
+        if (response.status == 'Okay'){            
+            switch(eventType) {
+                case "warning":
+                    icon = iconWarning_Normal
+                    break;
+                case "event":
+                    icon = iconEvent_Normal
+                    break;
+                case "info":
+                    icon = iconInfo_Normal
+                    break;
+                default:
+                    icon = icon_Normal
+                    break;
+            }
+                    
             marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
             icon: icon
             });
-            if (eventType === "Good"){
-                buttonClicked.style.backgroundColor = color_buttonGood_NotPressed;
-                buttonClicked.style.borderColor = color_buttonGood_NotPressed;
-                $('#buttonGood').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-up fa-6');
-                markersGood.addLayer(marker);
-            }
-            if (eventType === "Bad"){
-                buttonClicked.style.backgroundColor = color_buttonBad_NotPressed;
-                buttonClicked.style.borderColor = color_buttonBad_NotPressed;
-                $('#buttonBad').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-thumbs-down fa-6');
-                markersBad.addLayer(marker);
-            }
             
-            markersGood.eachLayer(function (layer) {
-            layer.setIcon(iconGood);
-            });
-            markersBad.eachLayer(function (layer) {
-                layer.setIcon(iconBad);
-            });
+            buttonClicked.style.backgroundColor = color_buttonEvent_NotPressed;
+            buttonClicked.style.borderColor = color_buttonEvent_NotPressed;
+            $('#buttonEvent').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-plus fa-6');
+            markers.addLayer(marker);
+            
             markersTemp.clearLayers();
             
             $('#modal_Timerange').modal('hide');
+            $('#modal_Description').modal('hide');
+            $('#modal_Category').modal('hide');
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
             timestamp = new Date(Date.now() + 60 * 1000 * 60);
@@ -341,57 +354,3 @@ $(function() {
     $( "#amount" ).text( "Valid until " + timestamp_String );
         
 });
-
-//$(function() {
-//    $("#buttonValidity_Down").click(function (ev) {
-//    //    console.log($( "#modalMarker_TimeValidity" ).text())
-//    //    $( "#modalMarker_TimeValidity" ).html( "3" );
-//        $( "#modalMarker_TimeValidity" ).text( "<b>Some</b> new text." );
-//    });
-//    $("#buttonValidity_Up").click(function (ev) {
-//    //    $( "#modalMarker_TimeValidity" ).text( "4" );
-//    });
-//});        
-
-                           
-                           
-
-
-
-//
-//
-//function onMapClick(e) {
-//    
-//    if (setMarker){
-//        var marker = L.marker(e.latlng, 
-//            {
-//            icon: L.mapbox.marker.icon({
-//                'marker-color': markerColor
-//            }),
-//            draggable: true
-//        }).addTo(map);
-//        
-//        setMarker = false;
-//    
-//        var buttonSelected = document.getElementById(typeOfButton)
-//    
-//        if (typeOfButton == "buttonGood"){
-//            buttonSelected.style.backgroundColor = color_buttonGood_NotPressed;
-//            buttonSelected.style.borderColor = color_buttonGood_NotPressed;
-//        }
-//        if (typeOfButton == "buttonBad"){
-//            buttonSelected.style.backgroundColor = color_buttonBad_NotPressed;
-//            buttonSelected.style.borderColor = color_buttonBad_NotPressed;
-//        }
-//    }
-//    
-//}
-//
-//map.on('click', onMapClick);
-
-//
-//map.featureLayer.on('click', function(e) {
-//        map.panTo(e.layer.getLatLng());
-//    });
-
-
