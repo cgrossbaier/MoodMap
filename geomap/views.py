@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+import urllib
 import json
 
 from django.db import IntegrityError
@@ -32,7 +33,6 @@ numberOfColours = len(colours)
 def index(request):
     context = {}
     return render(request, 'geomap/index.html', context)
-
 
 def checkVerification(request):
     logout(request)
@@ -111,6 +111,50 @@ def addEvent(request):
             response = {'status': 'Okay', 'message': 'Event saved'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
+def searchQuery(request):
+    response = {'status': 'Not okay', 'message': 'No Post method'}
+    if request.method == u'POST':
+        try:
+            searchQuery = request.POST['searchQuery']
+            boundNorthWest_lat = request.POST['boundNorthWest_lat']
+            boundNorthWest_lng = request.POST['boundNorthWest_lng']
+            boundSouthEast_lat = request.POST['boundSouthEast_lat']
+            boundSouthEast_lng = request.POST['boundSouthEast_lng']
+        except (KeyError):
+            response = {'status': 'Not okay', 'message': 'KeyError'}
+        else:
+            lat, lng = queryGoogle_geocode(searchQuery,
+                                          boundNorthWest_lat,
+                                          boundNorthWest_lng,
+                                          boundSouthEast_lat,
+                                          boundSouthEast_lng);
+            if (lat is not None and lng is not None):
+                response = {'status': 'Okay', 
+                            'lat': lat,
+                            'lng': lng}
+            else:
+                response = {'status': 'Place not found', 'message': 'No result'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, boundSouthEast_lat,  boundSouthEast_lng):
+    ## API KEY
+    key = "AIzaSyC_XaGJy5dpcH2YoYDckNv-IfCKIeiSNSU"
+    googleGeocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json?'
+    url = googleGeocodeUrl + "address=" + str(searchQuery) + "&bounds=" + boundNorthWest_lat + " " + boundNorthWest_lng + "|" + boundSouthEast_lat + " " + boundSouthEast_lng + " " + "&key=" + key
+    json_response = urllib.urlopen(url)
+    response = json.loads(json_response.read())
+
+    if response['results']:
+        result = response['results'][0]
+        lat = result['geometry']['location']['lat']
+        lng = result['geometry']['location']['lng']
+    else:
+        result = None
+        lat = None
+        lng = None
+    
+    return lat, lng
 
 
 #@login_required

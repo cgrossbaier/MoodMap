@@ -233,6 +233,34 @@ function onPlaceChanged() {
   }
 }
 
+$("#buttonSearch").click(function (ev) {
+    searchQuery = document.getElementById('autocomplete')
+    boundNorthWest_lat = map.getBounds().getNorthWest().lat
+    boundNorthWest_lng = map.getBounds().getNorthWest().lng
+    boundSouthEast_lat = map.getBounds().getSouthEast().lat
+    boundSouthEast_lng = map.getBounds().getSouthEast().lng
+    var data = {searchQuery: searchQuery.value,
+               boundNorthWest_lat: boundNorthWest_lat,
+               boundNorthWest_lng: boundNorthWest_lng,
+               boundSouthEast_lat: boundSouthEast_lat,
+               boundSouthEast_lng: boundSouthEast_lng};
+    var link = "/geomap/searchQuery/";
+
+    $.post(link, data, function(response){
+        if (response.status == 'Okay'){
+            var newLatLng = new L.LatLng(response.lat, 
+                                 response.lng);
+            map.panTo(newLatLng);
+            map.setZoom(14);
+            searchQuery.value = "";
+        }
+        else{
+            console.log("Error")
+        }
+    });
+});
+
+
 //Slider
 
 function addZero(i) {

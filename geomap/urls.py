@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^checkVerification/$', views.checkVerification, name='checkVerification'),
     # ex: /addEvent
     url(r'^addEvent/$', views.addEvent, name='addEvent'),
+    # ex: /searchQuery
+    url(r'^searchQuery/$', views.searchQuery, name='searchQuery'),
 #    # ex: /geomap/export_feedback
 #    url(r'^export_feedback/$', views.export_feedback, name='export_feedback'),
 #    # ex: /geomap/export_user

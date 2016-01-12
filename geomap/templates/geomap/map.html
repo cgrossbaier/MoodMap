@@ -55,7 +55,7 @@
                             <div class="input-group" id="custom-search-input">
                               <input type="text" id="autocomplete" class="form-control" placeholder="Search for...">
                                 <span class="input-group-btn">
-                                <button class="btn btn-default btnSearch" type="button">
+                                <button class="btn btn-default btnSearch" id="buttonSearch" type="button">
                                     <i class="glyphicon glyphicon-search"></i>
                                 </button>
                               </span>
@@ -130,7 +130,7 @@
         
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<!--        <script src="javascripts/jquery.ui.touch-punch.min.js"></script>-->
+        <script src="{% static 'geomap/js/jquery.ui.touch-punch.min.js' %}"></script>
         
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{% static 'geomap/bootstrap/js/bootstrap.min.js' %}"></script>
