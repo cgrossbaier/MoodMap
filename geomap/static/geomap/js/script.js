@@ -1,13 +1,16 @@
 // Define variables
 
-var typeOfButton = "buttonEvent";
-var markerColor = document.getElementById("buttonEvent").style.backgroundColor;
+var typeOfButton = "buttonAddMarker";
+var markerColor = document.getElementById("buttonAddMarker").style.backgroundColor;
 
 var setMarker = false;
 
-var color_buttonEvent_NotPressed = document.getElementById("buttonEvent").style.backgroundColor;
+var color_buttonAddMarker_NotPressed = document.getElementById("buttonAddMarker").style.backgroundColor;
 
-var buttonEvent = document.getElementById("buttonEvent");
+var buttonAddMarker = document.getElementById("buttonAddMarker");
+var buttonEvent = document.getElementById("button-event");
+var buttonInfo = document.getElementById("button-info");
+var buttonWarning = document.getElementById("button-warning");
 
 var color_button_Pressed = "grey";
 
@@ -27,13 +30,13 @@ var icon_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 var icon_Large = L.mapbox.marker.icon({'marker-color': markerColor,
                                             'marker-size': 'large'});
 
-markerColor = "EA2E49";
+markerColor = "BD4932";
 var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 
-markerColor = "77C4D3";
+markerColor = "105B63";
 var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 
-markerColor = "F6F792";
+markerColor = "FFD34E";
 var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 
 //
@@ -66,6 +69,7 @@ var markersTemp =  L.layerGroup().addTo(map);
 var userLocation_Set = false;
 
 eventType = "";
+description = "";
 
 //Location Search within Browser
 
@@ -143,24 +147,35 @@ L.control.locate({onLocationError: error, drawCircle: userLocation_Set, icon: 'f
 
 //Function to handle clicks on the category buttons
 
-$("#buttonEvent").click(function (ev) {
+$("#buttonAddMarker").click(function (ev) {
+    $("#button-wrapper-category").css("display", "block");
+    $("#buttonAddMarker").css("display", "none");
+});
+    
+    
+$(".button-category").click(function (ev) {
     buttonClicked = ev.delegateTarget;
     
     if (setMarker === false){
-        buttonClicked.style.backgroundColor = color_button_Pressed;
-        buttonClicked.style.borderColor = color_button_Pressed;
-        buttonClicked.style.color = "white";
-
         setMarker = true;
-        buttonSelected = buttonClicked;
-        
-//        markers.eachLayer(function (layer) {
-//            layer.setIcon(icon_Small);
-//        });
+        if (buttonEvent === buttonClicked){
+            $("#button-info").css("display", "none");
+            $("#button-warning").css("display", "none");
+            icon = iconEvent_Normal;
+            eventType = "event";
 
-        if (buttonClicked === buttonEvent){
-            $(this).find($(".fa")).removeClass('fa-plus fa-6').addClass('fa-spinner fa-spin');
-            icon = icon_Large
+        }
+        if (buttonInfo === buttonClicked){
+            $("#button-event").css("display", "none");
+            $("#button-warning").css("display", "none");
+            icon = iconInfo_Normal;
+            eventType = "info";
+        }
+        if (buttonWarning === buttonClicked){
+            $("#button-info").css("display", "none");
+            $("#button-event").css("display", "none");
+            icon = iconWarning_Normal;
+            eventType = "warning";
         }
         
         marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
@@ -171,27 +186,23 @@ $("#buttonEvent").click(function (ev) {
         markersTemp.addLayer(marker);
     }
     else{
-        if (buttonSelected == buttonClicked){
-            $('#modal_Description').modal('show');
-            $('#eventDescription').focus();
+        $('#modal_Description').modal('show');
+        $('#eventDescription').focus();
 
-            setMarker = false;
-        }
-        else{
-            alert("Please save your choice first.")
-        }
+        setMarker = false;
     }
 });
 
 function discardEvent() {
     markersTemp.clearLayers();
-//    markers.eachLayer(function (layer) {
-//            layer.setIcon(icon_Normal);
-//            });
     
-    buttonClicked.style.backgroundColor = color_buttonEvent_NotPressed;
-    buttonClicked.style.borderColor = color_buttonEvent_NotPressed;
-    $('#buttonEvent').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-plus fa-6');
+    $("#buttonAddMarker").css("display", "inline-block");
+    
+    $("#button-wrapper-category").css("display", "none");
+    $("#button-event").css("display", "inline-block");
+    $("#button-info").css("display", "inline-block");
+    $("#button-warning").css("display", "inline-block");
+    
     
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('hide');
@@ -209,7 +220,6 @@ function showCategory() {
 function saveEvent() {
     valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
-    eventType = $('input[name="category"]:checked').val();
     var data = {eventType: eventType,
                valid_until: valid_until,
                lng: marker.getLatLng().lng,
@@ -219,36 +229,16 @@ function saveEvent() {
 
     $.post(link, data, function(response){
         if (response.status == 'Okay'){            
-            switch(eventType) {
-                case "warning":
-                    icon = iconWarning_Normal
-                    break;
-                case "event":
-                    icon = iconEvent_Normal
-                    break;
-                case "info":
-                    icon = iconInfo_Normal
-                    break;
-                default:
-                    icon = icon_Normal
-                    break;
-            }
                     
             marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
             icon: icon
             });
             
-            buttonClicked.style.backgroundColor = color_buttonEvent_NotPressed;
-            buttonClicked.style.borderColor = color_buttonEvent_NotPressed;
-            $('#buttonEvent').find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-plus fa-6');
+            marker.bindPopup(description);
             markers.addLayer(marker);
             
             markersTemp.clearLayers();
-            
-            $('#modal_Timerange').modal('hide');
-            $('#modal_Description').modal('hide');
-            $('#modal_Category').modal('hide');
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
             timestamp = new Date(Date.now() + 60 * 1000 * 60);
@@ -256,6 +246,17 @@ function saveEvent() {
 
             $( "#amount" ).text( "Valid until " + timestamp_String );
             $('#eventDescription').val('');
+            
+            $("#buttonAddMarker").css("display", "inline-block");
+
+            $("#button-wrapper-category").css("display", "none");
+            $("#button-event").css("display", "inline-block");
+            $("#button-info").css("display", "inline-block");
+            $("#button-warning").css("display", "inline-block");
+
+            $('#modal_Timerange').modal('hide');
+            $('#modal_Description').modal('hide');
+            $('#modal_Category').modal('hide');
         }
         else{
             console.log("Error")

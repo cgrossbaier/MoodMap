@@ -4,7 +4,7 @@ White: #FCFFF5
 Red: #682321
 DarkBlue: #193441
 LightBlue: #799AA5
-https://color.adobe.com/CS04-color-theme-1994456/edit/?copy=true&base=2&rule=Custom&selected=4&name=Copy%20of%20CS04&mode=rgb&rgbvalues=0.964706,0.968627,0.572549,0.199289,0.215578,0.27,0.465992,0.768536,0.827451,0.854902,0.929412,0.886275,0.917647,0.179088,0.287378&swatchOrder=0,1,2,3,4
+https://color.adobe.com/Honey-Pot-color-theme-1490158/edit/?copy=true
 */
 
 
@@ -42,42 +42,58 @@ html, body{
     width: 100%;
 }
 
+#button-wrapper-category {
+    margin-bottom: 20;
+    display: none;
+}
+
+
+
 /* Event */
 
-#buttonEvent {
+#buttonAddMarker {
     color: white;
     font-size: 30px;
     background-color: #193441;
 }
 
 .button-category {
-    font-size: 40px;
-    margin-right: 10px;
+    font-size: 50px;
+    margin: 10px;
     color: white;
     border-radius: 20;
 }
 
-
-/*
-    font-size: 40px;
-    background-color: beige;
-    border-color: black;
-    color: white;
-*/
-
-.button-warning {
-    background-color: #EA2E49;
-    border-color: #EA2E49;
-}
-.button-event {
-    background-color: #77C4D3;
-    border-color: #77C4D3;
-}
-.button-info {
-    background-color: #F6F792;
-    border-color: #F6F792;
+#button-event {
+    background-color: #105B63;
+    border-color: #105B63;
 }
 
+#button-event:hover {
+  color: black; 
+  background-color: #105B63;
+  border-color: #105B63;
+}
+
+#button-info {
+    background-color: #FFD34E;
+    border-color: #FFD34E;
+}
+#button-info:hover {
+  color: black; 
+  background-color: #FFD34E;
+  border-color: #FFD34E;
+}
+
+#button-warning {
+    background-color: #BD4932;
+    border-color: #BD4932;
+}
+#button-warning:hover {
+  color: black; 
+  background-color: #BD4932;
+  border-color: #BD4932;
+}
 
 #modalMarker{
     margin-top: 50px;
