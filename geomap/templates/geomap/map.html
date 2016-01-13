@@ -37,10 +37,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a><span class="glyphicon glyphicon-user"></span></a>
+                            <a><span class="glyphicon glyphicon-user"></span> User</a>
                         </li>
                         <li>
-                            <a><span class="glyphicon glyphicon-asterisk"></span></a>
+                            <a><span class="glyphicon glyphicon-asterisk"></span> Settings</a>
+                        </li>
+                        <li>
+                        <a href="" id="linkToFeedback"> <span class="glyphicon glyphicon-chevron-right"></span> Next</a>
                         </li>
                     </ul>
                 </div>
@@ -233,9 +236,13 @@
         <script src="{% static 'geomap/js/script.js' %}"></script>
         
         <script>
+            var name = window.location.href.replace('/map/','/feedback/');
+            document.getElementById('linkToFeedback').setAttribute('href', name)
+    
             var events_Type = {{events_Type | safe}}
             var events_Lat = {{events_Lat | safe}}
             var events_Lng = {{events_Lng | safe}}
+            var events_Description = {{events_Description | safe}}
             for (var i = 0; i < events_Type.length; i++) {
                 switch(events_Type[i]) {
                     case "warning":
@@ -256,6 +263,7 @@
                 {
                 icon: icon
                 });
+                marker.bindPopup(events_Description[i]);
                 markers.addLayer(marker);
                 
             }        

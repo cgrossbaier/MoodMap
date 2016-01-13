@@ -1,0 +1,140 @@
+<head>
+    {% load staticfiles %}
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="{% static 'geomap/leaflet/leaflet.css' %}" />
+        
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'geomap/bootstrap/css/bootstrap.min.css' %}" />  
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/index.css' %}" />
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">Mood map</a>
+                </div>
+                  <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a><span class="glyphicon glyphicon-user"></span></a>
+                        </li>
+                        <li>
+                            <a><span class="glyphicon glyphicon-asterisk"></span></a>
+                        </li>
+                        <li>
+                        <a href="" id='BackToMap'> <span class="glyphicon glyphicon-chevron-left"></span> Back to Map</a>
+                    </li>
+                    </ul>
+                </div>
+              </div>
+            </nav>
+    <!-- / Navigation -->
+    
+    <!-- Page Content -->
+    <div class="container" id="container-login">
+            <div class="row">
+                <div class="col-md-9">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        Warning
+                    </div>
+                    <div class="panel-body">
+                        The quality of your answers will determine the MTurk payout. Please write at least 150 characters per answer.
+                    </div>
+                </div>
+                <form action="{% url 'geomap:saveFeedback' %}" method="post"  id='frmFeedback'>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="form-group">
+                        <label for="feedback1">Could you please describe what functionality this tool offers?</label>
+                        <textarea cols="60" rows="5" type="text" class="form-control" id="feedback1" placeholder="..." name="feedback1" /></textarea>
+                        <div id="feedback1_Characters"></div>
+                    </div>
+                        <label for="feedback2">What live data sources can be incorporated into the tool?</label>
+                        <textarea cols="60" rows="5" class="form-control" id="feedback2" placeholder="..." name="feedback2"></textarea>
+                    <div id="feedback2_Characters"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedback3">What problem can be solved with this tool?</label>
+                        <textarea cols="60" rows="5" class="form-control" id="feedback3" placeholder="..." name="feedback3"></textarea>
+                        <div id="feedback3_Characters"></div>
+                    </div>
+                    <div id='errorMessage' class = 'errorMessage'></div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                </div>
+            </div>
+        </div>
+<!-- /.container -->
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'geomap/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'geomap/js/csrfSafeMethod.js' %}"></script>
+
+<script>
+    var name = window.location.href.replace('feedback/','map/');
+    document.getElementById('BackToMap').setAttribute('href', name)
+        
+    $(document).ready(function(){
+        var numberOfCharacters_Min = 150
+        var feedback1_numberOfCharacters = 0
+        $('#feedback1_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+        $('#feedback2_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+        $('#feedback3_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+
+    $('#feedback1').keyup(function() {
+        var feedback1_numberOfCharacters = $('#feedback1').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedback1_numberOfCharacters,0);
+
+        $('#feedback1_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+    $('#feedback2').keyup(function() {
+        var feedback2_numberOfCharacters = $('#feedback2').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedback2_numberOfCharacters,0);
+
+        $('#feedback2_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+    $('#feedback3').keyup(function() {
+        var feedback3_numberOfCharacters = $('#feedback3').val().length;
+        var text_remaining = Math.max(numberOfCharacters_Min - feedback3_numberOfCharacters,0);
+
+        $('#feedback3_Characters').html('Please write at least ' + text_remaining + ' more characters');
+    });
+             
+     $('#frmFeedback').submit(function (e) {
+         e.preventDefault();
+         var data= {feedback1: $('#feedback1').val(),
+                    feedback2: $('#feedback2').val(),
+                    feedback3: $('#feedback3').val()};
+
+        var link = "/geomap/saveFeedback/";
+	
+        $.post(link, data, function(response){
+        if (response.status == 'Okay'){
+            window.location.replace("/geomap/finalize/");
+        }
+        else{
+            $('#errorMessage').text(response.message);
+        }
+        }); 
+     });
+});
+</script>
+
+</body>

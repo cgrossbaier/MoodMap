@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from .models import Event, Statistic
+from .models import Event, Statistic, Feedback
 
 class EventAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -25,3 +25,12 @@ class StatisticAdmin(admin.ModelAdmin):
     search_fields = ['user']
     
 admin.site.register(Statistic, StatisticAdmin)
+
+class FeedbackAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['user']}),
+        ('Feedback', {'fields': ['feedback1', 'feedback2', 'feedback3']}),
+    ]
+
+admin.site.register(Feedback, FeedbackAdmin)
+

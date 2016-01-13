@@ -10,6 +10,10 @@ urlpatterns = [
     # ex: /geomap/
     url(r'^map/$', views.mapView, name='mapView'),
     # ex: /geomap/
+    url(r'^feedback/$', views.feedback, name='feedback'),
+    # ex: /geomap/
+    url(r'^finalize/$', views.finalize, name='finalize'),
+    # ex: /geomap/
     url(r'^checkVerification/$', views.checkVerification, name='checkVerification'),
     # ex: /addEvent
     url(r'^addEvent/$', views.addEvent, name='addEvent'),
@@ -17,6 +21,8 @@ urlpatterns = [
     url(r'^searchQuery/$', views.searchQuery, name='searchQuery'),
     # ex: /saveStatistics
     url(r'^saveStatistics/$', views.saveStatistics, name='saveStatistics'),
+    # ex: /saveFeedback
+    url(r'^saveFeedback/$', views.saveFeedback, name='saveFeedback'),
     # ex: /geomap/export_stats
     url(r'^export_stats/$', views.export_stats, name='export_stats'),
 #    # ex: /geomap/export_user

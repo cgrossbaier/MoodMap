@@ -7,7 +7,7 @@ from django.views import generic
 from django.utils import timezone
 
 from django.db import models
-from .models import Event, Statistic
+from .models import Event, Statistic, Feedback
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -68,17 +68,20 @@ def mapView(request):
     events_Type = []
     events_Lat = []
     events_Lng = []
+    events_Description = []
     if eventList:
         for event in eventList:
             events_Type.append(event.eventType)
             events_Lat.append(event.lat)
             events_Lng.append(event.lng)
+            events_Description.append(event.description)
     
     return render(request, 'geomap/map.html', {
             'error_message': error_message,
             'events_Type' : json.dumps(events_Type),
             'events_Lat' : json.dumps(events_Lat),
-            'events_Lng' : json.dumps(events_Lng)
+            'events_Lng' : json.dumps(events_Lng),
+            'events_Description' : json.dumps(events_Description)
             },)
 
 
@@ -137,6 +140,23 @@ def searchQuery(request):
 
 
 
+@login_required
+def feedback(request):
+    context = {}
+    return render(request, 'geomap/feedback.html', context)
+
+@login_required
+def finalize(request):
+    context = {}
+    user = request.user
+    if Feedback.objects.filter(user=user):
+        context = {'username': request.user.username}
+        logout(request)
+        return render(request, 'geomap/finalize.html', context)
+    else:
+        return render(request, 'geomap/index.html', context)
+
+############### Functions ###############
 
 @login_required
 def saveStatistics(request):
@@ -162,6 +182,31 @@ def saveStatistics(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
+
+
+@login_required
+def saveFeedback(request):
+    response = {'status': "Not Okay", 'message': "Please try again"} 
+    user=request.user
+    if request.method == u'POST':
+        response = {'status': "Not Okay", 'message': "You didn't answer all the questions."}
+        POST = request.POST
+        feedback1 = POST.get('feedback1', False)
+        feedback2 = POST.get('feedback2', False)
+        feedback3 = POST.get('feedback3', False)
+        
+        if feedback1 != "" or feedback2 != "" or feedback3 != "":
+            response = {'status': "Not Okay", 'message': "Could you please write a little bit more."}
+            if len(feedback1) >= 150 and len(feedback2) >= 150 and len(feedback3) >= 150:
+                feedback = Feedback()
+                feedback.user = user
+                feedback.feedback1 = feedback1
+                feedback.feedback2 = feedback2
+                feedback.feedback3 = feedback3
+                feedback.save()
+                response = {'status': "Okay"} 
+    
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, boundSouthEast_lat,  boundSouthEast_lng):
     ## API KEY

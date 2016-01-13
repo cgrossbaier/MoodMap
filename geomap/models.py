@@ -19,6 +19,16 @@ class Event(models.Model):
     
     def __str__(self):
         return self.eventType
+    
+class Feedback(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    feedback1 = models.TextField(blank=True)
+    feedback2 = models.TextField(blank=True)
+    feedback3 = models.TextField(blank=True)
+    feedback4 = models.TextField(blank=True)
+    feedback5 = models.TextField(blank=True)
+    def __str__(self):
+        return 'User ' + str(self.user.id)
 
 class Statistic(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
