@@ -95,6 +95,14 @@ html, body{
   border-color: #BD4932;
 }
 
+.button-closemodal {
+    font-size: 30px
+}
+.button-saveevent {
+    font-size: 30px
+}
+
+
 #modalMarker{
     margin-top: 50px;
     

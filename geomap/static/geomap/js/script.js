@@ -226,9 +226,11 @@ function saveEvent() {
                lat: marker.getLatLng().lat,
                description: description};
     var link = "/geomap/addEvent/";
+    $(this).find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
 
     $.post(link, data, function(response){
-        if (response.status == 'Okay'){            
+        if (response.status == 'Okay'){
+            $(this).find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
                     
             marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
@@ -282,7 +284,6 @@ var input = document.getElementById('autocomplete');
 var options = {
   bounds: defaultBounds
 };
-
 autocomplete = new google.maps.places.Autocomplete(input, options);
 autocomplete.addListener('place_changed', onPlaceChanged);
 
@@ -340,18 +341,14 @@ function addZero(i) {
 $(function() {
     $( "#modalMarker_Timerange" ).slider({
       min: 0,
-      max: 260,
+      max: 240,
       value: 60,
+      step: 30,
       slide: function( event, ui ) {
-        timestamp = new Date(Date.now() + ui.value * 1000 * 60);
-        timestamp_String = addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes());
-        $( "#amount" ).text( "Valid until " + timestamp_String );
+        $( "#amount" ).text( "Valid for " + ui.value + " minutes" );
       }
     });
 
-    timestamp = new Date(Date.now() + 60 * 1000 * 60);
-    timestamp_String = addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes());
-    
-    $( "#amount" ).text( "Valid until " + timestamp_String );
+    $( "#amount" ).text( "Valid for 60 minutes" );
         
 });
