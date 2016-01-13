@@ -138,8 +138,6 @@ def searchQuery(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-
-
 @login_required
 def feedback(request):
     context = {}

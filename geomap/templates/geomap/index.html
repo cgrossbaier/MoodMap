@@ -30,14 +30,16 @@
                   <a class="navbar-brand" href="#">Mood map</a>
                 </div>
                   <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
+<!--
                         <li>
                             <a><span class="glyphicon glyphicon-user"></span></a>
                         </li>
                         <li>
                             <a><span class="glyphicon glyphicon-asterisk"></span></a>
                         </li>
+-->
                     </ul>
                 </div>
               </div>
@@ -68,4 +70,8 @@
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="{% static 'geomap/bootstrap/js/bootstrap.min.js' %}"></script>
+            
+<script>
+    $('#verificationCode').focus();            
+</script>
 </body>

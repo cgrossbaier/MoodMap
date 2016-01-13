@@ -26,14 +26,16 @@
                   <a class="navbar-brand" href="#">Mood map</a>
                 </div>
                   <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
+<!--
                         <li>
                             <a><span class="glyphicon glyphicon-user"></span></a>
                         </li>
                         <li>
                             <a><span class="glyphicon glyphicon-asterisk"></span></a>
                         </li>
+-->
                         <li>
                         <a href="" id='BackToMap'> <span class="glyphicon glyphicon-chevron-left"></span> Back to Map</a>
                     </li>
@@ -63,12 +65,12 @@
                         <textarea cols="60" rows="5" type="text" class="form-control" id="feedback1" placeholder="..." name="feedback1" /></textarea>
                         <div id="feedback1_Characters"></div>
                     </div>
-                        <label for="feedback2">What live data sources can be incorporated into the tool?</label>
+                        <label for="feedback2">What sort of events should be included in this tool?</label>
                         <textarea cols="60" rows="5" class="form-control" id="feedback2" placeholder="..." name="feedback2"></textarea>
                     <div id="feedback2_Characters"></div>
                     </div>
                     <div class="form-group">
-                        <label for="feedback3">What problem can be solved with this tool?</label>
+                        <label for="feedback3">How could you make money with this tool?</label>
                         <textarea cols="60" rows="5" class="form-control" id="feedback3" placeholder="..." name="feedback3"></textarea>
                         <div id="feedback3_Characters"></div>
                     </div>
@@ -97,6 +99,8 @@
         $('#feedback1_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
         $('#feedback2_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
         $('#feedback3_Characters').html('Please write at least ' + numberOfCharacters_Min + ' more characters');
+        
+    $('#feedback1').focus();
 
     $('#feedback1').keyup(function() {
         var feedback1_numberOfCharacters = $('#feedback1').val().length;

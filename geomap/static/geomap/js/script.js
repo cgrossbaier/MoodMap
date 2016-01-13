@@ -1,3 +1,7 @@
+$(window).load(function(){
+        $('#modal_Explanation').modal('show');
+    });
+    
 // Define variables
 
 var buttonAddMarker = document.getElementById("buttonAddMarker");
@@ -349,6 +353,13 @@ $(function() {
 
     $( "#amount" ).text( "Valid for 60 minutes" );
         
+});
+
+// Explanation
+$("#buttonExplanation").click(function(){
+    $('#modal_Description').modal('hide');
+    $('#modal_Timerange').modal('hide');
+    $('#modal_Explanation').modal('show');
 });
 
 //Statistics

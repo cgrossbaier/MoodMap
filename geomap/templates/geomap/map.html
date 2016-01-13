@@ -34,16 +34,21 @@
                   <a class="navbar-brand" href="#">Mood map</a>
                 </div>
                   <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
+<!--
                         <li>
                             <a><span class="glyphicon glyphicon-user"></span> User</a>
                         </li>
                         <li>
                             <a><span class="glyphicon glyphicon-asterisk"></span> Settings</a>
                         </li>
+-->
                         <li>
-                        <a href="" id="linkToFeedback"> <span class="glyphicon glyphicon-chevron-right"></span> Next</a>
+                            <a id="buttonExplanation">Explanation</a>
+                        </li>
+                        <li>
+                        <a id="linkToFeedback"> <span class="glyphicon glyphicon-chevron-right"></span> Next</a>
                         </li>
                     </ul>
                 </div>
@@ -107,6 +112,35 @@
             </div>
         </footer>
         
+        <!-- Modal -->
+<div class="modal" id="modal_Explanation" tabindex="-1" role="dialog" aria-labelledby="modal_ExplanationLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Explanation</h4>
+      </div>
+      <div class="modal-body">
+          <p>The following tool shows live events in your neighbourhood. </p>
+          <p>There are three kind of events:</p>
+          
+           <ol>
+          <li><b>Event:</b> Enjoyful events such as live music on the street, street sales, etc. that are happing right now</li>
+          <li><b>Info:</b> Events that neither have a positive or negative meaning, but could be interesting to others.</li>
+          <li><b>Warning:</b> Negative events such as crime incidents, accidents, etc. that are happing right now or just happened</li>
+        </ol> 
+              
+           <p> For you to get the highest payout from this MTURK HIT, you are required to complete two tasks. First, try out the tool, add events by clicking on the button at the bottom of the page.</p>
+          
+ <p> Second, go to the next page and give us some feedback on your experience. The quality of your feedback and ideas will determine your payout. </p>
+Thank you and have fun!
+      </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+        
         <!-- Modal Description -->
         <div class="modal" id="modal_Description" tabindex="-1" role="dialog" aria-labelledby="modal_Description" data-backdrop="static" data-keyboard="false">
           <div class="modal-dialog" role="document">
@@ -165,51 +199,6 @@
           </div>
         </div>
         <!-- Modal Timerange -->
-        
-        <!-- Modal Category -->
-<!--
-        <div class="modal" id="modal_Category" tabindex="-1" role="dialog" aria-labelledby="modal_Category" data-backdrop="static" data-keyboard="false">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">New Event</h4>
-              </div>
-              <div class="modal-body">
-                  <div id=modal-buttonWrapper>
-                    <button type="button" class="btn btn-primary btn-modal" onclick="saveEvent();" >Save</button>
-                     <button type="button" class="btn btn-default btn-modal" onclick="discardEvent();" >Close</button>
-                  </div>
-                  <form>
-                      <div class="form-group">
-                          <label for="modalMarker_Timerange" id="amount">
-                              <div>Category</div>
-                          </label>
-                      </div>
-                  </form>
-                  <div id="modal-buttonWrapper-Category">
-                      <div class="btn-group" data-toggle="buttons">
-                          <label class="btn btn-primary button-category button-warning">
-                            <input type="radio" name="category" value="warning" autocomplete="off" checked> 
-                              <i class="fa fa-exclamation-circle fa-6"></i>
-                          </label>
-                          <label class="btn btn-primary button-category button-event">
-                            <input type="radio" name="category" value="event" autocomplete="off">                                     <i class="fa fa-smile-o fa-6"></i>
-                          </label>
-                          <label class="btn btn-primary button-category button-info">
-                            <input type="radio" name="category" value="info" autocomplete="off"> 
-                              <i class="fa fa-info-circle fa-6"></i>
-                          </label>
-                        </div>
-                  </div>
-                    
-              </div>
-              <div class="modal-footer">
-              </div>
-            </div>
-          </div>
-        </div>
--->
-        <!-- Modal Category -->
         
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
