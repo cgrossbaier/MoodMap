@@ -580,4 +580,52 @@ def export_stats(request):
     
     return response
 
+@login_required
+def export_feedback(request):
+    
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export_feedback.csv'
+    
+    # Delimiter ',' for German Excel
+    writer = csv.writer(response, dialect=csv.excel, delimiter=';')
+    column_list = ["MturkCode", "General", "Problem", "Data source"]
+    writer.writerow(column_list)
+    # List of Users
+    feedbacks = Feedback.objects.all().order_by('id')
+    for feedback in feedbacks:
+        answers = [(feedback.user.username.encode('utf-8')), 
+                   (feedback.feedback1.encode('utf-8')),
+                  (feedback.feedback2.encode('utf-8')),
+                  (feedback.feedback3.encode('utf-8'))]
+        writer.writerow(answers)
+    
+    return response
 
+@login_required
+def export_events(request):
+    
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export_events.csv'
+    
+    # Delimiter ',' for German Excel
+    writer = csv.writer(response, dialect=csv.excel, delimiter=';')
+    column_list = ["User", "eventType", "description", "creation_date", "valid_until", "lng", "lat"]
+    writer.writerow(column_list)
+    # List of Users
+    users = User.objects.all().order_by('id')
+    for user in users:
+        events = Event.objects.filter(user=user)
+        if events:
+            for event in events:
+                answers = [u'%s' % (user.username), 
+                           u'%s' % (event.eventType),
+                           u'%s' % (event.description),
+                           u'%s' % (event.creation_date),
+                           u'%s' % (event.valid_until),
+                           u'%s' % (event.lng),
+                          u'%s' % (event.lat)]
+                writer.writerow(answers)
+    
+    return response
