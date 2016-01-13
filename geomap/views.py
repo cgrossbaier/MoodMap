@@ -42,7 +42,7 @@ def checkVerification(request):
         NumberOfUsers = len(User.objects.all())+1
         username = makeSessionId(str(NumberOfUsers))
         password = 'user1234'
-        if NumberOfUsers < 30:
+        if NumberOfUsers < 100:
             if verificationCode == 'MTURK_CODE':
                 try:
                     user = User.objects.create_user(username, password = password)
