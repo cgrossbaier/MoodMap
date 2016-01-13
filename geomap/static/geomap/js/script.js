@@ -91,8 +91,10 @@ function success(pos) {
     map.setView([crd.latitude, crd.longitude], 14);
     L.circle([crd.latitude, crd.longitude], radius).addTo(map);
     userLocation_Set = true;
-};
 
+    saveStatistics("User Location");
+};
+           
 function error(err) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
@@ -109,6 +111,7 @@ function error(err) {
             break;
     }
     console.warn('ERROR(' + err.code + '): ' + message);
+    saveStatistics("User Location not permitted");
 };
 
 navigator.geolocation.getCurrentPosition(success, error, options);
@@ -148,10 +151,10 @@ L.control.locate({onLocationError: error, drawCircle: userLocation_Set, icon: 'f
 //Function to handle clicks on the category buttons
 
 $("#buttonAddMarker").click(function (ev) {
+    saveStatistics("Add Marker");
     $("#button-wrapper-category").css("display", "block");
     $("#buttonAddMarker").css("display", "none");
 });
-    
     
 $(".button-category").click(function (ev) {
     buttonClicked = ev.delegateTarget;
@@ -177,6 +180,7 @@ $(".button-category").click(function (ev) {
             icon = iconWarning_Normal;
             eventType = "warning";
         }
+        saveStatistics("Select marker" + eventType);
         
         marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
@@ -186,15 +190,17 @@ $(".button-category").click(function (ev) {
         markersTemp.addLayer(marker);
     }
     else{
+        saveStatistics("Set marker" + eventType)
         $('#modal_Description').modal('show');
         $('#eventDescription').focus();
-
+        saveStatistics("Show Description")
         setMarker = false;
     }
 });
 
 function discardEvent() {
     markersTemp.clearLayers();
+    saveStatistics("Discard Event")
     
     $("#buttonAddMarker").css("display", "inline-block");
     
@@ -203,21 +209,24 @@ function discardEvent() {
     $("#button-info").css("display", "inline-block");
     $("#button-warning").css("display", "inline-block");
     
+    $( "#modalMarker_Timerange" ).slider( "value" , 60);
+    $( "#amount" ).text( "Valid for 60 minutes");
+    $('#eventDescription').val('');
     
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('hide');
 }
 
 
-function showDescription() {
+function showTimerange() {
+    saveStatistics("Show Timerange")
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('show');
 }
-function showCategory() {
-    $('#modal_Timerange').modal('hide');
-    $('#modal_Category').modal('show');
-}
+
 function saveEvent() {
+    saveStatistics("Save Event:" + eventType)
+    $(this).find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
     valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
     var data = {eventType: eventType,
@@ -226,12 +235,10 @@ function saveEvent() {
                lat: marker.getLatLng().lat,
                description: description};
     var link = "/geomap/addEvent/";
-    $(this).find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
-
+    
     $.post(link, data, function(response){
         if (response.status == 'Okay'){
-            $(this).find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
-                    
+            saveStatistics("Save Event:" + eventType + " : Successfull")        
             marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
             {
             icon: icon
@@ -243,10 +250,7 @@ function saveEvent() {
             markersTemp.clearLayers();
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
-            timestamp = new Date(Date.now() + 60 * 1000 * 60);
-            timestamp_String = addZero(timestamp.getHours()) + ':' + addZero(timestamp.getMinutes());
-
-            $( "#amount" ).text( "Valid until " + timestamp_String );
+            $( "#amount" ).text( "Valid for 60 minutes");
             $('#eventDescription').val('');
             
             $("#buttonAddMarker").css("display", "inline-block");
@@ -255,6 +259,8 @@ function saveEvent() {
             $("#button-event").css("display", "inline-block");
             $("#button-info").css("display", "inline-block");
             $("#button-warning").css("display", "inline-block");
+            
+            $(this).find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
 
             $('#modal_Timerange').modal('hide');
             $('#modal_Description').modal('hide');
@@ -262,6 +268,7 @@ function saveEvent() {
         }
         else{
             console.log("Error")
+            saveStatistics("Save Event:" + eventType + " : Error")
             markersTemp.clearLayers();
         }
     });  
@@ -269,8 +276,12 @@ function saveEvent() {
 
 map.on('move', function (e) {
     if (setMarker){
+        saveStatistics("Map move with Marker:" + eventType)
         var newLatLng = new L.LatLng(map.getCenter().lat, map.getCenter().lng);
         marker.setLatLng(newLatLng);
+    }
+    else{
+//        saveStatistics("Map move without Marker")
     }
 });
 
@@ -289,10 +300,10 @@ autocomplete.addListener('place_changed', onPlaceChanged);
 
 function onPlaceChanged() {
   var place = autocomplete.getPlace();
+  saveStatistics("New search query - Autocomplete: " + $('#autocomplete').val())
   if (place.geometry) {
     var newLatLng = new L.LatLng(place.geometry.location.lat(), 
                                  place.geometry.location.lng());
-//    createMarkers(place.geometry.location.lat(), place.geometry.location.lng());
     map.panTo(newLatLng);
     map.setZoom(14);
   } else {
@@ -302,6 +313,7 @@ function onPlaceChanged() {
 
 $("#buttonSearch").click(function (ev) {
     searchQuery = document.getElementById('autocomplete')
+    saveStatistics("New search query: " + searchQuery)
     boundNorthWest_lat = map.getBounds().getNorthWest().lat
     boundNorthWest_lng = map.getBounds().getNorthWest().lng
     boundSouthEast_lat = map.getBounds().getSouthEast().lat
@@ -315,6 +327,7 @@ $("#buttonSearch").click(function (ev) {
 
     $.post(link, data, function(response){
         if (response.status == 'Okay'){
+            saveStatistics("New search query: " + searchQuery + ": Successfull")
             var newLatLng = new L.LatLng(response.lat, 
                                  response.lng);
             map.panTo(newLatLng);
@@ -324,19 +337,13 @@ $("#buttonSearch").click(function (ev) {
         else{
             document.getElementById('autocomplete').value = '';
             document.getElementById('autocomplete').placeholder = 'Place not found, enter a place';
+            saveStatistics("New search query: " + searchQuery + ": Not found")
         }
     });
 });
 
 
 //Slider
-
-function addZero(i) {
-    if (i < 10) {
-        i = "0" + i;
-    }
-    return i;
-}
 
 $(function() {
     $( "#modalMarker_Timerange" ).slider({
@@ -346,9 +353,23 @@ $(function() {
       step: 30,
       slide: function( event, ui ) {
         $( "#amount" ).text( "Valid for " + ui.value + " minutes" );
+        saveStatistics("Slider change: " + eventType + ": Valid for: " + ui.value)
       }
     });
 
     $( "#amount" ).text( "Valid for 60 minutes" );
         
 });
+
+//Statistics
+
+function saveStatistics(statType) {
+    var data = {statType: statType,
+                   lng: map.getCenter().lng,
+                   lat: map.getCenter().lat,
+                   zoom: map.getZoom()};
+        var link = "/geomap/saveStatistics/";
+
+        $.post(link, data, function(response){
+        });
+}

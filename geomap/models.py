@@ -19,3 +19,14 @@ class Event(models.Model):
     
     def __str__(self):
         return self.eventType
+
+class Statistic(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    statType = models.CharField(max_length=200)
+    timestamp = models.DateTimeField('date published')
+    lng = models.FloatField()
+    lat = models.FloatField()
+    zoom = models.FloatField()
+    
+    def __str__(self):
+        return self.statType

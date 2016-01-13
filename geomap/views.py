@@ -7,7 +7,7 @@ from django.views import generic
 from django.utils import timezone
 
 from django.db import models
-from .models import Event
+from .models import Event, Statistic
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -132,6 +132,33 @@ def searchQuery(request):
                             'lng': lng}
             else:
                 response = {'status': 'Place not found', 'message': 'No result'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+
+
+
+@login_required
+def saveStatistics(request):
+    response = {'status': 'Not okay', 'message': 'No Post method'}
+    if request.method == u'POST':
+        try:
+            statType = request.POST['statType']
+            lng = request.POST['lng']
+            lat = request.POST['lat']
+            zoom = request.POST['zoom']
+        except (KeyError):
+            response = {'status': 'Not okay', 'message': 'KeyError'}
+        else:
+            statistic = Statistic()
+            statistic.user = request.user
+            statistic.statType = statType
+            statistic.timestamp = timezone.now()
+            statistic.lng = float(lng)
+            statistic.lat = float(lat)
+            statistic.zoom = float(zoom)             
+            statistic.save()
+            response = {'status': 'Okay', 'message': 'Event saved'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
@@ -481,3 +508,33 @@ def makeSessionId(st):
 #                writer.writerow(answers)
 #    
 #    return response
+
+
+@login_required
+def export_stats(request):
+    
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export_stats.csv'
+    
+    # Delimiter ',' for German Excel
+    writer = csv.writer(response, dialect=csv.excel, delimiter=';')
+    column_list = ["User", "statType", "timestamp", "lng", "lat", "zoom"]
+    writer.writerow(column_list)
+    # List of Users
+    users = User.objects.all().order_by('id')
+    for user in users:
+        statistics = Statistic.objects.filter(user=user)
+        if statistics:
+            for statistic in statistics:
+                answers = [u'%s' % (user.username), 
+                           u'%s' % (statistic.statType),
+                           u'%s' % (statistic.timestamp),
+                           u'%s' % (statistic.lng),
+                           u'%s' % (statistic.lat),
+                           u'%s' % (statistic.zoom)]
+                writer.writerow(answers)
+    
+    return response
+
+

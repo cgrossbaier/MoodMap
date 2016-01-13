@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from .models import Event
+from .models import Event, Statistic
 
 class EventAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -8,8 +8,20 @@ class EventAdmin(admin.ModelAdmin):
         ('Date information', {'fields': ['creation_date', 'valid_until']}),
         ('Event information', {'fields': ['eventType', 'lng', 'lat']}),
     ]
-    list_display = ('user', 'creation_date')
+    list_display = ('user', 'eventType', 'creation_date')
     list_filter = ['creation_date']
     search_fields = ['user']
-    
+
 admin.site.register(Event, EventAdmin)
+
+class StatisticAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['user']}),
+        ('Date information', {'fields': ['timestamp']}),
+        ('Event information', {'fields': ['statType', 'lng', 'lat', 'zoom']}),
+    ]
+    list_display = ('user', 'timestamp')
+    list_filter = ['timestamp']
+    search_fields = ['user']
+    
+admin.site.register(Statistic, StatisticAdmin)
