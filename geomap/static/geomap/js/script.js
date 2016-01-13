@@ -1,18 +1,9 @@
 // Define variables
 
-var typeOfButton = "buttonAddMarker";
-var markerColor = document.getElementById("buttonAddMarker").style.backgroundColor;
-
-var setMarker = false;
-
-var color_buttonAddMarker_NotPressed = document.getElementById("buttonAddMarker").style.backgroundColor;
-
 var buttonAddMarker = document.getElementById("buttonAddMarker");
 var buttonEvent = document.getElementById("button-event");
 var buttonInfo = document.getElementById("button-info");
 var buttonWarning = document.getElementById("button-warning");
-
-var color_button_Pressed = "grey";
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
@@ -21,14 +12,9 @@ var map = L.mapbox.map('map', 'mapbox.streets')
 
 var marker = L.marker();
 var buttonClicked;
-var buttonSelected;
 
-var markerColor = "193441";
-var icon_Small = L.mapbox.marker.icon({'marker-color': markerColor,
-                                            'marker-size': 'small'});
-var icon_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
-var icon_Large = L.mapbox.marker.icon({'marker-color': markerColor,
-                                            'marker-size': 'large'});
+var markerColor;
+var setMarker = false;
 
 markerColor = "BD4932";
 var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
@@ -118,36 +104,6 @@ navigator.geolocation.getCurrentPosition(success, error, options);
 
 L.control.locate({onLocationError: error, drawCircle: userLocation_Set, icon: 'fa fa-compass'}).addTo(map);
 
-//Create dummy data
-
-//function createMarkers(lat, lng, type) {
-//    var mapCenter_Lat = lat;
-//    var mapCenter_Lng = lng;
-//
-//
-//    for (i = 0; i < 100; i++) { 
-//        marker_Lat = Math.random() * 0.06 - 0.03 + mapCenter_Lat;
-//        marker_Lng = Math.random() * 0.10 - 0.05 + mapCenter_Lng;
-//        if(Math.random() > 0.5) {
-//            marker = L.marker([marker_Lat, marker_Lng], 
-//                {
-//                icon: iconGood
-//                });
-//            markersGood.addLayer(marker);
-//        }
-//         else{
-//            marker = L.marker([marker_Lat, marker_Lng], 
-//                {
-//                icon: iconBad
-//                });
-//            markersBad.addLayer(marker);
-//         }
-//
-//    }
-//    
-//    return false
-//}
-
 //Function to handle clicks on the category buttons
 
 $("#buttonAddMarker").click(function (ev) {
@@ -209,14 +165,13 @@ function discardEvent() {
     $("#button-info").css("display", "inline-block");
     $("#button-warning").css("display", "inline-block");
     
-    $( "#modalMarker_Timerange" ).slider( "value" , 60);
-    $( "#amount" ).text( "Valid for 60 minutes");
+    $("#modalMarker_Timerange" ).slider( "value" , 60);
+    $("#amount" ).text( "Valid for 60 minutes");
     $('#eventDescription').val('');
     
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('hide');
 }
-
 
 function showTimerange() {
     saveStatistics("Show Timerange")
@@ -250,7 +205,7 @@ function saveEvent() {
             markersTemp.clearLayers();
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
-            $( "#amount" ).text( "Valid for 60 minutes");
+            $("#amount" ).text( "Valid for 60 minutes");
             $('#eventDescription').val('');
             
             $("#buttonAddMarker").css("display", "inline-block");
@@ -279,6 +234,15 @@ map.on('move', function (e) {
         saveStatistics("Map move with Marker:" + eventType)
         var newLatLng = new L.LatLng(map.getCenter().lat, map.getCenter().lng);
         marker.setLatLng(newLatLng);
+    }
+    else{
+//        saveStatistics("Map move without Marker")
+    }
+});
+
+map.on('zoom', function (e) {
+    if (setMarker){
+        saveStatistics("Map Zoom with Marker:" + eventType)
     }
     else{
 //        saveStatistics("Map move without Marker")
@@ -373,3 +337,35 @@ function saveStatistics(statType) {
         $.post(link, data, function(response){
         });
 }
+
+
+//Create dummy data
+
+//function createMarkers(lat, lng, type) {
+//    var mapCenter_Lat = lat;
+//    var mapCenter_Lng = lng;
+//
+//
+//    for (i = 0; i < 100; i++) { 
+//        marker_Lat = Math.random() * 0.06 - 0.03 + mapCenter_Lat;
+//        marker_Lng = Math.random() * 0.10 - 0.05 + mapCenter_Lng;
+//        if(Math.random() > 0.5) {
+//            marker = L.marker([marker_Lat, marker_Lng], 
+//                {
+//                icon: iconGood
+//                });
+//            markersGood.addLayer(marker);
+//        }
+//         else{
+//            marker = L.marker([marker_Lat, marker_Lng], 
+//                {
+//                icon: iconBad
+//                });
+//            markersBad.addLayer(marker);
+//         }
+//
+//    }
+//    
+//    return false
+//}
+
