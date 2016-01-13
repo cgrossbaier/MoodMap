@@ -17,13 +17,28 @@ var markerColor;
 var setMarker = false;
 
 markerColor = "BD4932";
-var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'small',
+                                              'marker-symbol': "w"});
+var iconWarning_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'large',
+                                              'marker-symbol': "w"});
 
 markerColor = "105B63";
-var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'small',
+                                              'marker-symbol': "e"});
+var iconEvent_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'large',
+                                              'marker-symbol': "e"});
 
 markerColor = "FFD34E";
-var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
+var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'small',
+                                              'marker-symbol': "i"});
+var iconInfo_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+                                              'marker-size': 'large',
+                                              'marker-symbol': "i"});
 
 //
 //var MarkerWarning = L.ExtraMarkers.icon({
@@ -48,14 +63,15 @@ var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor});
 //var MarkerInfo_DIV = L.divIcon({className: 'MarkerInfo',
 //                           iconSize: [60, 60]});
 
-
-var markers = L.layerGroup().addTo(map);
 var markersTemp =  L.layerGroup().addTo(map);
+var markers = L.layerGroup().addTo(map);
 
 var userLocation_Set = false;
 
-eventType = "";
-description = "";
+var eventType = "";
+var description = "";
+
+var locationCircle = L.circle();
 
 //Location Search within Browser
 
@@ -69,16 +85,23 @@ var options = {
 
 function success(pos) {
     var crd = pos.coords;
-    
     var radius = crd.accuracy / 2;
     
 //    createMarkers(crd.latitude, crd.longitude);
+    
+    saveStatistics("User Location: First time");
 
     map.setView([crd.latitude, crd.longitude], 14);
-    L.circle([crd.latitude, crd.longitude], radius).addTo(map);
-    userLocation_Set = true;
+//    if (userLocation_Set === false){
+//        locationCircle = L.circle([crd.latitude, crd.longitude], radius).addTo(map);
+//        userLocation_Set = true;
+//        saveStatistics("User Location: First time");
+//    }
+//    else{
+//        map.removeLayer(locationCircle)
+//        saveStatistics("User Location");
+//    }
 
-    saveStatistics("User Location");
 };
            
 function error(err) {
@@ -120,20 +143,20 @@ $(".button-category").click(function (ev) {
         if (buttonEvent === buttonClicked){
             $("#button-info").css("display", "none");
             $("#button-warning").css("display", "none");
-            icon = iconEvent_Normal;
+            icon = iconEvent_Large;
             eventType = "event";
 
         }
         if (buttonInfo === buttonClicked){
             $("#button-event").css("display", "none");
             $("#button-warning").css("display", "none");
-            icon = iconInfo_Normal;
+            icon = iconInfo_Large;
             eventType = "info";
         }
         if (buttonWarning === buttonClicked){
             $("#button-info").css("display", "none");
             $("#button-event").css("display", "none");
-            icon = iconWarning_Normal;
+            icon = iconWarning_Large;
             eventType = "warning";
         }
         saveStatistics("Select marker" + eventType);
@@ -169,6 +192,8 @@ function discardEvent() {
     $("#amount" ).text( "Valid for 60 minutes");
     $('#eventDescription').val('');
     
+    $("#buttonSaveEvent").find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
+    
     $('#modal_Description').modal('hide');
     $('#modal_Timerange').modal('hide');
 }
@@ -181,7 +206,7 @@ function showTimerange() {
 
 function saveEvent() {
     saveStatistics("Save Event:" + eventType)
-    $(this).find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
+    $("#buttonSaveEvent").find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
     valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
     var data = {eventType: eventType,
@@ -215,7 +240,7 @@ function saveEvent() {
             $("#button-info").css("display", "inline-block");
             $("#button-warning").css("display", "inline-block");
             
-            $(this).find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
+            $("#buttonSaveEvent").find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
 
             $('#modal_Timerange').modal('hide');
             $('#modal_Description').modal('hide');
@@ -223,6 +248,7 @@ function saveEvent() {
         }
         else{
             console.log("Error")
+            $("#buttonSaveEvent").find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
             saveStatistics("Save Event:" + eventType + " : Error")
             markersTemp.clearLayers();
         }
@@ -240,7 +266,7 @@ map.on('move', function (e) {
     }
 });
 
-map.on('zoom', function (e) {
+map.on('zoomend', function (e) {
     if (setMarker){
         saveStatistics("Map Zoom with Marker:" + eventType)
     }

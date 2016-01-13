@@ -75,12 +75,15 @@
                                 <div id="button-wrapper-category">
                                     <button type="button" class="btn btn-primary button-category" id="button-event"> 
                                         <i class="fa fa-smile-o fa-6"></i>
+                                        <div style="font-size: 20;">Event</div>
                                     </button>
                                     <button type="button" class="btn btn-primary button-category" id="button-info"> 
                                         <i class="fa fa-info-circle fa-6"></i>
+                                        <div style="font-size: 20;">Info</div>
                                     </button>
                                     <button type="button" class="btn btn-primary button-category" id="button-warning"> 
                                         <i class="fa fa-exclamation-circle fa-6"></i>
+                                        <div style="font-size: 20;">Warning</div>
                                     </button>
                                 </div>
                                 <div>
@@ -136,7 +139,7 @@
               </div>
               <div class="modal-body">
                   <div id=modal-buttonWrapper>
-                    <button type="button" class="btn btn-primary btn-success btn-modal button-saveevent" onclick="saveEvent(this);" ><i class="fa fa-check fa-6"></i></button>
+                    <button type="button" class="btn btn-primary btn-success btn-modal button-saveevent" id="buttonSaveEvent" onclick="saveEvent();" ><i class="fa fa-check fa-6"></i></button>
                      <button type="button" class="btn btn-default btn-warning btn-modal button-closemodal" onclick="discardEvent();" ><i class="fa fa-times fa-6"></i></button>
                   </div>
                   <form>
