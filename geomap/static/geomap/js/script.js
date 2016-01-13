@@ -91,11 +91,10 @@ function success(pos) {
     var crd = pos.coords;
     var radius = crd.accuracy / 2;
     
-//    createMarkers(crd.latitude, crd.longitude);
-    
     saveStatistics("User Location: First time");
 
     map.setView([crd.latitude, crd.longitude], 14);
+    createMarkers();
 //    if (userLocation_Set === false){
 //        locationCircle = L.circle([crd.latitude, crd.longitude], radius).addTo(map);
 //        userLocation_Set = true;
@@ -300,6 +299,7 @@ function onPlaceChanged() {
                                  place.geometry.location.lng());
     map.panTo(newLatLng);
     map.setZoom(14);
+    createMarkers();
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a place';
   }
@@ -327,6 +327,7 @@ $("#buttonSearch").click(function (ev) {
             map.panTo(newLatLng);
             map.setZoom(14);
             searchQuery.value = "";
+            createMarkers()
         }
         else{
             document.getElementById('autocomplete').value = '';
@@ -375,34 +376,42 @@ function saveStatistics(statType) {
         });
 }
 
-
 //Create dummy data
 
-//function createMarkers(lat, lng, type) {
-//    var mapCenter_Lat = lat;
-//    var mapCenter_Lng = lng;
-//
-//
-//    for (i = 0; i < 100; i++) { 
-//        marker_Lat = Math.random() * 0.06 - 0.03 + mapCenter_Lat;
-//        marker_Lng = Math.random() * 0.10 - 0.05 + mapCenter_Lng;
-//        if(Math.random() > 0.5) {
-//            marker = L.marker([marker_Lat, marker_Lng], 
-//                {
-//                icon: iconGood
-//                });
-//            markersGood.addLayer(marker);
-//        }
-//         else{
-//            marker = L.marker([marker_Lat, marker_Lng], 
-//                {
-//                icon: iconBad
-//                });
-//            markersBad.addLayer(marker);
-//         }
-//
-//    }
-//    
-//    return false
-//}
+function createMarkers() {
+    bounds = map.getBounds()
+    
+    x = bounds.getWest()-bounds.getEast();
+    y = bounds.getNorth()-bounds.getSouth();
+
+    for (i = 0; i < 20; i++) { 
+        marker_Lat = Math.random() * y - y/2 + map.getCenter().lat;
+        marker_Lng = Math.random() * x - x/2 + map.getCenter().lng;
+        
+        random = Math.random();
+        markerText = "";
+        
+        if(random < 0.33) {
+            icon = iconEvent_Normal
+            markerText = "Event";
+        } else if (random > 0.33 & random < 0.66){
+            icon = iconWarning_Normal
+            markerText = "Warning";
+        } else{
+             icon = iconInfo_Normal
+             markerText = "Info";
+        }
+    
+        marker = L.marker([marker_Lat, marker_Lng], 
+            {
+            icon: icon
+            });
+            
+        marker.bindPopup(markerText);
+        markers.addLayer(marker);
+
+    }
+    
+    return false
+}
 
