@@ -171,6 +171,38 @@ html, body{
     padding: 4px 0 0 6px;
 }
 
+.my-icon {
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  color: white;
+  margin-left: -10px;
+  padding-top: 4px;
+
+}
+
+.icon-dc-event {
+  background: #105B63;
+  border: 2px rgba(#105B63, 2);
+}
+.icon-sf-event {
+  background: #105B63;
+}
+.icon-dc-info {
+  background: #FFD34E;
+}
+.icon-sf-info {
+  background: #FFD34E;
+}
+.icon-dc-warning {
+  background: #BD4932;
+}
+.icon-sf-warning {
+  background: #BD4932;
+}
+
 /* Adjustment for media */
 
 @media(max-width:767px) {
