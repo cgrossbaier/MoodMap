@@ -11,8 +11,23 @@ var buttonWarning = document.getElementById("button-warning");
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
-var map = L.mapbox.map('map', 'mapbox.streets')
-    .setView([49.910763,2.1681859], 4);
+var southWest = L.latLng(52.393805, 13.006257),
+    northEast = L.latLng(52.683976, 13.709512),
+    bounds = L.latLngBounds(southWest, northEast);
+
+var map = L.mapbox.map('map', 'mapbox.streets', {
+    // set that bounding box as maxBounds to restrict moving the map
+    // see full maxBounds documentation:
+    // http://leafletjs.com/reference.html#map-maxbounds
+    maxBounds: bounds,
+    maxZoom: 19,
+    minZoom: 10
+}).setView([52.5281028,13.3262337], 10);
+
+// zoom the map to that bounding box
+map.fitBounds(bounds);
+
+
 
 var marker = L.marker();
 var buttonClicked;

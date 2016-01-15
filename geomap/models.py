@@ -19,6 +19,9 @@ class Event(models.Model):
     lng = models.FloatField()
     lat = models.FloatField()
     
+    def isActive(self):
+        return self.valid_until >= timezone.now() and timezone.now() >= self.creation_date
+    
     def __str__(self):
         return self.eventType
     

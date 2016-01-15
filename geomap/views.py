@@ -21,6 +21,7 @@ from django.db import IntegrityError
 from random import randint
 import string
 import datetime
+import pytz
 
 ############### variables ###############
 
@@ -64,7 +65,12 @@ def checkVerification(request):
 def mapView(request):
     context = {}
     error_message = ""
-    eventList = Event.objects.all()
+    eventList = list()
+    events = Event.objects.all()
+    for event in events:
+        print((event.valid_until >= timezone.now() and timezone.now() >= event.creation_date)==event.isActive())
+        if event.isActive():
+            eventList.append(event)
     event_geoJSON = getGeoJSON(eventList);
     events_Type = []
     events_Lat = []
@@ -251,14 +257,16 @@ def getMarkterStyle(event):
     elif eventType == 'event':
         markerColor = "#105B63"
         markerSymbol = "e"
+        if eventType_subCategory == 'market':
+            markerSymbol = "grocery"
     else:
         markerColor = "#000000"
         markerSymbol = "b"
     return markerColor, markerSymbol
 
 
-def getPopup(event, date):
-    popup = "<b>%s: %s</b><br>%s" % (event.eventType.title(), event.eventType_subCategory.title(), date)
+def getPopup(event, date_Start, date_End):
+    popup = "<b>%s: %s</b><br>%s - %s" % (event.eventType.title(), event.eventType_subCategory.title(), date_Start, date_End)
     if event.description != "":
         popup = popup + "<br>%s" % (event.description)
     if event.link != "":
@@ -267,20 +275,21 @@ def getPopup(event, date):
     return popup
         
 def getGeoJSON(events):
+    localtimezone = pytz.timezone('Europe/Berlin')
     markerSize = "small"
     events_GeoJSON = '{"type": "FeatureCollection", "features": ['
     notFirstElement = False
     for event in events:
         markerColor, markerSymbol = getMarkterStyle(event)
-        date = event.creation_date.strftime('%d.%m.%Y %H:%M')
-        popup = getPopup(event, date)
-#        popup = "<b>%s: %s</b><br>%s<br>%s<br><a href='%s' target='_blank'>Link</a>" % (event.eventType, event.eventType_subCategory, date, event.description, event.link)
+        date_Start = event.creation_date.astimezone(localtimezone).strftime('%d.%m.%Y %H:%M')
+        date_End = event.valid_until.astimezone(localtimezone).strftime('%H:%M')
+        popup = getPopup(event, date_Start, date_End)
         if notFirstElement:
             events_GeoJSON = events_GeoJSON + ','
         events_GeoJSON = events_GeoJSON + '{"type": "Feature", "geometry": { "type": "Point", '
         events_GeoJSON = events_GeoJSON + '"coordinates": [%s, %s]},' % (event.lng, event.lat)
         events_GeoJSON = events_GeoJSON + '"properties": {'
-        events_GeoJSON = events_GeoJSON + '"date": "%s", "description": "%s","link": "%s","marker-color": "%s","marker-size": "%s","marker-symbol": "%s","popup": "%s"}}' % (date, event.description, event.link, markerColor, markerSize, markerSymbol, popup)
+        events_GeoJSON = events_GeoJSON + '"date": "%s", "description": "%s","link": "%s","marker-color": "%s","marker-size": "%s","marker-symbol": "%s","popup": "%s"}}' % (date_Start, event.description, event.link, markerColor, markerSize, markerSymbol, popup)
         notFirstElement = True
     events_GeoJSON = events_GeoJSON + "]}"
     return events_GeoJSON
