@@ -98,7 +98,7 @@ function success(pos) {
     saveStatistics("User Location: First time");
 
     map.setView([crd.latitude, crd.longitude], 14);
-    createMarkers();
+//    createMarkers();
 //    if (userLocation_Set === false){
 //        locationCircle = L.circle([crd.latitude, crd.longitude], radius).addTo(map);
 //        userLocation_Set = true;
@@ -303,7 +303,7 @@ function onPlaceChanged() {
                                  place.geometry.location.lng());
     map.panTo(newLatLng);
     map.setZoom(14);
-    createMarkers();
+//    createMarkers();
   } else {
     document.getElementById('autocomplete').placeholder = 'Enter a place';
   }
@@ -331,7 +331,7 @@ $("#buttonSearch").click(function (ev) {
             map.panTo(newLatLng);
             map.setZoom(14);
             searchQuery.value = "";
-            createMarkers()
+//            createMarkers()
         }
         else{
             document.getElementById('autocomplete').value = '';

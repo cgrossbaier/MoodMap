@@ -65,6 +65,7 @@ def mapView(request):
     context = {}
     error_message = ""
     eventList = Event.objects.all()
+    event_geoJSON = getGeoJSON(eventList);
     events_Type = []
     events_Lat = []
     events_Lng = []
@@ -81,7 +82,8 @@ def mapView(request):
             'events_Type' : json.dumps(events_Type),
             'events_Lat' : json.dumps(events_Lat),
             'events_Lng' : json.dumps(events_Lng),
-            'events_Description' : json.dumps(events_Description)
+            'events_Description' : json.dumps(events_Description),
+            'event_geoJSON':event_geoJSON,
             },)
 
 
@@ -208,7 +210,6 @@ def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, bou
     key = "AIzaSyC_XaGJy5dpcH2YoYDckNv-IfCKIeiSNSU"
     googleGeocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json?'
     url = googleGeocodeUrl + "address=" + str(searchQuery) + "&bounds=" + boundNorthWest_lat + " " + boundNorthWest_lng + "|" + boundSouthEast_lat + " " + boundSouthEast_lng + " " + "&key=" + key
-    print(url)
     json_response = urllib.urlopen(url)
     response = json.loads(json_response.read())
 
@@ -232,6 +233,57 @@ def makeSessionId(st):
 	m.update(str(time.time()))
 	m.update(str(st))
 	return string.replace(base64.encodestring(m.digest())[:-3], '/', '$')
+
+
+def getMarkterStyle(event):
+    eventType = event.eventType
+    eventType_subCategory = ''
+    if event.eventType_subCategory:
+        eventType_subCategory = event.eventType_subCategory
+    if eventType == 'info':
+        markerColor = "#FFD34E"
+        markerSymbol = "i"
+        if eventType_subCategory == 'police':
+            markerSymbol = "police"
+    elif eventType == 'warning':
+        markerColor = "#BD4932"
+        markerSymbol = "w"
+    elif eventType == 'event':
+        markerColor = "#105B63"
+        markerSymbol = "e"
+    else:
+        markerColor = "#000000"
+        markerSymbol = "b"
+    return markerColor, markerSymbol
+
+
+def getPopup(event, date):
+    popup = "<b>%s: %s</b><br>%s" % (event.eventType.title(), event.eventType_subCategory.title(), date)
+    if event.description != "":
+        popup = popup + "<br>%s" % (event.description)
+    if event.link != "":
+        popup = popup + "<br><a href='%s' target='_blank'>Link</a>" % (event.link)
+        
+    return popup
+        
+def getGeoJSON(events):
+    markerSize = "small"
+    events_GeoJSON = '{"type": "FeatureCollection", "features": ['
+    notFirstElement = False
+    for event in events:
+        markerColor, markerSymbol = getMarkterStyle(event)
+        date = event.creation_date.strftime('%d.%m.%Y %H:%M')
+        popup = getPopup(event, date)
+#        popup = "<b>%s: %s</b><br>%s<br>%s<br><a href='%s' target='_blank'>Link</a>" % (event.eventType, event.eventType_subCategory, date, event.description, event.link)
+        if notFirstElement:
+            events_GeoJSON = events_GeoJSON + ','
+        events_GeoJSON = events_GeoJSON + '{"type": "Feature", "geometry": { "type": "Point", '
+        events_GeoJSON = events_GeoJSON + '"coordinates": [%s, %s]},' % (event.lng, event.lat)
+        events_GeoJSON = events_GeoJSON + '"properties": {'
+        events_GeoJSON = events_GeoJSON + '"date": "%s", "description": "%s","link": "%s","marker-color": "%s","marker-size": "%s","marker-symbol": "%s","popup": "%s"}}' % (date, event.description, event.link, markerColor, markerSize, markerSymbol, popup)
+        notFirstElement = True
+    events_GeoJSON = events_GeoJSON + "]}"
+    return events_GeoJSON
 
 @login_required
 def export_stats(request):

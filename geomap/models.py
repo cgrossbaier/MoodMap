@@ -11,9 +11,11 @@ from django.utils import timezone
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     eventType = models.CharField(max_length=200)
-    description = models.CharField(max_length=800)
+    eventType_subCategory = models.CharField(max_length=200, default="")
+    description = models.CharField(max_length=800, default="")
     creation_date = models.DateTimeField('date published')
     valid_until = models.DateTimeField('date published')
+    link = models.CharField(max_length=400, default="", blank=True)
     lng = models.FloatField()
     lat = models.FloatField()
     

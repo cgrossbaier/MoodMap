@@ -6,7 +6,7 @@ class EventAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['user']}),
         ('Date information', {'fields': ['creation_date', 'valid_until']}),
-        ('Event information', {'fields': ['eventType', 'lng', 'lat']}),
+        ('Event information', {'fields': ['eventType', 'eventType_subCategory',"description", "link", 'lng', 'lat']}),
     ]
     list_display = ('user', 'eventType', 'creation_date')
     list_filter = ['creation_date']
