@@ -125,52 +125,53 @@ $("#buttonAddMarker").click(function (ev) {
     
 $(".button-category").click(function (ev) {
     buttonClicked = ev.delegateTarget;
-    
-    if (setMarker === false){
-        setMarker = true;
-        if (buttonEvent === buttonClicked){
-            $("#button-info").css("display", "none");
-            $("#button-warning").css("display", "none");
-            icon = iconEvent_Large;
-            eventType = "event";
+    if (buttonEvent === buttonClicked){
+        icon = iconEvent_Large;
+        eventType = "event";
+    }
+    if (buttonInfo === buttonClicked){
+        icon = iconInfo_Large;
+        eventType = "info";
+    }
+    if (buttonWarning === buttonClicked){
+        icon = iconWarning_Large;
+        eventType = "warning";
+    }
+    $("#button-info").css("display", "none");
+    $("#button-warning").css("display", "none");
+    $("#button-event").css("display", "none");
+    $("#buttonAddMarker-setMarker").css("display", "inline-block");
+    saveStatistics("Select marker" + eventType);
 
-        }
-        if (buttonInfo === buttonClicked){
-            $("#button-event").css("display", "none");
-            $("#button-warning").css("display", "none");
-            icon = iconInfo_Large;
-            eventType = "info";
-        }
-        if (buttonWarning === buttonClicked){
-            $("#button-info").css("display", "none");
-            $("#button-event").css("display", "none");
-            icon = iconWarning_Large;
-            eventType = "warning";
-        }
-        saveStatistics("Select marker" + eventType);
-        
-        marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
-            {
-            icon: icon
-            });
-                
-        markersTemp.addLayer(marker);
+    marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
+        {
+        icon: icon
+        });
+
+    markersTemp.addLayer(marker);
+    setMarker = true;
     }
-    else{
-        saveStatistics("Set marker" + eventType)
-        $('#modal_Description').modal('show');
-        $('#eventDescription').focus();
-        saveStatistics("Show Description")
-        setMarker = false;
+);
+$("#buttonAddMarker-setMarker").click(function (ev) {
+    saveStatistics("Set marker" + eventType)
+    setMarker = false;
+    $('#modal_Description').modal('show');
+    $('#eventDescription').focus();
+    $("#buttonAddMarker-clicked").css("display", "none");
+    $("#buttonAddMarker-setMarker").css("display", "none");
+    saveStatistics("Show Description")
+    setMarker = false;
     }
-});
+);
 
 function discardEvent() {
     markersTemp.clearLayers();
     saveStatistics("Discard Event")
+    setMarker = false;
     
     $("#buttonAddMarker").css("display", "inline-block");
     $("#buttonAddMarker-clicked").css("display", "none");
+    $("#buttonAddMarker-setMarker").css("display", "none");
     
     $("#button-wrapper-category").css("display", "none");
     $("#button-event").css("display", "inline-block");
@@ -234,8 +235,6 @@ function saveEvent() {
             $('#modal_Timerange').modal('hide');
             $('#modal_Description').modal('hide');
             $('#modal_Category').modal('hide');
-            
-            $("#buttonAddMarker-clicked").css("display", "none");
         }
         else{
             console.log("Error")
