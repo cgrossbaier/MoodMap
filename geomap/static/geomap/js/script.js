@@ -70,6 +70,10 @@ var iconInfo_Large= L.mapbox.marker.icon({'marker-color': markerColor,
 var markersTemp =  L.layerGroup().addTo(map);
 var markers = L.layerGroup().addTo(map);
 
+map.featureLayer.on('click', function(e) {
+        map.panTo(e.layer.getLatLng());
+    });
+
 var userLocation_Set = false;
 
 var eventType = "";
