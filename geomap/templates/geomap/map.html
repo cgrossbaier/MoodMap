@@ -235,20 +235,6 @@ Thank you and have fun!
             var events_Lng = {{events_Lng | safe}}
             var events_Description = {{events_Description | safe}}
             
-//            iconEvent_Normal = L.divIcon({"className": "my-icon icon-dc-event", // class name to style
-//                       "html": "<i class='fa fa-smile-o fa-6'></i>", // add content inside the marker
-//                       "iconSize": null // size of icon, use null to set the size in CSS
-//                                      });
-//            iconInfo_Normal = L.divIcon({"className": "my-icon icon-dc-info", // class name to style
-//                       "html": "<i class='fa fa-info-circle fa-6'></i>", // add content inside the marker
-//                       "iconSize": null // size of icon, use null to set the size in CSS
-//                                      });
-//            iconWarning_Normal = L.divIcon({"className": "my-icon icon-dc-warning", // class name to style
-//                       "html": "<i class='fa fa-exclamation-circle fa-6'></i>", // add content inside the marker
-//                       "iconSize": null // size of icon, use null to set the size in CSS
-//                                      });
-//            if ('{{ event_geoJSON | safe }}' != "None"){
-            
             //add cafe, books store, and university geoJSON layers with styling
             var markersGeojson = L.mapbox.featureLayer()
             .setGeoJSON({{ event_geoJSON | safe }})
@@ -258,35 +244,7 @@ Thank you and have fun!
                       marker.bindPopup(marker.feature.properties.popup);
                 }
             }).addTo(map);
-            
-//                L.geoJson({{ event_geoJSON | safe }}).addTo(map);
-//            }
-
-//            for (var i = 0; i < events_Type.length; i++) {
-//                switch(events_Type[i]) {
-//                    case "warning":
-//                        icon = iconWarning_Normal
-//                        break;
-//                    case "event":
-//                        icon = iconEvent_Normal
-//                        break;
-//                    case "info":
-//                        icon = iconInfo_Normal
-//                        break;
-//                    default:
-//                        icon = icon_Normal
-//                        break;
-//                }
-//                
-//                marker = L.marker([events_Lat[i], events_Lng[i]], 
-//                {
-//                icon: icon
-//                });
-//
-//                marker.bindPopup(events_Description[i]);
-//                markers.addLayer(marker);
-//                
-//            }        
+                   
         </script>
         
     </body>

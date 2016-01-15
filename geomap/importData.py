@@ -9,6 +9,7 @@ import datetime
 import re
 import codecs
 import json
+import pytz
 
 # policreports
 with open('/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/mysite/geomap/static/geomap/data/polizeireports.json') as data_file:    
