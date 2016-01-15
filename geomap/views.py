@@ -68,7 +68,6 @@ def mapView(request):
     eventList = list()
     events = Event.objects.all()
     for event in events:
-        print((event.valid_until >= timezone.now() and timezone.now() >= event.creation_date)==event.isActive())
         if event.isActive():
             eventList.append(event)
     event_geoJSON = getGeoJSON(eventList);
@@ -115,7 +114,13 @@ def addEvent(request):
             event.lat = float(lat)
             event.description = description             
             event.save()
-            response = {'status': 'Okay', 'message': 'Event saved'}
+            events = Event.objects.all()
+            eventList = []
+            for event in events:
+                if event.isActive():
+                    eventList.append(event)
+            event_geoJSON = getGeoJSON(eventList);
+            response = {'status': 'Okay', 'message': 'Event saved', 'event_geoJSON': event_geoJSON}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

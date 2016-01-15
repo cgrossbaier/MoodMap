@@ -11,23 +11,21 @@ var buttonWarning = document.getElementById("button-warning");
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
-var southWest = L.latLng(52.393805, 13.006257),
-    northEast = L.latLng(52.683976, 13.709512),
-    bounds = L.latLngBounds(southWest, northEast);
+//var southWest = L.latLng(52.383805, 13.000257),
+//    northEast = L.latLng(52.693976, 13.809512),
+//    bounds = L.latLngBounds(southWest, northEast);
 
 var map = L.mapbox.map('map', 'mapbox.streets', {
     // set that bounding box as maxBounds to restrict moving the map
     // see full maxBounds documentation:
     // http://leafletjs.com/reference.html#map-maxbounds
-    maxBounds: bounds,
+//    maxBounds: bounds,
     maxZoom: 19,
     minZoom: 10
 }).setView([52.5281028,13.3262337], 10);
 
 // zoom the map to that bounding box
-map.fitBounds(bounds);
-
-
+//map.fitBounds(bounds);
 
 var marker = L.marker();
 var buttonClicked;
@@ -59,31 +57,10 @@ var iconInfo_Large= L.mapbox.marker.icon({'marker-color': markerColor,
                                               'marker-size': 'large',
                                               'marker-symbol': "i"});
 
-//
-//var MarkerWarning = L.ExtraMarkers.icon({
-//    icon: 'fa-exclamation-circle',
-//    markerColor: 'red',
-//    shape: 'round',
-//    prefix: 'fa'
-//  });
-//var MarkerEvent = L.ExtraMarkers.icon({
-//    icon: 'fa-smile-o',
-//    markerColor: 'green',
-//    shape: 'round',
-//    prefix: 'fa'
-//  });
-//var MarkerInfo = L.ExtraMarkers.icon({
-//    icon: 'fa-info-circle',
-//    markerColor: 'purple',
-//    shape: 'round',
-//    prefix: 'fa'
-//  });
-//
-//var MarkerInfo_DIV = L.divIcon({className: 'MarkerInfo',
-//                           iconSize: [60, 60]});
-
 var markersTemp =  L.layerGroup().addTo(map);
 var markers = L.layerGroup().addTo(map);
+
+var markersGeojson = L.mapbox.featureLayer()
 
 map.featureLayer.on('click', function(e) {
         map.panTo(e.layer.getLatLng());
@@ -113,17 +90,6 @@ function success(pos) {
     saveStatistics("User Location: First time");
 
     map.setView([crd.latitude, crd.longitude], 14);
-//    createMarkers();
-//    if (userLocation_Set === false){
-//        locationCircle = L.circle([crd.latitude, crd.longitude], radius).addTo(map);
-//        userLocation_Set = true;
-//        saveStatistics("User Location: First time");
-//    }
-//    else{
-//        map.removeLayer(locationCircle)
-//        saveStatistics("User Location");
-//    }
-
 };
            
 function error(err) {
@@ -141,8 +107,7 @@ function error(err) {
             message = "An unknown error occurred."
             break;
     }
-    console.warn('ERROR(' + err.code + '): ' + message);
-    saveStatistics("User Location not permitted");
+    saveStatistics("User Location:" + message);
 };
 
 navigator.geolocation.getCurrentPosition(success, error, options);
@@ -155,6 +120,7 @@ $("#buttonAddMarker").click(function (ev) {
     saveStatistics("Add Marker");
     $("#button-wrapper-category").css("display", "block");
     $("#buttonAddMarker").css("display", "none");
+    $("#buttonAddMarker-clicked").css("display", "inline-block");
 });
     
 $(".button-category").click(function (ev) {
@@ -204,6 +170,7 @@ function discardEvent() {
     saveStatistics("Discard Event")
     
     $("#buttonAddMarker").css("display", "inline-block");
+    $("#buttonAddMarker-clicked").css("display", "none");
     
     $("#button-wrapper-category").css("display", "none");
     $("#button-event").css("display", "inline-block");
@@ -240,15 +207,15 @@ function saveEvent() {
     
     $.post(link, data, function(response){
         if (response.status == 'Okay'){
-            saveStatistics("Save Event:" + eventType + " : Successfull")        
-            marker = L.marker([map.getCenter().lat, map.getCenter().lng], 
-            {
-            icon: icon
-            });
-            
-            marker.bindPopup(description);
-            markers.addLayer(marker);
-            
+            saveStatistics("Save Event:" + eventType + " : Successfull")
+            markersGeojson = L.mapbox.featureLayer()
+            .setGeoJSON(JSON.parse(response.event_geoJSON))
+            //wait for the layer to be "on", or "loaded", to use a function that will setIcon with an L.icon object
+            markersGeojson.eachLayer(function(marker) {
+                if (marker.feature.properties.popup !== ""){
+                      marker.bindPopup(marker.feature.properties.popup);
+                }
+            }).addTo(map);            
             markersTemp.clearLayers();
             
             $( "#modalMarker_Timerange" ).slider( "value" , 60);
@@ -267,6 +234,8 @@ function saveEvent() {
             $('#modal_Timerange').modal('hide');
             $('#modal_Description').modal('hide');
             $('#modal_Category').modal('hide');
+            
+            $("#buttonAddMarker-clicked").css("display", "none");
         }
         else{
             console.log("Error")

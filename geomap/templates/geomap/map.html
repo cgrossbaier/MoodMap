@@ -83,20 +83,23 @@
                                 <div id="button-wrapper-category">
                                     <button type="button" class="btn btn-primary button-category" id="button-event"> 
                                         <i class="fa fa-smile-o fa-6"></i>
-                                        <div style="font-size: 20;">Event</div>
+                                        <div class="button-category-subtitle">Event</div>
                                     </button>
                                     <button type="button" class="btn btn-primary button-category" id="button-info"> 
                                         <i class="fa fa-info-circle fa-6"></i>
-                                        <div style="font-size: 20;">Info</div>
+                                        <div class="button-category-subtitle">Info</div>
                                     </button>
                                     <button type="button" class="btn btn-primary button-category" id="button-warning"> 
                                         <i class="fa fa-exclamation-circle fa-6"></i>
-                                        <div style="font-size: 20;">Warning</div>
+                                        <div class="button-category-subtitle">Warning</div>
                                     </button>
                                 </div>
                                 <div>
-                                    <button type="button" class="btn btn-lg" id="buttonAddMarker"> 
+                                    <button type="button" class="btn btn-lg buttonAddMarker" id="buttonAddMarker"> 
                                         <i class="fa fa-plus fa-6"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-lg buttonAddMarker buttonAddMarker-clicked" id="buttonAddMarker-clicked" onclick="discardEvent()"> 
+                                        <i class="fa fa-close fa-6"></i>
                                     </button>
                                 </div> 
                             </div>
@@ -236,7 +239,7 @@ Thank you and have fun!
             var events_Description = {{events_Description | safe}}
             
             //add cafe, books store, and university geoJSON layers with styling
-            var markersGeojson = L.mapbox.featureLayer()
+            markersGeojson = L.mapbox.featureLayer()
             .setGeoJSON({{ event_geoJSON | safe }})
             //wait for the layer to be "on", or "loaded", to use a function that will setIcon with an L.icon object
             markersGeojson.eachLayer(function(marker) {

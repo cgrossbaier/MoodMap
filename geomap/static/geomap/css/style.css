@@ -56,17 +56,31 @@ html, body{
 
 /* Event */
 
-#buttonAddMarker {
+.buttonAddMarker {
     color: white;
     font-size: 30px;
     background-color: #193441;
+    border-color: #193441;
 }
+
+.buttonAddMarker-clicked {
+    color: white;
+    font-size: 15px;
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+    display: none;
+}
+
 
 .button-category {
     font-size: 80px;
     margin: 10px;
     color: white;
     border-radius: 20;
+}
+.button-category-subtitle{
+    font-size: 20px;
 }
 
 #button-event {
@@ -220,11 +234,14 @@ html, body{
     font-size: 35px;
     }
     .button-category {
-    font-size: 60px;
+    font-size: 55px;
     margin: 10px;
     color: white;
     border-radius: 20;
-}
+    }
+    .button-category-subtitle{
+    font-size: 14px;
+    }
 }
 
 
