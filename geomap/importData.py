@@ -12,7 +12,7 @@ import json
 import pytz
 
 # policreports
-with open('/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/mysite/geomap/static/geomap/data/polizeireports.json') as data_file:    
+with open('/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/venv/polizeireports.json') as data_file:    
     data = json.load(data_file)
 
 if User.objects.filter(username="polizeireports"):
