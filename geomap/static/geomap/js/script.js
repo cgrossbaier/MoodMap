@@ -67,31 +67,17 @@ map.featureLayer.on('click', function(e) {
     });
 
 var userLocation_Set = false;
+var locationCircle_Layer = L.layerGroup().addTo(map);
+var locationCircle = L.circle();
 
 var eventType = "";
 var description = "";
 
-var locationCircle = L.circle();
 
 //Location Search within Browser
 
-map.locate({setView: true, maxZoom: 16});
-
-var options = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0
-};
-
-function success(pos) {
-    var crd = pos.coords;
-    var radius = crd.accuracy / 2;
-    
-    saveStatistics("User Location: First time");
-
-    map.setView([crd.latitude, crd.longitude], 14);
-};
-           
+map.locate({setView: true, maxZoom: 8});
+      
 function error(err) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
@@ -110,9 +96,18 @@ function error(err) {
     saveStatistics("User Location:" + message);
 };
 
-navigator.geolocation.getCurrentPosition(success, error, options);
+var lc = L.control.locate({onLocationError: error, icon: 'fa fa-compass', showPopup: false}).addTo(map);
 
-L.control.locate({onLocationError: error, drawCircle: userLocation_Set, icon: 'fa fa-compass'}).addTo(map);
+// request location update and set location
+lc.start();
+
+// For the time now
+Date.prototype.timeNow = function () {
+     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes();
+}
+
+var newDate = new Date();
+$("#timeLastSync").text("Last update: " + newDate.timeNow())
 
 //Function to handle clicks on the category buttons
 
@@ -209,6 +204,8 @@ function saveEvent() {
     $.post(link, data, function(response){
         if (response.status == 'Okay'){
             saveStatistics("Save Event:" + eventType + " : Successfull")
+            newDate = new Date();
+            $("#timeLastSync").text("Last update: " + newDate.timeNow())
             markersGeojson = L.mapbox.featureLayer()
             .setGeoJSON(JSON.parse(response.event_geoJSON))
             //wait for the layer to be "on", or "loaded", to use a function that will setIcon with an L.icon object

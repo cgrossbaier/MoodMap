@@ -25,18 +25,25 @@ else:
     user = User(username="polizeireports", password="police")
     user.save()
 
-Event.objects.filter(user=user).delete()
-    
+#Event.objects.filter(user=user).delete()
+
+creation_date_max = Event.objects.filter(user=user).latest('creation_date').creation_date
+localtimezone = pytz.timezone('Europe/Berlin')
+
 for feature in data['features']:
-    event = Event()
-    event.user = user
-    event.creation_date = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M').strftime('%Y-%m-%d %H:%M+0100')
-    event.eventType = 'info'
-    event.eventType_subCategory = 'police'
-    event.valid_until = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M') + datetime.timedelta(hours = 23)
-    event.lng = float(feature['geometry']['coordinates'][0])
-    event.lat = float(feature['geometry']['coordinates'][1])
-    event.description = feature['properties']['description']
-    event.link = feature['properties']['link']   
-    event.save()
+    creation_date = localtimezone.localize(datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M'))
+    if creation_date > creation_date_max:
+        print('New Policereport')
+        event = Event()
+        event.user = user
+        event.creation_date = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M').strftime('%Y-%m-%d %H:%M+0100')
+        event.eventType = 'info'
+        event.eventType_subCategory = 'police'
+        valid_until = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M') + datetime.timedelta(hours = 23)
+        event.valid_until = valid_until.strftime('%Y-%m-%d %H:%M+0100')
+        event.lng = float(feature['geometry']['coordinates'][0])
+        event.lat = float(feature['geometry']['coordinates'][1])
+        event.description = feature['properties']['description']
+        event.link = feature['properties']['link']   
+        event.save()
 
