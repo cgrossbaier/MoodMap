@@ -8,7 +8,7 @@ class EventAdmin(admin.ModelAdmin):
         ('Date information', {'fields': ['creation_date', 'valid_until']}),
         ('Event information', {'fields': ['eventType', 'eventType_subCategory',"description", "link", 'lng', 'lat']}),
     ]
-    list_display = ('user', 'eventType', 'creation_date')
+    list_display = ('user', 'eventType', 'creation_date', 'description')
     list_filter = ['creation_date']
     search_fields = ['user']
 

@@ -1,0 +1,87 @@
+{
+    "flohmaerkte": [{
+        "Location": "Flea Market at Strasse des 17. Juni 106",
+        "Date": "Samstag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998184-2983302-flea-market-at-strasse-des-17juni.en.html",
+        "lat": "52.514434",
+        "lng": "13.335626"
+    }, {
+        "Location": "Strasse des 17. Juni 106",
+        "Date": "Sonntag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998184-2983302-flea-market-at-strasse-des-17juni.en.html",
+        "lat": "52.514434",
+        "lng": "13.335626"
+    }, {
+        "Location": "Flea Market at Boxhagener Platz",
+        "Date": "Sonntag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998240-2983302-fleamarket-at-boxhagener-platz-.en.html",
+        "lat": "52.510858",
+        "lng": "13.459723"
+    }, {
+        "Location": "Flea Market at Bode Museum",
+        "Date": "Samstag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998194-2983302-flea-market-at-bode-museum.en.html",
+        "lat": "52.520890",
+        "lng": "13.394114"
+    }, {
+        "Location": "Flea Market at Bode Museum",
+        "Date": "Sonntag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998194-2983302-flea-market-at-bode-museum.en.html",
+        "lat": "52.520890",
+        "lng": "13.394114"
+    }, {
+        "Location": "Art Market at Zeughaus",
+        "Date": "Samstag",
+        "Hour": "11.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998204-2983302-art-market-at-zeughaus.en.html",
+        "lat": "52.520890",
+        "lng": "13.394114"
+    }, {
+        "Location": "Art Market at Zeughaus",
+        "Date": "Sonntag",
+        "Hour": "10.00 bis 17.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998204-2983302-art-market-at-zeughaus.en.html",
+        "lat": "52.518558",
+        "lng": "13.397483"
+    }, {
+        "Location": "Flea Market at Mauerpark",
+        "Date": "Sonntag",
+        "Hour": "09.00 bis 18.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998222-2983302-flea-market-at-mauerpark.en.html",
+        "lat": "52.540887",
+        "lng": "13.402189"
+    }, {
+        "Location": "Flea Market at Rathaus Schöneberg",
+        "Date": "Samstag",
+        "Hour": "09.00 bis 16.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998231-2983302-flea-market-at-rathaus-schoeneberg-.en.html",
+        "lat": "52.485358",
+        "lng": "13.342873"
+    }, {
+        "Location": "Flea Market at Rathaus Schöneberg",
+        "Date": "Sonntag",
+        "Hour": "09.00 bis 16.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998231-2983302-flea-market-at-rathaus-schoeneberg-.en.html",
+        "lat": "52.485358",
+        "lng": "13.342873"
+    }, {
+        "Location": "Flea Market at Fehrbelliner Platz",
+        "Date": "Samstag",
+        "Hour": "10.00 bis 16.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998531-2983302-flea-market-at-fehrbelliner-platz.en.html",
+        "lat": "52.491006",
+        "lng": "13.315090"
+    }, {
+        "Location": "Flea Market at Fehrbelliner Platz",
+        "Date": "Sonntag",
+        "Hour": "10.00 bis 16.00",
+        "link": "https://www.berlin.de/en/shopping/markets-and-flea-markets/1998531-2983302-flea-market-at-fehrbelliner-platz.en.html",
+        "lat": "52.491006",
+        "lng": "13.315090"
+    }]
+}

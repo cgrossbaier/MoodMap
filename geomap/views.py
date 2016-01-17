@@ -31,12 +31,20 @@ numberOfColours = len(colours)
 ############### Pages ###############
 
 def index(request):
+    """
+    index:
+	The Login page
+	"""
     context = {}
     return render(request, 'geomap/index.html', context)
 
 def checkVerification(request):
+    """
+	checkVerification: 
+    Check if verification Code is okay, then create user and call mapView function
+	"""
     logout(request)
-    error_message = ''
+    error_message = 'No Post Method'
     if request.method == u'POST':
         POST = request.POST
         verificationCode = POST.get('verificationCode', False)
@@ -63,6 +71,10 @@ def checkVerification(request):
 
 @login_required
 def mapView(request):
+    """
+    mapView
+	Get all the events that are active and pass them over to the map function
+	"""
     context = {}
     error_message = ""
     eventList = list()
