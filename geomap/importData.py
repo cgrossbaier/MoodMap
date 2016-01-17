@@ -11,8 +11,11 @@ import codecs
 import json
 import pytz
 
+#filename = '/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/venv/polizeireports.json'
+filename = os.getcwd() + '/geomap/static/geomap/data/polizeireports.json'
+
 # policreports
-with open('/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/venv/polizeireports.json') as data_file:    
+with open(filename) as data_file:    
     data = json.load(data_file)
 
 if User.objects.filter(username="polizeireports"):
@@ -39,9 +42,11 @@ for feature in data['features']:
     
 # wochenmaerkte
 
+filename = os.getcwd() + '/geomap/static/geomap/data/wochenmaerkte.json'
+
 wochentage = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
 
-with open('/Users/christophgrossbaier/Documents/rivutec/MoodMapDjango/mysite/geomap/static/geomap/data/wochenmaerkte.json') as data_file:    
+with open(filename) as data_file:    
     data = json.load(data_file)
 
 if User.objects.filter(username="wochenmaerkte"):
