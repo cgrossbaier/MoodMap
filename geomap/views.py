@@ -329,7 +329,7 @@ def export_stats(request):
         if statistics:
             for statistic in statistics:
                 answers = [u'%s' % (user.username), 
-                           u'%s' % (statistic.statType.encode('utf-8')),
+                           u'%s' % (statistic.statType.decode('utf-8')),
                            u'%s' % (statistic.timestamp),
                            u'%s' % (statistic.lng),
                            u'%s' % (statistic.lat),
