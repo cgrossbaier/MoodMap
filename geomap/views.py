@@ -328,8 +328,8 @@ def export_stats(request):
         statistics = Statistic.objects.filter(user=user)
         if statistics:
             for statistic in statistics:
-                answers = [u'%s' % (user.username), 
-                           u'%s' % (statistic.statType.decode('utf-8')),
+                answers = [u'%s' % (user.username.encode('utf-8')), 
+                           u'%s' % (statistic.statType.encode('utf-8')),
                            u'%s' % (statistic.timestamp),
                            u'%s' % (statistic.lng),
                            u'%s' % (statistic.lat),
@@ -337,7 +337,7 @@ def export_stats(request):
                 writer.writerow(answers)
     
     return response
-
+    
 @login_required
 def export_feedback(request):
     
