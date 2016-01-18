@@ -329,7 +329,7 @@ def export_stats(request):
         if statistics:
             for statistic in statistics:
                 answers = [u'%s' % (user.username), 
-                           u'%s' % (statistic.statType),
+                           u'%s' % (statistic.statType.encode('utf-8')),
                            u'%s' % (statistic.timestamp),
                            u'%s' % (statistic.lng),
                            u'%s' % (statistic.lat),
@@ -378,8 +378,8 @@ def export_events(request):
         if events:
             for event in events:
                 answers = [u'%s' % (user.username), 
-                           u'%s' % (event.eventType),
-                           u'%s' % (event.description),
+                           u'%s' % (event.eventType.encode('utf-8')),
+                           u'%s' % (event.description.encode('utf-8')),
                            u'%s' % (event.creation_date),
                            u'%s' % (event.valid_until),
                            u'%s' % (event.lng),
