@@ -59,7 +59,7 @@
                             <a id="timeLastSync"></i></a>
                         </li>
                         <li>
-                            <a id="buttonExplanation">Help</a></i>
+                            <a id="buttonExplanation" href="">Help</a></i>
                         </li>
                         <li>
                         <a id="linkToFeedback"> <span class="glyphicon glyphicon-chevron-right"></span> Next</a>
@@ -72,59 +72,52 @@
         <div class="container">
                 <div id="map-wrapper">
                     <div class="row">
+                        <div class="col-md-9">
                         <div class="row">
-                        <div class="col-lg-1"></div>
-                          <div class="col-lg-6">
-<!--
-                            <div class="input-group" id="custom-search-input">
-                              <input type="text" id="autocomplete" class="form-control" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default btnSearch" id="buttonSearch" type="button">
-                                    <i class="glyphicon glyphicon-search"></i>
-                                </button>
-                              </span>
-                            </div>
--->
-                          </div><!-- /.col-lg-6 -->
-                        </div><!-- /.row -->
-                        <div class="col-md-2"></div>
-                    </div>
-                    <div class="row">
-                        <div id="map"></div>
-                    </div>                    
-                    <div class="row">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-4 text-center">
-                            <div id="button-wrapper">
-                                <div id="button-wrapper-category">
-                                    <button type="button" class="btn btn-primary button-category" id="button-event"> 
-                                        <i class="fa fa-smile-o fa-6"></i>
-                                        <div class="button-category-subtitle">Event</div>
-                                    </button>
-                                    <button type="button" class="btn btn-primary button-category" id="button-info"> 
-                                        <i class="fa fa-info-circle fa-6"></i>
-                                        <div class="button-category-subtitle">Info</div>
-                                    </button>
-                                    <button type="button" class="btn btn-primary button-category" id="button-warning"> 
-                                        <i class="fa fa-exclamation-circle fa-6"></i>
-                                        <div class="button-category-subtitle">Warning</div>
-                                    </button>
-                                </div>
-                                <div>
-                                    <button type="button" class="btn btn-lg buttonAddMarker" id="buttonAddMarker"> 
-                                        <i class="fa fa-plus fa-6"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-lg buttonAddMarker-clicked" id="buttonAddMarker-clicked" onclick="discardEvent()"> <i class="fa fa-close fa-6"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-lg buttonAddMarker-setMarker" id="buttonAddMarker-setMarker" onclick=""> <i class="fa fa-check fa-6"></i>
-                                    </button>
-                                </div> 
-                            </div>
+                            <div id="map"></div>
                         </div>
-                        <div class="col-md-4"></div>
-                    </div> 
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 text-center">
+                                <div id="button-wrapper">
+                                    <div id="button-wrapper-category">
+                                        <button type="button" class="btn btn-primary button-category" id="button-event">
+                                            <i class="fa fa-smile-o fa-6"></i>
+                                            <div class="button-category-subtitle">Event</div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary button-category" id="button-info">
+                                            <i class="fa fa-info-circle fa-6"></i>
+                                            <div class="button-category-subtitle">Info</div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary button-category" id="button-warning">
+                                            <i class="fa fa-exclamation-circle fa-6"></i>
+                                            <div class="button-category-subtitle">Warning</div>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-lg buttonAddMarker" id="buttonAddMarker">
+                                            <i class="fa fa-plus fa-6"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-lg buttonAddMarker-clicked" id="buttonAddMarker-clicked" onclick="discardEvent()"> <i class="fa fa-close fa-6"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-lg buttonAddMarker-setMarker" id="buttonAddMarker-setMarker" onclick=""> <i class="fa fa-check fa-6"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="table-wrapper">
+                         <div class="list-loading"> <i class="fa fa-spinner fa-spin fa-6"></i></div>
+                          <div class="list-group" id="list-group">
+                          </div>
+                        </div>
+                    </div>
                 </div>
         </div>
+    </div>
         
         <footer class="footer">
             <div class="container">
@@ -235,7 +228,7 @@ Thank you and have fun!
         <!-- JS: Leaflet  -->
         <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
         <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
-        <script src="{% static 'geomap/js/leaflet.extra-markers.min.js' %}" /></script>
+<!--        <script src="{% static 'geomap/js/leaflet.extra-markers.min.js' %}" /></script>-->
 <!--        <script src="{% static 'geomap/leaflet/leaflet.js' %}"></script>-->
         
         <!-- Google API -->
@@ -248,12 +241,9 @@ Thank you and have fun!
         
         <script>
             var name = window.location.href.replace('/map/','/feedback/');
-            document.getElementById('linkToFeedback').setAttribute('href', name)
+            document.getElementById('linkToFeedback').setAttribute('href', name);
     
-            var events_Type = {{events_Type | safe}}
-            var events_Lat = {{events_Lat | safe}}
-            var events_Lng = {{events_Lng | safe}}
-            var events_Description = {{events_Description | safe}}
+            var events = {{eventListJson | safe}}
             
             //add cafe, books store, and university geoJSON layers with styling
             markersGeojson = L.mapbox.featureLayer()
@@ -264,7 +254,14 @@ Thank you and have fun!
                       marker.bindPopup(marker.feature.properties.popup);
                 }
             }).addTo(map);
-                   
+
+//            for (i = 0; i < events_Type.length; i++) {
+//                addEventToList(events_Type[i], events_Description[i], events_Duration[i], events_Lat[i], events_Lng[i]);
+//            }
+
+            for (i = 0; i < events.length; i++) {
+                addEventToList(events[i].eventType, events[i].description, events[i].duration, events[i].lat, events[i].lng);
+            }
         </script>
         
     </body>

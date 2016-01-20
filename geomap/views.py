@@ -77,30 +77,25 @@ def mapView(request):
 	"""
     context = {}
     error_message = ""
-    eventList = list()
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('-creation_date')
+    eventListJson = []
+    eventList = []
     for event in events:
         if event.isActive():
             eventList.append(event)
+            eventJson = {}
+            timeDelta = timezone.now() - event.creation_date
+            eventJson["eventType"] = event.eventType
+            eventJson["lat"] = event.lat
+            eventJson["lng"] = event.lng
+            eventJson["duration"] = round(float(timeDelta.seconds)/60)
+            eventJson["description"] = event.description
+            eventListJson.append(eventJson)
     event_geoJSON = getGeoJSON(eventList);
-    events_Type = []
-    events_Lat = []
-    events_Lng = []
-    events_Description = []
-    if eventList:
-        for event in eventList:
-            events_Type.append(event.eventType)
-            events_Lat.append(event.lat)
-            events_Lng.append(event.lng)
-            events_Description.append(event.description)
-    
     return render(request, 'geomap/map.html', {
             'error_message': error_message,
-            'events_Type' : json.dumps(events_Type),
-            'events_Lat' : json.dumps(events_Lat),
-            'events_Lng' : json.dumps(events_Lng),
-            'events_Description' : json.dumps(events_Description),
             'event_geoJSON':event_geoJSON,
+            'eventListJson':json.dumps(eventListJson)
             },)
 
 
@@ -126,13 +121,25 @@ def addEvent(request):
             event.lat = float(lat)
             event.description = description             
             event.save()
-            events = Event.objects.all()
+            events = Event.objects.all().order_by('-creation_date')
+            eventListJson = []
             eventList = []
             for event in events:
                 if event.isActive():
+                    eventJson = {}
+                    timeDelta = timezone.now() - event.creation_date
+                    eventJson["eventType"] = event.eventType
+                    eventJson["lat"] = event.lat
+                    eventJson["lng"] = event.lng
+                    eventJson["duration"] = round(float(timeDelta.seconds)/60)
+                    eventJson["description"] = event.description
+                    eventListJson.append(eventJson)
                     eventList.append(event)
             event_geoJSON = getGeoJSON(eventList);
-            response = {'status': 'Okay', 'message': 'Event saved', 'event_geoJSON': event_geoJSON}
+            response = {'status': 'Okay',
+                        'message': 'Event saved',
+                        'event_geoJSON': event_geoJSON,
+                       'eventListJson': json.dumps(eventListJson)}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 

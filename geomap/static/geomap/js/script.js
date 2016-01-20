@@ -33,27 +33,27 @@ var buttonClicked;
 var markerColor;
 var setMarker = false;
 
-markerColor = "BD4932";
+colorWarning = "BD4932";
 //var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
 //                                              'marker-size': 'small',
 //                                              'marker-symbol': "w"});
-var iconWarning_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+var iconWarning_Large= L.mapbox.marker.icon({'marker-color': colorWarning,
                                               'marker-size': 'large',
                                               'marker-symbol': "w"});
 
-markerColor = "105B63";
+colorEvent = "105B63";
 //var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
 //                                              'marker-size': 'small',
 //                                              'marker-symbol': "e"});
-var iconEvent_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+var iconEvent_Large= L.mapbox.marker.icon({'marker-color': colorEvent,
                                               'marker-size': 'large',
                                               'marker-symbol': "e"});
 
-markerColor = "FFD34E";
+colorInfo = "FFD34E";
 //var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
 //                                              'marker-size': 'small',
 //                                              'marker-symbol': "i"});
-var iconInfo_Large= L.mapbox.marker.icon({'marker-color': markerColor,
+var iconInfo_Large= L.mapbox.marker.icon({'marker-color': colorInfo,
                                               'marker-size': 'large',
                                               'marker-symbol': "i"});
 
@@ -214,6 +214,16 @@ function saveEvent() {
             }).addTo(map);            
             markersTemp.clearLayers();
             
+            events = JSON.parse(response.eventListJson);
+
+            var listGroup = document.getElementById("list-group");
+            while (listGroup.firstChild) {
+                listGroup.removeChild(listGroup.firstChild);
+            }
+            for (i = 0; i < events.length; i++) {
+                addEventToList(events[i].eventType, events[i].description, events[i].duration, events[i].lat, events[i].lng);
+            }
+
             $("#modalMarker_Timerange" ).slider( "value" , 60);
             $("#amount" ).text( "Valid for 60 minutes");
             $('#eventDescription').val('');
@@ -357,6 +367,58 @@ function saveStatistics(statType) {
         $.post(link, data, function(response){
         });
 }
+
+
+//Create list
+function addEventToList(type, description, duration, lat, lng) {
+    //Create an input type dynamically.
+    var element = document.createElement("button");
+    var lat = lat;
+    var lng = lng;
+    //Assign different attributes to the element.
+    element.onclick = function() { // Note this is a function
+        var newLatLng = new L.LatLng(lat, lng);
+        map.panTo(newLatLng);
+    };
+
+    element.setAttribute('class', "list-group-item")
+
+    var listSymbol = document.createElement("div");
+    var listContent = document.createElement("div");
+    var listDistance = document.createElement("div");
+
+    listSymbol.setAttribute('class', "list-symbol")
+    listContent.setAttribute('class', "list-content")
+    listDistance.setAttribute('class', "list-distance")
+
+    listSymbol.innerHTML = '<i class="fa fa-circle">'
+    if (description === ""){
+            listContent.innerHTML = "No description"
+    }
+    else{
+        listContent.innerHTML = description
+    }
+    listDistance.innerHTML = '<i class="fa fa-clock-o"></i><p>' + duration + 'min</p>'
+
+    if (type === "event"){
+        listSymbol.style.color = colorEvent;
+    }
+    if (type === "info"){
+        listSymbol.style.color = colorInfo;
+    }
+    if (type === "warning"){
+        listSymbol.style.color = colorWarning;
+    }
+
+    element.appendChild(listSymbol);
+    element.appendChild(listContent);
+    element.appendChild(listDistance);
+
+    var listGroup = document.getElementById("list-group");
+    listGroup.appendChild(element);
+}
+
+
 
 //Create dummy data
 

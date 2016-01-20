@@ -44,9 +44,11 @@ html, body{
     border-color: transparent;
 }
 
+/*
 .collapsing, .in {background-color: #f7f7f7;}
-.collapsing ul li a, .in ul li a {color: #555!important;}
+.collapsing ul li a, .in ul li a {color: #555;}
 .collapsing ul li a:hover, .in ul li a:hover {color: #f1f1f1!important;}
+*/
 /* Map */
 
 #map-wrapper {
@@ -79,6 +81,34 @@ html, body{
 .modal-footer {
 }
 
+/* List */
+
+.table-wrapper {
+    margin-top: 55px;
+    width: 100%;
+    height: 85%;
+    margin-bottom: 0;
+    overflow: auto;
+}
+.list-loading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.list-symbol{
+    width: 10%;
+    float: left;
+    padding-top: 3.3;
+}
+.list-content{
+    width: 65%;
+    float: left;
+}
+.list-distance{
+    width: 25%;
+    float: left;
+    text-align: center;
+}
 /* Event */
 
 .buttonAddMarker {
@@ -107,13 +137,13 @@ html, body{
     margin-left: 5px
 }
 .button-category {
-    font-size: 80px;
+    font-size: 50px;
     margin: 10px;
     color: white;
     border-radius: 20;
 }
 .button-category-subtitle{
-    font-size: 20px;
+    font-size: 15px;
 }
 
 #button-event {
@@ -153,7 +183,6 @@ html, body{
 .button-saveevent {
     font-size: 30px
 }
-
 
 #modalMarker{
     margin-top: 50px;
@@ -253,6 +282,15 @@ html, body{
 /* Adjustment for media */
 
 @media(max-width:767px) {
+
+    #map {
+    height: 70%;
+    }
+
+    .table-wrapper {
+    margin-top: 15px;
+    }
+
     .form-control {
        font-size: 18px;
        height: 55px;
