@@ -1,7 +1,7 @@
-$(window).load(function(){
-        $('#modal_Explanation').modal('show');
-    });
-    
+//$(window).load(function(){
+//        $('#modal_Explanation').modal('show');
+//    });
+
 // Define variables
 
 var buttonAddMarker = document.getElementById("buttonAddMarker");
@@ -11,14 +11,18 @@ var buttonWarning = document.getElementById("button-warning");
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
-var map = L.mapbox.map('map', 'mapbox.streets', {
+var map = L.mapbox.map('map', 'cgrossbaier.ok6pb6m1', {
     // set that bounding box as maxBounds to restrict moving the map
     // see full maxBounds documentation:
     // http://leafletjs.com/reference.html#map-maxbounds
 //    maxBounds: bounds,
     maxZoom: 19,
-    minZoom: 10
+    minZoom: 10,
+    zoomControl: false
 }).setView([52.5281028,13.3262337], 10);
+
+new L.Control.Zoom({ position: 'bottomleft' }).addTo(map);
+
 
 // zoom the map to that bounding box
 //map.fitBounds(bounds);
@@ -91,7 +95,7 @@ function error(err) {
     saveStatistics("User Location:" + message);
 };
 
-var lc = L.control.locate({onLocationError: error, icon: 'fa fa-compass', showPopup: false}).addTo(map);
+var lc = L.control.locate({onLocationError: error, icon: 'fa fa-compass', showPopup: false, position: 'bottomleft',}).addTo(map);
 
 // request location update and set location
 lc.start();
