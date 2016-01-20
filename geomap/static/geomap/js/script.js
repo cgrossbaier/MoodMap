@@ -11,10 +11,6 @@ var buttonWarning = document.getElementById("button-warning");
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
-//var southWest = L.latLng(52.383805, 13.000257),
-//    northEast = L.latLng(52.693976, 13.809512),
-//    bounds = L.latLngBounds(southWest, northEast);
-
 var map = L.mapbox.map('map', 'mapbox.streets', {
     // set that bounding box as maxBounds to restrict moving the map
     // see full maxBounds documentation:
@@ -34,32 +30,31 @@ var markerColor;
 var setMarker = false;
 
 markerColor = "BD4932";
-var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-                                              'marker-size': 'small',
-                                              'marker-symbol': "w"});
+//var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+//                                              'marker-size': 'small',
+//                                              'marker-symbol': "w"});
 var iconWarning_Large= L.mapbox.marker.icon({'marker-color': markerColor,
                                               'marker-size': 'large',
                                               'marker-symbol': "w"});
 
 markerColor = "105B63";
-var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-                                              'marker-size': 'small',
-                                              'marker-symbol': "e"});
+//var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+//                                              'marker-size': 'small',
+//                                              'marker-symbol': "e"});
 var iconEvent_Large= L.mapbox.marker.icon({'marker-color': markerColor,
                                               'marker-size': 'large',
                                               'marker-symbol': "e"});
 
 markerColor = "FFD34E";
-var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-                                              'marker-size': 'small',
-                                              'marker-symbol': "i"});
+//var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
+//                                              'marker-size': 'small',
+//                                              'marker-symbol': "i"});
 var iconInfo_Large= L.mapbox.marker.icon({'marker-color': markerColor,
                                               'marker-size': 'large',
                                               'marker-symbol': "i"});
 
+//var markers = L.layerGroup().addTo(map);
 var markersTemp =  L.layerGroup().addTo(map);
-var markers = L.layerGroup().addTo(map);
-
 var markersGeojson = L.mapbox.featureLayer()
 
 map.featureLayer.on('click', function(e) {
@@ -149,7 +144,6 @@ $(".button-category").click(function (ev) {
 );
 $("#buttonAddMarker-setMarker").click(function (ev) {
     saveStatistics("Set marker" + eventType)
-    setMarker = false;
     $('#modal_Description').modal('show');
     $('#eventDescription').focus();
     $("#buttonAddMarker-clicked").css("display", "none");
@@ -216,7 +210,7 @@ function saveEvent() {
             }).addTo(map);            
             markersTemp.clearLayers();
             
-            $( "#modalMarker_Timerange" ).slider( "value" , 60);
+            $("#modalMarker_Timerange" ).slider( "value" , 60);
             $("#amount" ).text( "Valid for 60 minutes");
             $('#eventDescription').val('');
             
@@ -244,7 +238,7 @@ function saveEvent() {
 
 map.on('move', function (e) {
     if (setMarker){
-        saveStatistics("Map move with Marker:" + eventType)
+//        saveStatistics("Map move with Marker:" + eventType)
         var newLatLng = new L.LatLng(map.getCenter().lat, map.getCenter().lng);
         marker.setLatLng(newLatLng);
     }

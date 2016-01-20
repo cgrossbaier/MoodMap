@@ -244,7 +244,6 @@ def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, bou
         result = None
         lat = None
         lng = None
-    
     return lat, lng
 
 
@@ -362,7 +361,6 @@ def export_feedback(request):
 
 @login_required
 def export_events(request):
-    
     import csv
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=export_events.csv'
