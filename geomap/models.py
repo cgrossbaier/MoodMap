@@ -12,7 +12,7 @@ class Event(models.Model):
     eventType = models.CharField(max_length=200)
     eventType_subCategory = models.CharField(max_length=200, default="", null=True)
     description = models.CharField(max_length=800, default="")
-    creation_date = models.DateTimeField('Published')
+    creation_date = models.DateTimeField('Created')
     valid_until = models.DateTimeField('Expires')
     link = models.CharField(max_length=400, default="", blank=True, null=True)
     lng = models.FloatField()

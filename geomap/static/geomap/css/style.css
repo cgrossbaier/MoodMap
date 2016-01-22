@@ -249,6 +249,21 @@ a{
     font-size: 30px
 }
 
+.tags {
+    font-size: 12px;
+    background-color: beige;
+    display: inline-block;
+    margin-right:2px;
+    line-height: 1.3333333;
+    border-radius: 2px;
+    border-color: black;
+}
+
+.popup-tags{
+    margin-top: 1px;
+    border-top: 1px solid #e2e2e2;
+    padding-top: 4px;
+}
 #modalMarker{
     margin-top: 50px;
     

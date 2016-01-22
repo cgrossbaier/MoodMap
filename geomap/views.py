@@ -105,6 +105,7 @@ def addEvent(request):
     if request.method == u'POST':
         try:
             eventType = request.POST['eventType']
+            eventType_subCategory = request.POST['eventType_subCategory']
             valid_until = request.POST['valid_until']
             lng = request.POST['lng']
             lat = request.POST['lat']
@@ -116,6 +117,7 @@ def addEvent(request):
             event.user = request.user
             event.creation_date = timezone.now()
             event.eventType = eventType
+            event.eventType_subCategory = json.dumps(eventType_subCategory.split(","))
             event.valid_until = timezone.now() + datetime.timedelta(0, int(valid_until)*60)
             event.lng = float(lng)
             event.lat = float(lat)
@@ -221,11 +223,20 @@ def getCategories(request):
             response = {'status': 'Not okay', 'message': 'KeyError'}
         else:
             events = Event.objects.all().filter(eventType=eventType)
-            categories = []
+            categories = set()
+            jsonDec = json.decoder.JSONDecoder()
             for event in events:
-                categories.append(event.eventType_subCategory)
-            if categories:
-                response = {'status': 'Okay', 'categories': categories}
+                if event.eventType_subCategory != "":
+                    subCategories = jsonDec.decode(event.eventType_subCategory)
+                    for subCategory in subCategories:
+                        categories.add(subCategory)
+            value = 1
+            category_List = []
+            for category in categories:
+                category_List.append({'text': category, 'value': value})
+                value = value + 1
+            if category_List:
+                response = {'status': 'Okay', 'categories': json.dumps(category_List)}
             else:
                 response = {'status': 'Okay', 'categories': ""}
     return HttpResponse(json.dumps(response), content_type='application/json')
@@ -309,12 +320,21 @@ def getMarkterStyle(event):
 
 
 def getPopup(event, date_Start, date_End):
-    popup = "<b>%s: %s</b><br>%s - %s" % (event.eventType.title(), event.eventType_subCategory.title(), date_Start, date_End)
+    popup = "<b>%s</b><br>%s - %s" % (event.eventType.title(), date_Start, date_End)
+
     if event.description != "":
         popup = popup + "<br>%s" % (event.description)
     if event.link != "":
         popup = popup + "<br><a href='%s' target='_blank'>Link</a>" % (event.link)
         
+    jsonDec = json.decoder.JSONDecoder()
+    button = ""
+    if event.eventType_subCategory != "":
+        subCategories = jsonDec.decode(event.eventType_subCategory)
+        for subCategory in subCategories:
+            button = button + "<div class='tags'>%s</div>" % (subCategory)
+        popup = popup + "<div class='popup-tags'>%s</div>" % (button)
+
     return popup
         
 def getGeoJSON(events):

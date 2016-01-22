@@ -56,7 +56,7 @@ for flohmarkt in data['flohmaerkte']:
         event = Event()
         event.user = user
         event.eventType = 'event'
-        event.eventType_subCategory = 'market'
+        event.eventType_subCategory = json.dumps(['market'])
         event.lng = float(flohmarkt['lng'])
         event.lat = float(flohmarkt['lat'])
         event.description = flohmarkt['Location']

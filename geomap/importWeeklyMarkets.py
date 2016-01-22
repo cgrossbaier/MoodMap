@@ -56,7 +56,7 @@ for wochenmarkt in data['wochenmaerkte']:
         event = Event()
         event.user = user
         event.eventType = 'event'
-        event.eventType_subCategory = 'market'
+        event.eventType_subCategory = json.dumps(['market'])
         event.lng = float(wochenmarkt['lng'])
         event.lat = float(wochenmarkt['lat'])
         event.description = wochenmarkt['Location']

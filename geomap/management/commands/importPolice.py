@@ -31,9 +31,13 @@ class Command(BaseCommand):
             user.save()
 
         #Event.objects.filter(user=user).delete()
-
-        creation_date_max = Event.objects.filter(user=user).latest('creation_date').creation_date
         localtimezone = pytz.timezone('Europe/Berlin')
+        events = Event.objects.filter(user=user)
+        if events:
+            creation_date_max = Event.objects.filter(user=user).latest('creation_date').creation_date
+        else:
+            creation_date_max = datetime.datetime(2000,10,10,0,0,0)
+            creation_date_max = localtimezone.localize(creation_date_max)
 
         for feature in data['features']:
             creation_date = localtimezone.localize(datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M'))
@@ -43,7 +47,8 @@ class Command(BaseCommand):
                 event.user = user
                 event.creation_date = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M').strftime('%Y-%m-%d %H:%M+0100')
                 event.eventType = 'info'
-                event.eventType_subCategory = 'police'
+                event.eventType_subCategory = json.dumps(['police'])
+#                event.eventType_subCategory = 'police'
                 valid_until = datetime.datetime.strptime(feature['properties']['date'], '%d.%m.%Y %H:%M') + datetime.timedelta(hours = 23)
                 event.valid_until = valid_until.strftime('%Y-%m-%d %H:%M+0100')
                 event.lng = float(feature['geometry']['coordinates'][0])

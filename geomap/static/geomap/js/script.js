@@ -72,7 +72,6 @@ var locationCircle = L.circle();
 var eventType = "";
 var description = "";
 
-
 //Location Search within Browser
 
 map.locate({setView: true, maxZoom: 8});
@@ -172,8 +171,10 @@ $('#input-categoryTags').selectize({
 
         $.post(link, data, function(response){
             if (response.status == 'Okay'){
-                if (response.categories !== '')
-                    callback(response.categories);
+                if (response.categories !== ''){
+                    categories = JSON.parse(response.categories);
+                    callback(categories);
+                }
                 else{
                     callback();
                 }
@@ -182,9 +183,8 @@ $('#input-categoryTags').selectize({
     }
 });
 
-
-
-
+ var $select = $('#input-categoryTags').selectize();
+ var categoryTags = $select[0].selectize;
 
 
 function discardEvent() {
@@ -204,6 +204,8 @@ function discardEvent() {
     $("#modalMarker_Timerange" ).slider( "value" , 60);
     $("#amount" ).text( "Valid for 60 minutes");
     $('#eventDescription').val('');
+    categoryTags.clear();
+    categoryTags.clearOptions();
     
     $("#buttonSaveEvent").find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
     
@@ -222,7 +224,9 @@ function saveEvent() {
     $("#buttonSaveEvent").find($(".fa")).removeClass('fa-check fa-6').addClass('fa-spinner fa-spin');
     valid_until = $( "#modalMarker_Timerange" ).slider( "value" )
     description = $('textarea#eventDescription').val();
+    eventType_subCategory = categoryTags.getValue()
     var data = {eventType: eventType,
+                eventType_subCategory: eventType_subCategory,
                valid_until: valid_until,
                lng: marker.getLatLng().lng,
                lat: marker.getLatLng().lat,
@@ -257,6 +261,8 @@ function saveEvent() {
             $("#modalMarker_Timerange" ).slider( "value" , 60);
             $("#amount" ).text( "Valid for 60 minutes");
             $('#eventDescription').val('');
+            categoryTags.clear();
+            categoryTags.clearOptions();
             
             $("#buttonAddMarker").css("display", "inline-block");
 
