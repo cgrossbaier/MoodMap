@@ -89,9 +89,13 @@ def mapView(request):
             categories = set()
             if event.eventType_subCategory != "":
                 jsonDec = json.decoder.JSONDecoder()
-                subCategories = jsonDec.decode(event.eventType_subCategory)
-                for subCategory in subCategories:
-                    categories.add(subCategory)
+                try:
+                    subCategories = jsonDec.decode(event.eventType_subCategory)
+                except(ValueError):
+                    categories.add(event.eventType_subCategory)
+                else:
+                    for subCategory in subCategories:
+                        categories.add(subCategory)
             if categories:
                 eventJson["eventType_subCategory"] = list(categories)
             else:
@@ -254,7 +258,7 @@ def getCategories(request):
             value = 1
             category_List = []
             for category in categories:
-                category_List.append({'text': category, 'value': value})
+                category_List.append({'text': category, 'value': category})
                 value = value + 1
             if category_List:
                 response = {'status': 'Okay', 'categories': json.dumps(category_List)}

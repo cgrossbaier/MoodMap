@@ -214,9 +214,16 @@ function discardEvent() {
 }
 
 function showTimerange() {
-    saveStatistics("Show Timerange")
-    $('#modal_Description').modal('hide');
-    $('#modal_Timerange').modal('show');
+    numberOfTags = categoryTags.getValue().length
+    if (numberOfTags > 0){
+        saveStatistics("Show Timerange")
+        $('#modal_Description').modal('hide');
+        $('#modal_Timerange').modal('show');
+    }
+    else{
+        alert("Please define at least one category")
+    }
+
 }
 
 function saveEvent() {
@@ -433,13 +440,13 @@ function addEventToList(type, description, duration, lat, lng, eventType_subCate
     }
     else{
         listContent.innerHTML = description
-        if (eventType_subCategory !== ""){
-            for (i = 0; i < eventType_subCategory.length; i++) {
-                if (i === 0) {
-                    listContent.innerHTML = listContent.innerHTML + '<div class="popup-tags"><div>'
-                }
-                listContent.innerHTML = listContent.innerHTML + "<div class='tags'>" + eventType_subCategory[i] + "</div>"
-        }
+    }
+    if (eventType_subCategory !== ""){
+        for (i = 0; i < eventType_subCategory.length; i++) {
+            if (i === 0) {
+                listContent.innerHTML = listContent.innerHTML + '<div class="popup-tags"><div>'
+            }
+            listContent.innerHTML = listContent.innerHTML + "<div class='tags'>" + eventType_subCategory[i] + "</div>"
         }
     }
     listDistance.innerHTML = '<i class="fa fa-clock-o"></i><p>' + duration + 'min</p>'
