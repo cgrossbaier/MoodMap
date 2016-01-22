@@ -212,6 +212,26 @@ def saveStatistics(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 @login_required
+def getCategories(request):
+    response = {'status': 'Not okay', 'message': 'No Post method'}
+    if request.method == u'POST':
+        try:
+            eventType = request.POST['eventType']
+        except (KeyError):
+            response = {'status': 'Not okay', 'message': 'KeyError'}
+        else:
+            events = Event.objects.all().filter(eventType=eventType)
+            categories = []
+            for event in events:
+                categories.append(event.eventType_subCategory)
+            if categories:
+                response = {'status': 'Okay', 'categories': categories}
+            else:
+                response = {'status': 'Okay', 'categories': ""}
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+@login_required
 def saveFeedback(request):
     response = {'status': "Not Okay", 'message': "Please try again"} 
     user=request.user

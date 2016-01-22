@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^addEvent/$', views.addEvent, name='addEvent'),
     # ex: /searchQuery
     url(r'^searchQuery/$', views.searchQuery, name='searchQuery'),
+    # ex: /getCategories
+    url(r'^getCategories/$', views.getCategories, name='getCategories'),
     # ex: /saveStatistics
     url(r'^saveStatistics/$', views.saveStatistics, name='saveStatistics'),
     # ex: /saveFeedback

@@ -22,6 +22,9 @@
 
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
         
+        <!-- Custom Selectize -->
+        <link rel="stylesheet" type="text/css" href="{% static 'geomap/selectize/css/selectize.bootstrap3.css' %}" />
+
         <!-- Custom Style -->
         <link rel="stylesheet" type="text/css" href="{% static 'geomap/css/style.css' %}" />
     
@@ -111,14 +114,13 @@
                     <div class="col-md-3">
                          <div class="table-wrapper">
                          <div class="list-loading"> <i class="fa fa-spinner fa-spin fa-6"></i></div>
-                          <div class="list-group" id="list-group">
-                          </div>
+                          <div class="list-group" id="list-group"></div>
                         </div>
                     </div>
                 </div>
         </div>
     </div>
-        
+
         <footer class="footer">
             <div class="container">
                 <p class="text-muted">@rivutec 2016</p>
@@ -172,6 +174,8 @@ Thank you and have fun!
                       <div class="form-group">
                         <label for="modalMarker_Description">Description</label>
                         <textarea class="form-control" rows="3" id="eventDescription" placeholder="Tell us what's happening"></textarea>
+                        <label for="modalMarker_Category">Category</label>
+                        <input class="form-control" type="text" id="input-categoryTags">
                       </div>
                     </form>
               </div>
@@ -228,11 +232,16 @@ Thank you and have fun!
         <!-- JS: Leaflet  -->
         <script src='https://api.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
         <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
+        <!-- JS: selectize  -->
+<!--        <script type="text/javascript" src="selectize.js"></script>-->
+        <script src="{% static 'geomap/selectize/js/standalone/selectize.js' %}"></script>
+
+
 <!--        <script src="{% static 'geomap/js/leaflet.extra-markers.min.js' %}" /></script>-->
 <!--        <script src="{% static 'geomap/leaflet/leaflet.js' %}"></script>-->
         
         <!-- Google API -->
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANQYxP-lNK7CRRjjTixFzHLtXWcqXO7Gg&libraries=places"></script>
+<!--        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANQYxP-lNK7CRRjjTixFzHLtXWcqXO7Gg&libraries=places"></script>-->
         
         <!-- JS: Map  -->
         <script src="{% static 'geomap/js/csrfSafeMethod.js' %}"></script>

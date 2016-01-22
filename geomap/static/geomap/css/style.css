@@ -142,6 +142,10 @@ a{
 .modal-footer {
 }
 
+#input-categoryTags{
+    width: 100%
+}
+
 /* List */
 
 .table-wrapper {

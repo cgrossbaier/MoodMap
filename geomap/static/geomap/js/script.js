@@ -157,6 +157,36 @@ $("#buttonAddMarker-setMarker").click(function (ev) {
     }
 );
 
+$('#input-categoryTags').selectize({
+    delimiter: ',',
+    create: function(input) {
+        return {
+            value: input,
+            text: input
+        }
+    },
+    load: function (query, callback) {
+        if (!query.length) return callback();
+        var data = {eventType: eventType};
+        var link = "/geomap/getCategories/";
+
+        $.post(link, data, function(response){
+            if (response.status == 'Okay'){
+                if (response.categories !== '')
+                    callback(response.categories);
+                else{
+                    callback();
+                }
+            }}
+        );
+    }
+});
+
+
+
+
+
+
 function discardEvent() {
     markersTemp.clearLayers();
     saveStatistics("Discard Event")
@@ -272,30 +302,30 @@ map.on('zoomend', function (e) {
 
 //Search Autocomplete with Google
 
-var defaultBounds = new google.maps.LatLngBounds(
-new google.maps.LatLng(map.getBounds().getNorthWest()),
-new google.maps.LatLng(map.getBounds().getSouthEast()));
-
-var input = document.getElementById('autocomplete');
-var options = {
-  bounds: defaultBounds
-};
-autocomplete = new google.maps.places.Autocomplete(input, options);
-autocomplete.addListener('place_changed', onPlaceChanged);
-
-function onPlaceChanged() {
-  var place = autocomplete.getPlace();
-  saveStatistics("New search query - Autocomplete: " + $('#autocomplete').val())
-  if (place.geometry) {
-    var newLatLng = new L.LatLng(place.geometry.location.lat(), 
-                                 place.geometry.location.lng());
-    map.panTo(newLatLng);
-    map.setZoom(14);
-//    createMarkers();
-  } else {
-    document.getElementById('autocomplete').placeholder = 'Enter a place';
-  }
-}
+//var defaultBounds = new google.maps.LatLngBounds(
+//new google.maps.LatLng(map.getBounds().getNorthWest()),
+//new google.maps.LatLng(map.getBounds().getSouthEast()));
+//
+//var input = document.getElementById('autocomplete');
+//var options = {
+//  bounds: defaultBounds
+//};
+//autocomplete = new google.maps.places.Autocomplete(input, options);
+//autocomplete.addListener('place_changed', onPlaceChanged);
+//
+//function onPlaceChanged() {
+//  var place = autocomplete.getPlace();
+//  saveStatistics("New search query - Autocomplete: " + $('#autocomplete').val())
+//  if (place.geometry) {
+//    var newLatLng = new L.LatLng(place.geometry.location.lat(),
+//                                 place.geometry.location.lng());
+//    map.panTo(newLatLng);
+//    map.setZoom(14);
+////    createMarkers();
+//  } else {
+//    document.getElementById('autocomplete').placeholder = 'Enter a place';
+//  }
+//}
 
 $("#buttonSearch").click(function (ev) {
     searchQuery = document.getElementById('autocomplete')
