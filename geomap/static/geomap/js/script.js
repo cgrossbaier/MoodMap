@@ -72,6 +72,9 @@ var locationCircle = L.circle();
 var eventType = "";
 var description = "";
 
+modal_Description_Header = document.getElementById('modal_Description_Header');
+modal_Timerange_Header = document.getElementById('modal_Timerange_Header')
+
 //Location Search within Browser
 
 map.locate({setView: true, maxZoom: 8});
@@ -121,14 +124,26 @@ $(".button-category").click(function (ev) {
     if (buttonEvent === buttonClicked){
         icon = iconEvent_Large;
         eventType = "event";
+        modal_Description_Header.className = 'modal-header modal-event';
+        modal_Description_Header.innerHTML = '<h4>New Event</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-event';
+        modal_Timerange_Header.innerHTML = '<h4>New Event</h4>';
     }
     if (buttonInfo === buttonClicked){
         icon = iconInfo_Large;
         eventType = "info";
+        modal_Description_Header.className = 'modal-header modal-info';
+        modal_Description_Header.innerHTML = '<h4>New Info</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-info';
+        modal_Timerange_Header.innerHTML = '<h4>New Info</h4>';
     }
     if (buttonWarning === buttonClicked){
         icon = iconWarning_Large;
         eventType = "warning";
+        modal_Description_Header.className = 'modal-header modal-warning';
+        modal_Description_Header.innerHTML = '<h4>New Danger</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-warning';
+        modal_Timerange_Header.innerHTML = '<h4>New Warning</h4>';
     }
     $("#button-info").css("display", "none");
     $("#button-warning").css("display", "none");
@@ -148,7 +163,7 @@ $(".button-category").click(function (ev) {
 $("#buttonAddMarker-setMarker").click(function (ev) {
     saveStatistics("Set marker" + eventType)
     $('#modal_Description').modal('show');
-    $('#eventDescription').focus();
+    categoryTags.focus()
     $("#buttonAddMarker-clicked").css("display", "none");
     $("#buttonAddMarker-setMarker").css("display", "none");
     saveStatistics("Show Description")
@@ -185,7 +200,6 @@ $('#input-categoryTags').selectize({
 
  var $select = $('#input-categoryTags').selectize();
  var categoryTags = $select[0].selectize;
-
 
 function discardEvent() {
     markersTemp.clearLayers();
@@ -446,10 +460,10 @@ function addEventToList(type, description, duration, lat, lng, eventType_subCate
             if (i === 0) {
                 listContent.innerHTML = listContent.innerHTML + '<div class="popup-tags"><div>'
             }
-            listContent.innerHTML = listContent.innerHTML + "<div class='tags'>" + eventType_subCategory[i] + "</div>"
+            listContent.innerHTML = listContent.innerHTML + "<div class='tags'>#" + eventType_subCategory[i] + "</div>"
         }
     }
-    listDistance.innerHTML = '<i class="fa fa-clock-o"></i><p>' + duration + 'min</p>'
+    listDistance.innerHTML = '<i class="fa fa-clock-o"></i><p> valid for ' + duration + ' mins</p>'
 
     if (type === "event"){
         listSymbol.style.color = colorEvent;

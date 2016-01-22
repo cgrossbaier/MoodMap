@@ -20,6 +20,8 @@ wochentage = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samsta
 
 numberOfWeeks = 20
 
+localtimezone = pytz.timezone('Europe/Berlin')
+
 with open(filename) as data_file:    
     data = json.load(data_file)
 
@@ -56,11 +58,11 @@ for wochenmarkt in data['wochenmaerkte']:
         event = Event()
         event.user = user
         event.eventType = 'event'
-        event.eventType_subCategory = json.dumps(['market'])
+        event.eventType_subCategory = json.dumps(['wochenmaerkte'])
         event.lng = float(wochenmarkt['lng'])
         event.lat = float(wochenmarkt['lat'])
         event.description = wochenmarkt['Location']
-        creation_date = mondayMidnight + datetime.timedelta(days=weekday + n*7, hours = hours_Start)
+        creation_date = localtimezone.localize(mondayMidnight + datetime.timedelta(days=weekday + n*7, hours = hours_Start))
         event.creation_date = creation_date.strftime('%Y-%m-%d %H:%M+0100')
         if len(hourEnd.split(".")) == 2:
             hours_End = int(hourEnd.split(".")[0]) + min(float(hourEnd.split(".")[1])/60,1) - hours_Start

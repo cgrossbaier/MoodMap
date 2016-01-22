@@ -136,7 +136,18 @@ a{
 }
 
 .modal-header {
-    background-color: #193441;
+    color: white;
+}
+.modal-info {
+    background-color: #FFD34E;
+    color: white;
+}
+.modal-event {
+    background-color: #105B63;;
+    color: white;
+}
+.modal-warning {
+    background-color: #BD4932;
     color: white;
 }
 .modal-footer {

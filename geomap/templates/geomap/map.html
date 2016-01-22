@@ -113,7 +113,7 @@
                     </div>
                     <div class="col-md-3">
                          <div class="table-wrapper">
-                         <div class="list-loading"> <i class="fa fa-spinner fa-spin fa-6"></i></div>
+<!--                         <div class="list-loading"> <i class="fa fa-spinner fa-spin fa-6"></i></div>-->
                           <div class="list-group" id="list-group"></div>
                         </div>
                     </div>
@@ -162,7 +162,7 @@ Thank you and have fun!
         <div class="modal" id="modal_Description" tabindex="-1" role="dialog" aria-labelledby="modal_Description" data-backdrop="static" data-keyboard="false">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-header">
+              <div class="modal-header" id="modal_Description_Header">
                 <h4 class="modal-title" id="myModalLabel">New Event</h4>
               </div>
               <div class="modal-body">
@@ -172,10 +172,10 @@ Thank you and have fun!
                   </div>
                   <form>
                       <div class="form-group">
+                       <label for="modalMarker_Category">Category</label>
+                        <input class="form-control" type="text" id="input-categoryTags">
                         <label for="modalMarker_Description">Description</label>
                         <textarea class="form-control" rows="3" id="eventDescription" placeholder="Tell us what's happening"></textarea>
-                        <label for="modalMarker_Category">Category</label>
-                        <input class="form-control" type="text" id="input-categoryTags">
                       </div>
                     </form>
               </div>
@@ -190,7 +190,7 @@ Thank you and have fun!
         <div class="modal" id="modal_Timerange" tabindex="-1" role="dialog" aria-labelledby="modal_Timerange" data-backdrop="static" data-keyboard="false">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-header">
+              <div class="modal-header" id="modal_Timerange_Header">
                 <h4 class="modal-title" id="myModalLabel">New Event</h4>
               </div>
               <div class="modal-body">
