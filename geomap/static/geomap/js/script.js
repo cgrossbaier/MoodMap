@@ -254,8 +254,8 @@ function saveEvent() {
             while (listGroup.firstChild) {
                 listGroup.removeChild(listGroup.firstChild);
             }
-            for (i = 0; i < events.length; i++) {
-                addEventToList(events[i].eventType, events[i].description, events[i].duration, events[i].lat, events[i].lng);
+            for (j = 0; j < events.length; j++) {
+                addEventToList(events[j].eventType, events[j].description, events[j].duration, events[j].lat, events[j].lng, events[j].eventType_subCategory);
             }
 
             $("#modalMarker_Timerange" ).slider( "value" , 60);
@@ -406,7 +406,7 @@ function saveStatistics(statType) {
 
 
 //Create list
-function addEventToList(type, description, duration, lat, lng) {
+function addEventToList(type, description, duration, lat, lng, eventType_subCategory) {
     //Create an input type dynamically.
     var element = document.createElement("button");
     var lat = lat;
@@ -433,6 +433,14 @@ function addEventToList(type, description, duration, lat, lng) {
     }
     else{
         listContent.innerHTML = description
+        if (eventType_subCategory !== ""){
+            for (i = 0; i < eventType_subCategory.length; i++) {
+                if (i === 0) {
+                    listContent.innerHTML = listContent.innerHTML + '<div class="popup-tags"><div>'
+                }
+                listContent.innerHTML = listContent.innerHTML + "<div class='tags'>" + eventType_subCategory[i] + "</div>"
+        }
+        }
     }
     listDistance.innerHTML = '<i class="fa fa-clock-o"></i><p>' + duration + 'min</p>'
 

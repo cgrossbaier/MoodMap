@@ -253,7 +253,6 @@ Thank you and have fun!
             document.getElementById('linkToFeedback').setAttribute('href', name);
     
             var events = {{eventListJson | safe}}
-            
             //add cafe, books store, and university geoJSON layers with styling
             markersGeojson = L.mapbox.featureLayer()
             .setGeoJSON({{ event_geoJSON | safe }})
@@ -264,12 +263,8 @@ Thank you and have fun!
                 }
             }).addTo(map);
 
-//            for (i = 0; i < events_Type.length; i++) {
-//                addEventToList(events_Type[i], events_Description[i], events_Duration[i], events_Lat[i], events_Lng[i]);
-//            }
-
-            for (i = 0; i < events.length; i++) {
-                addEventToList(events[i].eventType, events[i].description, events[i].duration, events[i].lat, events[i].lng);
+            for (j = 0; j < events.length; j++) {
+                addEventToList(events[j].eventType, events[j].description, events[j].duration, events[j].lat, events[j].lng, events[j].eventType_subCategory);
             }
         </script>
         

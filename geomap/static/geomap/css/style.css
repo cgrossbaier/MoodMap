@@ -254,9 +254,11 @@ a{
     background-color: beige;
     display: inline-block;
     margin-right:2px;
+    margin-bottom:2px;
     line-height: 1.3333333;
     border-radius: 2px;
     border-color: black;
+    padding: 5px;
 }
 
 .popup-tags{

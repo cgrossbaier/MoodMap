@@ -86,12 +86,23 @@ def mapView(request):
             eventJson = {}
             timeDelta = timezone.now() - event.creation_date
             eventJson["eventType"] = event.eventType
+            categories = set()
+            if event.eventType_subCategory != "":
+                jsonDec = json.decoder.JSONDecoder()
+                subCategories = jsonDec.decode(event.eventType_subCategory)
+                for subCategory in subCategories:
+                    categories.add(subCategory)
+            if categories:
+                eventJson["eventType_subCategory"] = list(categories)
+            else:
+                eventJson["eventType_subCategory"] = ""
             eventJson["lat"] = event.lat
             eventJson["lng"] = event.lng
             eventJson["duration"] = round(float(timeDelta.seconds)/60)
             eventJson["description"] = event.description
             eventListJson.append(eventJson)
     event_geoJSON = getGeoJSON(eventList);
+    print(len(eventListJson))
     return render(request, 'geomap/map.html', {
             'error_message': error_message,
             'event_geoJSON':event_geoJSON,
@@ -130,6 +141,16 @@ def addEvent(request):
                 if event.isActive():
                     eventJson = {}
                     timeDelta = timezone.now() - event.creation_date
+                    categories = set()
+                    if event.eventType_subCategory != "":
+                        jsonDec = json.decoder.JSONDecoder()
+                        subCategories = jsonDec.decode(event.eventType_subCategory)
+                        for subCategory in subCategories:
+                            categories.add(subCategory)
+                    if categories:
+                        eventJson["eventType_subCategory"] = list(categories)
+                    else:
+                        eventJson["eventType_subCategory"] = ""
                     eventJson["eventType"] = event.eventType
                     eventJson["lat"] = event.lat
                     eventJson["lng"] = event.lng
