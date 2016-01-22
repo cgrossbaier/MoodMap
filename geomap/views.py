@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 
 import urllib
 import json
+import googlemaps
 
 from django.db import IntegrityError
 
@@ -75,42 +76,9 @@ def mapView(request):
     mapView
 	Get all the events that are active and pass them over to the map function
 	"""
-    context = {}
     error_message = ""
-    events = Event.objects.all().order_by('-creation_date')
-    eventListJson = []
-    eventList = []
-    for event in events:
-        if event.isActive():
-            eventList.append(event)
-            eventJson = {}
-            timeDelta = timezone.now() - event.creation_date
-            eventJson["eventType"] = event.eventType
-            categories = set()
-            if event.eventType_subCategory != "":
-                jsonDec = json.decoder.JSONDecoder()
-                try:
-                    subCategories = jsonDec.decode(event.eventType_subCategory)
-                except(ValueError):
-                    categories.add(event.eventType_subCategory)
-                else:
-                    for subCategory in subCategories:
-                        categories.add(subCategory)
-            if categories:
-                eventJson["eventType_subCategory"] = list(categories)
-            else:
-                eventJson["eventType_subCategory"] = ""
-            eventJson["lat"] = event.lat
-            eventJson["lng"] = event.lng
-            eventJson["duration"] = round(float(timeDelta.seconds)/60)
-            eventJson["description"] = event.description
-            eventListJson.append(eventJson)
-    event_geoJSON = getGeoJSON(eventList);
-    print(len(eventListJson))
     return render(request, 'geomap/map.html', {
-            'error_message': error_message,
-            'event_geoJSON':event_geoJSON,
-            'eventListJson':json.dumps(eventListJson)
+            'error_message': error_message
             },)
 
 
@@ -124,6 +92,8 @@ def addEvent(request):
             valid_until = request.POST['valid_until']
             lng = request.POST['lng']
             lat = request.POST['lat']
+            user_lng = request.POST['user_lng']
+            user_lat = request.POST['user_lat']
             description = request.POST['description']
         except (KeyError):
             response = {'status': 'Not okay', 'message': 'KeyError'}
@@ -138,35 +108,8 @@ def addEvent(request):
             event.lat = float(lat)
             event.description = description             
             event.save()
-            events = Event.objects.all().order_by('-creation_date')
-            eventListJson = []
-            eventList = []
-            for event in events:
-                if event.isActive():
-                    eventJson = {}
-                    timeDelta = timezone.now() - event.creation_date
-                    categories = set()
-                    if event.eventType_subCategory != "":
-                        jsonDec = json.decoder.JSONDecoder()
-                        subCategories = jsonDec.decode(event.eventType_subCategory)
-                        for subCategory in subCategories:
-                            categories.add(subCategory)
-                    if categories:
-                        eventJson["eventType_subCategory"] = list(categories)
-                    else:
-                        eventJson["eventType_subCategory"] = ""
-                    eventJson["eventType"] = event.eventType
-                    eventJson["lat"] = event.lat
-                    eventJson["lng"] = event.lng
-                    eventJson["duration"] = round(float(timeDelta.seconds)/60)
-                    eventJson["description"] = event.description
-                    eventListJson.append(eventJson)
-                    eventList.append(event)
-            event_geoJSON = getGeoJSON(eventList);
             response = {'status': 'Okay',
-                        'message': 'Event saved',
-                        'event_geoJSON': event_geoJSON,
-                       'eventListJson': json.dumps(eventListJson)}
+                        'message': 'Event saved'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
@@ -196,6 +139,57 @@ def searchQuery(request):
                 response = {'status': 'Place not found', 'message': 'No result'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
+@login_required
+def updateEventList(request):
+    response = {'status': 'Not okay', 'message': 'No Post method'}
+    eventList = []
+    eventListJson = {}
+    if request.method == u'POST':
+        try:
+            lat_NW = float(request.POST['lat_NW'])
+            lng_NW = float(request.POST['lng_NW'])
+            lat_SE = float(request.POST['lat_SE'])
+            lng_SE = float(request.POST['lng_SE'])
+            user_lat = float(request.POST['user_lat'])
+            user_lng = float(request.POST['user_lng'])
+        except (KeyError):
+            response = {'status': 'Not okay', 'message': 'KeyError'}
+        else:
+            eventListJson, eventList = getEvents(lat_NW, lng_NW, lat_SE, lng_SE, user_lat, user_lng)
+        event_geoJSON = getGeoJSON(eventList)
+        response = {'status': 'Okay',
+                        'message': 'Event saved',
+                        'event_geoJSON': event_geoJSON,
+                       'eventListJson': json.dumps(eventListJson)}
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+def getEvents(lat_NW, lng_NW, lat_SE, lng_SE, user_lat, user_lng):
+    events = Event.objects.all().order_by('-creation_date')
+    eventListJson = []
+    eventList = []
+    for event in events:
+        if event.isActive():
+            if event.lat <= lat_NW and event.lat >= lat_SE and event.lng >= lng_NW and event.lng <= lng_SE:
+                eventJson = {}
+                timeDelta = timezone.now() - event.creation_date
+                categories = set()
+                if event.eventType_subCategory != "":
+                    jsonDec = json.decoder.JSONDecoder()
+                    subCategories = jsonDec.decode(event.eventType_subCategory)
+                    for subCategory in subCategories:
+                        categories.add(subCategory)
+                if categories:
+                    eventJson["eventType_subCategory"] = list(categories)
+                else:
+                    eventJson["eventType_subCategory"] = ""
+                eventJson["eventType"] = event.eventType
+                eventJson["lat"] = event.lat
+                eventJson["lng"] = event.lng
+                eventJson["duration"] = str(queryGoogle_walkingDistance(user_lat, user_lng, event.lat, event.lng))
+                eventJson["description"] = event.description
+                eventListJson.append(eventJson)
+                eventList.append(event)
+    return eventListJson, eventList
 
 @login_required
 def feedback(request):
@@ -309,6 +303,16 @@ def queryGoogle_geocode(searchQuery, boundNorthWest_lat, boundNorthWest_lng, bou
         lng = None
     return lat, lng
 
+def queryGoogle_walkingDistance(start_lat, start_lng, stop_lat, stop_lng):
+    ## API KEY
+    gmaps = googlemaps.Client(key='AIzaSyCCx9Ielmj6w1F0N1KmPVdv77uNDdRpG1I')
+    directions_result = gmaps.directions(str(start_lat)+"," + str(start_lng),
+                                         str(stop_lat)+"," + str(stop_lng),
+                                         mode="walking")
+    duration = ""
+    if directions_result[0]['legs'][0]:
+        duration = directions_result[0]['legs'][0]['duration']['text']
+    return duration
 
 # Help Function
 def makeSessionId(st):

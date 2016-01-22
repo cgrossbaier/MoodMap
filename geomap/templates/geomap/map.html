@@ -264,21 +264,6 @@ Thank you and have fun!
         <script>
             var name = window.location.href.replace('/map/','/feedback/');
             document.getElementById('linkToFeedback').setAttribute('href', name);
-    
-            var events = {{eventListJson | safe}}
-            //add cafe, books store, and university geoJSON layers with styling
-            markersGeojson = L.mapbox.featureLayer()
-            .setGeoJSON({{ event_geoJSON | safe }})
-            //wait for the layer to be "on", or "loaded", to use a function that will setIcon with an L.icon object
-            markersGeojson.eachLayer(function(marker) {
-                if (marker.feature.properties.popup !== ""){
-                      marker.bindPopup(marker.feature.properties.popup);
-                }
-            }).addTo(map);
-
-            for (j = 0; j < events.length; j++) {
-                addEventToList(events[j].eventType, events[j].description, events[j].duration, events[j].lat, events[j].lng, events[j].eventType_subCategory);
-            }
         </script>
         
     </body>
