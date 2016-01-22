@@ -142,7 +142,7 @@ $(".button-category").click(function (ev) {
     }
     if (buttonClean === buttonClicked){
         icon = iconClean;
-        eventType = "sales";
+        eventType = "clean";
         modal_Description_Header.className = 'modal-header modal-clean';
         modal_Description_Header.innerHTML = '<h4>Clean</h4>';
         modal_Timerange_Header.className = 'modal-header modal-clean';
