@@ -88,11 +88,23 @@
                                             <i class="fa fa-smile-o fa-6"></i>
                                             <div class="button-category-subtitle">Event</div>
                                         </button>
-                                        <button type="button" class="btn btn-primary button-category" id="button-info">
-                                            <i class="fa fa-info-circle fa-6"></i>
-                                            <div class="button-category-subtitle">Info</div>
+                                        <button type="button" class="btn btn-primary button-category" id="button-lovely">
+                                            <i class="fa fa-heart fa-6"></i>
+                                            <div class="button-category-subtitle">Lovely</div>
                                         </button>
-                                        <button type="button" class="btn btn-primary button-category" id="button-warning">
+                                        <button type="button" class="btn btn-primary button-category" id="button-sales">
+                                            <i class="fa fa-star fa-6"></i>
+                                            <div class="button-category-subtitle">Sales</div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary button-category" id="button-mobility">
+                                            <i class="fa fa-bus fa-6"></i>
+                                            <div class="button-category-subtitle">Mobility</div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary button-category" id="button-clean">
+                                            <i class="fa fa-leaf fa-6"></i>
+                                            <div class="button-category-subtitle">Clean</div>
+                                        </button>
+                                        <button type="button" class="btn btn-primary button-category" id="button-danger">
                                             <i class="fa fa-exclamation-circle fa-6"></i>
                                             <div class="button-category-subtitle">Danger</div>
                                         </button>
@@ -171,11 +183,12 @@ Thank you and have fun!
                    <button type="button" class="btn btn-default btn-warning btn-modal button-closemodal" onclick="discardEvent();" ><i class="fa fa-times fa-6"></i></button>
                   </div>
                   <form>
-                      <div class="form-group">
-                       <label for="modalMarker_Category">Category</label>
-                        <input class="form-control" type="text" id="input-categoryTags">
+                      <div class="form-group" id='from-group-tag'>
+                       <label for="modalMarker_Category">Tag</label>
+                        <input class="form-control" type="text" id="input-categoryTags" placeholder="Short and simple - what's happening?">
+                        <div id="input-categoryTags-error"></div>
                         <label for="modalMarker_Description">Description</label>
-                        <textarea class="form-control" rows="3" id="eventDescription" placeholder="Tell us what's happening"></textarea>
+                        <textarea class="form-control" rows="3" id="eventDescription" placeholder="Woud you like to add some more information?"></textarea>
                       </div>
                     </form>
               </div>

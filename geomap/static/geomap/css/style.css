@@ -5,6 +5,14 @@ Red: #682321
 DarkBlue: #193441
 LightBlue: #799AA5
 https://color.adobe.com/Honey-Pot-color-theme-1490158/edit/?copy=true
+
+danger - #e41a1c
+sales - #377eb8
+lovely - #4daf4a
+event - #984ea3
+clean - #ff7f00
+mobility - #ffff33
+
 */
 
 
@@ -135,19 +143,35 @@ a{
     display: none;
 }
 
+#input-categoryTags-error{
+    color: red;
+}
 .modal-header {
     color: white;
 }
-.modal-info {
-    background-color: #FFD34E;
+.modal-danger {
+    background-color: #e41a1c;
     color: white;
 }
+.modal-sales {
+    background-color: #377eb8;;
+    color: white;
+}
+.modal-lovely {
+    background-color: #4daf4a;
+    color: white;
+}
+
 .modal-event {
-    background-color: #105B63;;
+    background-color: #984ea3;
     color: white;
 }
-.modal-warning {
-    background-color: #BD4932;
+.modal-clean {
+    background-color: #ff7f00;;
+    color: white;
+}
+.modal-mobility {
+    background-color: #ffff33;
     color: white;
 }
 .modal-footer {
@@ -212,6 +236,8 @@ a{
     display: none;
     margin-left: 5px
 }
+
+/* Button Types*/
 .button-category {
     font-size: 50px;
     margin: 10px;
@@ -219,38 +245,70 @@ a{
     border-radius: 20;
 }
 .button-category-subtitle{
-    font-size: 15px;
+    font-size: 13px;
 }
 
 #button-event {
-    background-color: #105B63;
-    border-color: #105B63;
+    background-color: #984ea3;
+    border-color: #984ea3;
 }
 
 #button-event:hover {
-  color: black; 
-  background-color: #105B63;
-  border-color: #105B63;
+  color: black;
+  background-color: #984ea3;
+  border-color: #984ea3;
 }
 
-#button-info {
-    background-color: #FFD34E;
-    border-color: #FFD34E;
-}
-#button-info:hover {
-  color: black; 
-  background-color: #FFD34E;
-  border-color: #FFD34E;
+#button-lovely {
+    background-color: #4daf4a;
+    border-color: #4daf4a;
 }
 
-#button-warning {
-    background-color: #BD4932;
-    border-color: #BD4932;
+#button-lovely:hover {
+  color: black;
+  background-color: #4daf4a;
+  border-color: #4daf4a;
 }
-#button-warning:hover {
+
+#button-sales {
+    background-color: #377eb8;
+    border-color: #377eb8;
+}
+
+#button-sales:hover {
+  color: black;
+  background-color: #377eb8;
+  border-color: #377eb8;
+}
+#button-mobility {
+    background-color: #ffff33;
+    border-color: #ffff33;
+}
+
+#button-mobility:hover {
+  color: black;
+  background-color: #ffff33;
+  border-color: #ffff33;
+}
+
+#button-clean {
+    background-color: #ff7f00;
+    border-color: #ff7f00;
+}
+#button-clean:hover {
   color: black; 
-  background-color: #BD4932;
-  border-color: #BD4932;
+  background-color: #ff7f00;
+  border-color: #ff7f00;
+}
+
+#button-danger {
+    background-color: #e41a1c;
+    border-color: #e41a1c;
+}
+#button-danger:hover {
+  color: black; 
+  background-color: #e41a1c;
+  border-color: #e41a1c;
 }
 
 .button-closemodal {

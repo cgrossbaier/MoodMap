@@ -6,23 +6,21 @@
 
 var buttonAddMarker = document.getElementById("buttonAddMarker");
 var buttonEvent = document.getElementById("button-event");
-var buttonInfo = document.getElementById("button-info");
-var buttonWarning = document.getElementById("button-warning");
+var buttonLovely = document.getElementById("button-lovely");
+var buttonSales = document.getElementById("button-sales");
+var buttonMobility = document.getElementById("button-mobility");
+var buttonClean = document.getElementById("button-clean");
+var buttonDanger = document.getElementById("button-danger");
 
 L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVybTA1NXVwMWd0diJ9.Y5Sdoofp1m9aexIJGwmi_A';
 
 var map = L.mapbox.map('map', 'cgrossbaier.ok6pb6m1', {
-    // set that bounding box as maxBounds to restrict moving the map
-    // see full maxBounds documentation:
-    // http://leafletjs.com/reference.html#map-maxbounds
-//    maxBounds: bounds,
     maxZoom: 19,
     minZoom: 10,
     zoomControl: false
 }).setView([52.5281028,13.3262337], 10);
 
 new L.Control.Zoom({ position: 'bottomleft' }).addTo(map);
-
 
 // zoom the map to that bounding box
 //map.fitBounds(bounds);
@@ -33,31 +31,20 @@ var buttonClicked;
 var markerColor;
 var setMarker = false;
 
-colorWarning = "BD4932";
-//var iconWarning_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-//                                              'marker-size': 'small',
-//                                              'marker-symbol': "w"});
-var iconWarning_Large= L.mapbox.marker.icon({'marker-color': colorWarning,
-                                              'marker-size': 'large',
-                                              'marker-symbol': "w"});
+colorEvent = "984ea3";
+colorLovely = "4daf4a";
+colorSales = "377eb8";
+colorMobility = "ffff33";
+colorClean = "ff7f00";
+colorDanger = "e41a1c";
 
-colorEvent = "105B63";
-//var iconEvent_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-//                                              'marker-size': 'small',
-//                                              'marker-symbol': "e"});
-var iconEvent_Large= L.mapbox.marker.icon({'marker-color': colorEvent,
-                                              'marker-size': 'large',
-                                              'marker-symbol': "e"});
+var iconEvent= L.mapbox.marker.icon({'marker-color': colorEvent, 'marker-size': 'large', 'marker-symbol': "music"});
+var iconLovely= L.mapbox.marker.icon({'marker-color': colorLovely, 'marker-size': 'large', 'marker-symbol': "heart"});
+var iconSales= L.mapbox.marker.icon({'marker-color': colorSales, 'marker-size': 'large', 'marker-symbol': "star"});
+var iconMobility= L.mapbox.marker.icon({'marker-color': colorMobility, 'marker-size': 'large', 'marker-symbol': "bus"});
+var iconClean= L.mapbox.marker.icon({'marker-color': colorClean, 'marker-size': 'large', 'marker-symbol': "garden"});
+var iconDanger= L.mapbox.marker.icon({'marker-color': colorDanger, 'marker-size': 'large', 'marker-symbol': "fire-station"});
 
-colorInfo = "FFD34E";
-//var iconInfo_Normal= L.mapbox.marker.icon({'marker-color': markerColor,
-//                                              'marker-size': 'small',
-//                                              'marker-symbol': "i"});
-var iconInfo_Large= L.mapbox.marker.icon({'marker-color': colorInfo,
-                                              'marker-size': 'large',
-                                              'marker-symbol': "i"});
-
-//var markers = L.layerGroup().addTo(map);
 var markersTemp =  L.layerGroup().addTo(map);
 var markersGeojson = L.mapbox.featureLayer()
 
@@ -122,32 +109,59 @@ $("#buttonAddMarker").click(function (ev) {
 $(".button-category").click(function (ev) {
     buttonClicked = ev.delegateTarget;
     if (buttonEvent === buttonClicked){
-        icon = iconEvent_Large;
+        icon = iconEvent;
         eventType = "event";
         modal_Description_Header.className = 'modal-header modal-event';
-        modal_Description_Header.innerHTML = '<h4>New Event</h4>';
+        modal_Description_Header.innerHTML = '<h4>Event</h4>';
         modal_Timerange_Header.className = 'modal-header modal-event';
-        modal_Timerange_Header.innerHTML = '<h4>New Event</h4>';
+        modal_Timerange_Header.innerHTML = '<h4>Event</h4>';
     }
-    if (buttonInfo === buttonClicked){
-        icon = iconInfo_Large;
-        eventType = "info";
-        modal_Description_Header.className = 'modal-header modal-info';
-        modal_Description_Header.innerHTML = '<h4>New Info</h4>';
-        modal_Timerange_Header.className = 'modal-header modal-info';
-        modal_Timerange_Header.innerHTML = '<h4>New Info</h4>';
+    if (buttonLovely === buttonClicked){
+        icon = iconLovely;
+        eventType = "lovely";
+        modal_Description_Header.className = 'modal-header modal-lovely';
+        modal_Description_Header.innerHTML = '<h4>Lovely</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-lovely';
+        modal_Timerange_Header.innerHTML = '<h4>Lovely</h4>';
     }
-    if (buttonWarning === buttonClicked){
-        icon = iconWarning_Large;
-        eventType = "warning";
-        modal_Description_Header.className = 'modal-header modal-warning';
-        modal_Description_Header.innerHTML = '<h4>New Danger</h4>';
-        modal_Timerange_Header.className = 'modal-header modal-warning';
-        modal_Timerange_Header.innerHTML = '<h4>New Warning</h4>';
+    if (buttonSales === buttonClicked){
+        icon = iconSales;
+        eventType = "sales";
+        modal_Description_Header.className = 'modal-header modal-sales';
+        modal_Description_Header.innerHTML = '<h4> Sales</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-sales';
+        modal_Timerange_Header.innerHTML = '<h4> Sales</h4>';
     }
-    $("#button-info").css("display", "none");
-    $("#button-warning").css("display", "none");
+    if (buttonMobility === buttonClicked){
+        icon = iconMobility;
+        eventType = "mobility";
+        modal_Description_Header.className = 'modal-header modal-mobility';
+        modal_Description_Header.innerHTML = '<h4>Mobility</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-mobility';
+        modal_Timerange_Header.innerHTML = '<h4>Mobility</h4>';
+    }
+    if (buttonClean === buttonClicked){
+        icon = iconClean;
+        eventType = "sales";
+        modal_Description_Header.className = 'modal-header modal-clean';
+        modal_Description_Header.innerHTML = '<h4>Clean</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-clean';
+        modal_Timerange_Header.innerHTML = '<h4>Clean</h4>';
+    }
+    if (buttonDanger === buttonClicked){
+        icon = iconDanger;
+        eventType = "danger";
+        modal_Description_Header.className = 'modal-header modal-danger';
+        modal_Description_Header.innerHTML = '<h4>Danger</h4>';
+        modal_Timerange_Header.className = 'modal-header modal-danger';
+        modal_Timerange_Header.innerHTML = '<h4>Danger</h4>';
+    }
     $("#button-event").css("display", "none");
+    $("#button-lovely").css("display", "none");
+    $("#button-sales").css("display", "none");
+    $("#button-mobility").css("display", "none");
+    $("#button-clean").css("display", "none");
+    $("#button-danger").css("display", "none");
     $("#buttonAddMarker-setMarker").css("display", "inline-block");
     saveStatistics("Select marker" + eventType);
 
@@ -212,8 +226,11 @@ function discardEvent() {
     
     $("#button-wrapper-category").css("display", "none");
     $("#button-event").css("display", "inline-block");
-    $("#button-info").css("display", "inline-block");
-    $("#button-warning").css("display", "inline-block");
+    $("#button-lovely").css("display", "inline-block");
+    $("#button-sales").css("display", "inline-block");
+    $("#button-mobility").css("display", "inline-block");
+    $("#button-clean").css("display", "inline-block");
+    $("#button-danger").css("display", "inline-block");
     
     $("#modalMarker_Timerange" ).slider( "value" , 60);
     $("#amount" ).text( "Valid for 60 minutes");
@@ -228,14 +245,18 @@ function discardEvent() {
 }
 
 function showTimerange() {
+    var formGroupTag = document.getElementById("from-group-tag");
     numberOfTags = categoryTags.getValue().length
     if (numberOfTags > 0){
         saveStatistics("Show Timerange")
+        formGroupTag.className = 'form-group';
+        document.getElementById('input-categoryTags-error').innerHTML = "";
         $('#modal_Description').modal('hide');
         $('#modal_Timerange').modal('show');
     }
     else{
-        alert("Please define at least one category")
+        formGroupTag.className = 'form-group has-error';
+        document.getElementById('input-categoryTags-error').innerHTML = "Please define at least one tag";
     }
 
 }
@@ -289,8 +310,11 @@ function saveEvent() {
 
             $("#button-wrapper-category").css("display", "none");
             $("#button-event").css("display", "inline-block");
-            $("#button-info").css("display", "inline-block");
-            $("#button-warning").css("display", "inline-block");
+            $("#button-lovely").css("display", "inline-block");
+            $("#button-sales").css("display", "inline-block");
+            $("#button-mobility").css("display", "inline-block");
+            $("#button-clean").css("display", "inline-block");
+            $("#button-danger").css("display", "inline-block");
             
             $("#buttonSaveEvent").find($(".fa")).removeClass('fa-spinner fa-spin').addClass('fa-check fa-6');
 
@@ -468,11 +492,20 @@ function addEventToList(type, description, duration, lat, lng, eventType_subCate
     if (type === "event"){
         listSymbol.style.color = colorEvent;
     }
-    if (type === "info"){
-        listSymbol.style.color = colorInfo;
+    if (type === "lovely"){
+        listSymbol.style.color = colorLovely;
     }
-    if (type === "warning"){
-        listSymbol.style.color = colorWarning;
+    if (type === "sales"){
+        listSymbol.style.color = colorSales;
+    }
+    if (type === "mobility"){
+        listSymbol.style.color = colorMobility;
+    }
+    if (type === "clean"){
+        listSymbol.style.color = colorClean;
+    }
+    if (type === "danger"){
+        listSymbol.style.color = colorDanger;
     }
 
     element.appendChild(listSymbol);

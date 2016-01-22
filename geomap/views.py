@@ -327,21 +327,30 @@ def getMarkterStyle(event):
         jsonDec = json.decoder.JSONDecoder()
         if event.eventType_subCategory != "":
             eventType_subCategory = jsonDec.decode(event.eventType_subCategory)
-    if eventType == 'info':
-        markerColor = "#FFD34E"
-        markerSymbol = "i"
+    if eventType == 'danger':
+        markerColor = "#e41a1c"
+        markerSymbol = "fire-station"
         if 'police' in eventType_subCategory:
             markerSymbol = "police"
-    elif eventType == 'warning':
-        markerColor = "#BD4932"
-        markerSymbol = "w"
-    elif eventType == 'event':
-        markerColor = "#105B63"
-        markerSymbol = "e"
+    elif eventType == 'sales':
+        markerColor = "#377eb8"
+        markerSymbol = "star"
         if 'fleemarket' in eventType_subCategory:
             markerSymbol = "grocery"
         if 'wochenmaerkte' in eventType_subCategory:
             markerSymbol = "grocery"
+    elif eventType == 'lovely':
+        markerColor = "#4daf4a"
+        markerSymbol = "heart"
+    elif eventType == 'clean':
+        markerColor = "#ff7f00"
+        markerSymbol = "garden"
+    elif eventType == 'mobility':
+        markerColor = "#ffff33"
+        markerSymbol = "bus"
+    elif eventType == 'event':
+        markerColor = "#984ea3"
+        markerSymbol = "music"
     else:
         markerColor = "#000000"
         markerSymbol = "b"
