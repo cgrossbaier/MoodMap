@@ -16,12 +16,12 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiY2dyb3NzYmFpZXIiLCJhIjoiY2lpeDIwdDk5MDAwMnVyb
 
 var map = L.mapbox.map('map', 'cgrossbaier.ok6pb6m1', {
     maxZoom: 19,
-    minZoom: 14,
+    minZoom: 12,
     zoomControl: false
-}).setView([52.5281028, 13.3262337], 14);
+}).setView([52.5281028, 13.3262337], 12);
 
 new L.Control.Zoom({
-    position: 'bottomleft'
+    position: 'topleft'
 }).addTo(map);
 
 // zoom the map to that bounding box
@@ -500,6 +500,7 @@ function updateEventList() {
             saveStatistics("Update Event List")
             newDate = new Date();
             $("#timeLastSync").text("Last update: " + newDate.timeNow())
+            markersGeojson.clearLayers();
             markersGeojson = L.mapbox.featureLayer()
                 .setGeoJSON(JSON.parse(response.event_geoJSON))
                 //wait for the layer to be "on", or "loaded", to use a function that will setIcon with an L.icon object
