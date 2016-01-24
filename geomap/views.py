@@ -333,7 +333,7 @@ def getMarkterStyle(event):
             eventType_subCategory = jsonDec.decode(event.eventType_subCategory)
     if eventType == 'danger':
         markerColor = "#e41a1c"
-        markerSymbol = "fire-station"
+        markerSymbol = "d"
         if 'police' in eventType_subCategory:
             markerSymbol = "police"
     elif eventType == 'sales':
@@ -348,7 +348,7 @@ def getMarkterStyle(event):
         markerSymbol = "heart"
     elif eventType == 'clean':
         markerColor = "#ff7f00"
-        markerSymbol = "garden"
+        markerSymbol = "r"
     elif eventType == 'mobility':
         markerColor = "#ffff33"
         markerSymbol = "bus"
@@ -417,7 +417,7 @@ def export_stats(request):
         if statistics:
             for statistic in statistics:
                 answers = [u'%s' % (user.username.encode('utf-8')), 
-                           u'%s' % (statistic.statType.encode('utf-8')),
+                           '%s' % (statistic.statType.encode('utf-8')),
                            u'%s' % (statistic.timestamp),
                            u'%s' % (statistic.lng),
                            u'%s' % (statistic.lat),
@@ -454,9 +454,9 @@ def export_events(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=export_events.csv'
     
-    # Delimiter ',' for German Excel
+    # Delimiter ';' for German Excel
     writer = csv.writer(response, dialect=csv.excel, delimiter=';')
-    column_list = ["User", "eventType", "description", "creation_date", "valid_until", "lng", "lat"]
+    column_list = ["User", "eventType", "eventType_subCategory", "description", "creation_date", "valid_until", "lng", "lat"]
     writer.writerow(column_list)
     # List of Users
     users = User.objects.all().order_by('id')
@@ -465,8 +465,9 @@ def export_events(request):
         if events:
             for event in events:
                 answers = [u'%s' % (user.username), 
-                           u'%s' % (event.eventType.encode('utf-8')),
-                           u'%s' % (event.description.encode('utf-8')),
+                           '%s' % (event.eventType.encode('utf-8')),
+                           '%s' % (event.eventType_subCategory.encode('utf-8')),
+                           '%s' % (event.description.encode('utf-8')),
                            u'%s' % (event.creation_date),
                            u'%s' % (event.valid_until),
                            u'%s' % (event.lng),

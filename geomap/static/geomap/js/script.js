@@ -66,12 +66,12 @@ var iconMobility = L.mapbox.marker.icon({
 var iconClean = L.mapbox.marker.icon({
     'marker-color': colorClean,
     'marker-size': 'large',
-    'marker-symbol': "garden"
+    'marker-symbol': "r"
 });
 var iconDanger = L.mapbox.marker.icon({
     'marker-color': colorDanger,
     'marker-size': 'large',
-    'marker-symbol': "fire-station"
+    'marker-symbol': "d"
 });
 
 var markersTemp = L.layerGroup().addTo(map);
