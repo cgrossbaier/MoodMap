@@ -8,12 +8,12 @@ from geomap.models import Event, Statistic, Feedback
 from django.utils import timezone
 import datetime
 
-import csv
 import random
 import pytz
-import sys
 import os
 import json
+import gspread
+from oauth2client.client import SignedJwtAssertionCredentials
 
 # fake events
 
@@ -31,30 +31,6 @@ if User.objects.filter(username="admin"):
 else:
     user = User(username="admin", password="admin")
     user.save()
-
-#
-#with open(filename, 'rb') as csvfile:
-#    events = csv.reader(csvfile, delimiter=';')
-#    next(events, None)  # skip the headers
-#    for event in events:
-#        newEvent = Event()
-#        newEvent.user = user
-#        newEvent.creation_date = timezone.now()
-#        newEvent.eventType = event[0]
-#        newEvent.eventType_subCategory = json.dumps(event[1].split("-"))
-#        newEvent.valid_until = timezone.now() + datetime.timedelta(0, random.uniform(30.0, 240.0)*60)
-#        newEvent.lng = random.uniform(lng_NW, lng_SE)
-#        newEvent.lat = random.uniform(lat_SE, lat_NW)
-#        newEvent.description = event[2]
-#        newEvent.save()
-#        print(event[0])
-#        print(event[1])
-#        print(event[2])
-#        print('-------')
-
-import json
-import gspread
-from oauth2client.client import SignedJwtAssertionCredentials
 
 filename = os.getcwd() + '/geomap/static/geomap/data/Moodmap-6137ab05624c.json'
 
@@ -84,44 +60,3 @@ for event in events:
     print(event["eventType_subCategory"])
     print(event["description"])
     print('-------')
-
-#
-#import gdata.service
-#import gdata.spreadsheet
-#import gdata.spreadsheet.service
-#import gdata.spreadsheet.text_db
-#import logging
-#import socket
-#
-#gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-#
-## Set the email to your Google account email
-#gd_client.email = 'c.grossbaier@gmail.com'
-#
-## Set the password to your Google account password. Please note that if you have
-## enabled the 2-steps authentication in Google you will have to generate a
-## password for this script.
-#gd_client.password = 'uqtnbpjfphrjoymv'
-#
-#try:
-#    gd_client.ProgrammaticLogin()
-#except socket.sslerror, e:
-#    logging.error('Spreadsheet socket.sslerror: ' + str(e))
-#
-## key: is the "key" value that you see in the url bar of the browser once you
-## open a Google Docs spreadsheet
-#key = '14TQhBxGoy-ur_3s-JANo2v8DZadK1YRbtaz5MBY_0k0'
-#
-## This is the worksheet ID: the default name of the first sheet is "od6"
-#wksht_id = 'od6'
-#
-#try:
-#    feed = gd_client.GetListFeed(key, wksht_id)
-#except gdata.service.RequestError, e:
-#    logging.error('Spreadsheet gdata.service.RequestError: ' + str(e))
-#except socket.sslerror, e:
-#    logging.error('Spreadsheet socket.sslerror: ' + str(e))
-#
-#for row_entry in feed.entry:
-#    record = gdata.spreadsheet.text_db.Record(row_entry=row_entry)
-#    print "%s,%s,%s" % (record.content['firstname'], record.content['lastname'], record.content['telephone'])
